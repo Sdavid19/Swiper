@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: app
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=database
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=swiper_db
+
+  db:
+    image: postgres:16
+    container_name: database
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: swiper_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:

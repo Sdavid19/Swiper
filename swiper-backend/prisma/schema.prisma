@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  isAdmin      Boolean  @default(false)
+  imageUrl     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  questionBanks QuestionBank[]
+  createdVotes  Vote[]
+  answers       Answer[]
+}
+
+model QuestionBank {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  imageUrl    String?
+  public      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  creatorId Int
+  creator   User @relation(fields: [creatorId], references: [id])
+
+  questions Question[]
+  votes     Vote[]
+
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+}
+
+model Question {
+  id       Int     @id @default(autoincrement())
+  text     String
+  imageUrl String?
+
+  bankId Int
+  bank   QuestionBank @relation(fields: [bankId], references: [id])
+
+  answers Answer[]
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  title     String
+  startsAt  DateTime
+  endsAt    DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bankId Int
+  bank   QuestionBank @relation(fields: [bankId], references: [id])
+
+  creatorId Int
+  creator   User @relation(fields: [creatorId], references: [id])
+
+  answers Answer[]
+}
+
+model Answer {
+  id        Int      @id @default(autoincrement())
+  answer    Boolean
+  createdAt DateTime @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  voteId Int
+  vote   Vote @relation(fields: [voteId], references: [id])
+
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id])
+
+  @@unique([userId, voteId, questionId])
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  slug String @unique
+
+  banks QuestionBank[]
+}
+
+model Media {
+  id       Int           @id @default(autoincrement())
+  name     String
+  type     MediaType
+  platform MediaPlatform
+}
+
+enum MediaType {
+  SERIES
+  MOVIE
+  SHORTFILM
+}
+
+enum MediaPlatform {
+  DISNEY
+  AMAZON
+  NETFLIX
+  HBO
+}
