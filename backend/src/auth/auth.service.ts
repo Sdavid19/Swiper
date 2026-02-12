@@ -1,19 +1,27 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import { AuthDto } from "./dto";
 import * as argon from 'argon2'
+import { UserService } from "../user";
+import { JwtService } from "@nestjs/jwt";
+import { SigninDto } from "./dto/signin.dto";
+import { SignupDto } from "./dto";
 
 @Injectable()
 export class AuthService {
 
-    constructor(private prisma: PrismaService){}
+    constructor(
+        private prisma: PrismaService, 
+        private userService: UserService, 
+        private jwtService: JwtService){}
 
-    async signup(dto: AuthDto) {
+    async signup(dto: SignupDto) {
+        const hash = await argon.hash(dto.password);
+
         const user = await this.prisma.user.create({
-
         data: {
-            ...dto,
-            passwordHash: await argon.hash(dto.password),
+            email: dto.email,
+            name: dto.name,
+            passwordHash: hash,
             isAdmin: false,
         },
             select: { email: true, name: true },
@@ -23,7 +31,21 @@ export class AuthService {
     }
 
 
-    signin() { 
-        return { msg: 'Signed up' }
+    async signin(dto: SigninDto) { 
+        const user = await this.userService.findUserByEmail(dto.email);
+
+        if(!user){
+            throw new UnauthorizedException();
+        }
+
+        const validPassword = await argon.verify(user.passwordHash, dto.password)
+
+        if(!validPassword){
+            throw new UnauthorizedException();
+        }
+
+        const payload = {sub: user.id, username: user.name, email: user.email};
+
+        return {access_token: await this.jwtService.signAsync(payload)};
     }
 }
