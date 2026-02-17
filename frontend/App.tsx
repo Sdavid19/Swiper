@@ -1,27 +1,23 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
-import { createStaticNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LoginScreen } from './src/features/auth/screens/LoginScreen';
+import { SignupScreen } from './src/features/auth/screens/SignupScreen';
 
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
+export const screens = ['Login', 'Signup'] as const;
+export type Screen = (typeof screens)[number];
+export type RootStackParamList = Record<Screen, undefined>;
+export type StackNavigation = NativeStackNavigationProp< RootStackParamList, Screen >;
 
-const RootStack = createNativeStackNavigator({
-  initialRouteName: "Login",
-  screens: {
-    Home: HomeScreen,
-    Login: LoginScreen
-  },
-});
-
-const Navigation = createStaticNavigation(RootStack);
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
-  return <Navigation />;
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Signup">
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Signup" component={SignupScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }

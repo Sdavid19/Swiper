@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Button, StyleSheet, TextInput, View, Alert, KeyboardAvoidingView, Platform, Text } from "react-native";
+import { Button, StyleSheet, TextInput, View, KeyboardAvoidingView, Platform, Alert } from "react-native";
 
-import { LoginDto } from "../dtos/login.dto";
 import { AxiosError } from "axios";
-import { login } from "../services/auth.service";
-
+import { signup } from "../services/auth.service";
 
 import { ErrorMessage } from "../components/ErrorMessages";
+import { SignupDto } from "../dtos/signup.dto";
+
 import { NavigateLink } from "../components/NavigateLink";
 
 
@@ -16,18 +16,19 @@ interface ErrorResponse {
   error: string;
 }
 
-export function LoginScreen() {
+export function SignupScreen() {
 
+  const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<string[] | null>(null);
 
   const handleLogin = async () => {
-    const credentials: LoginDto = { email, password };
+    const credentials: SignupDto = { email, password, name };
 
     try {
-      await login(credentials);
-      Alert.alert('Succesful login!')
+      await signup(credentials);
+       Alert.alert('Succesful signup!')
       setErrors(null);
     } catch (err) {
       const error = err as AxiosError<ErrorResponse>;
@@ -53,6 +54,13 @@ export function LoginScreen() {
           style={styles.input}
         />
         <TextInput
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+          autoCapitalize="none"
+          style={styles.input}
+        />
+        <TextInput
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
@@ -60,9 +68,11 @@ export function LoginScreen() {
           style={styles.input}
         />
 
-        <Button title="Login" onPress={handleLogin} />
+        <Button title="Signup" onPress={handleLogin} />
+
+        <NavigateLink text="Already have an account?" component="Login" />
   
-      <NavigateLink text="Not a member yet?" component="Signup" />
+        
       </View>
     </KeyboardAvoidingView>
   );
