@@ -71,8 +71,6 @@ export function SignupScreen() {
         <Button title="Signup" onPress={handleLogin} />
 
         <NavigateLink text="Already have an account?" component="Login" />
-  
-        
       </View>
     </KeyboardAvoidingView>
   );

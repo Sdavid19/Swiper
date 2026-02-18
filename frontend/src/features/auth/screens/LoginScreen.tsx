@@ -22,12 +22,11 @@ export function LoginScreen() {
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<string[] | null>(null);
 
-  const handleLogin = async () => {
+  const handleLogin = async () => { 
     const credentials: LoginDto = { email, password };
 
     try {
       await login(credentials);
-      Alert.alert('Succesful login!')
       setErrors(null);
     } catch (err) {
       const error = err as AxiosError<ErrorResponse>;
