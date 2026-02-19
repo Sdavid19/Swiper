@@ -1,0 +1,16 @@
+Feature-ök:
+Authentikáció
+- screenek:
+	- bejelentkezés
+	- regisztráció
+	- profilom
+- feature-ök:
+	- regisztráció
+	- bejelentkezés + JWT
+	- profil megtekintés + szerkesztés
+Kérdésbank kezelés
+Kérdés kezelés
+Szavazás kezelés visszanézés
+Csatlakozás szobákba
+Szavazás indítása
+
