@@ -1,3 +1,5 @@
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+
 export type AuthStackParamList = {
   Login: undefined
   Signup: undefined
@@ -13,10 +15,6 @@ export type RootStackParamList = {
   AppTabs: undefined
 }
 
-export type AuthStackParamList = {
-  Login: undefined
-  Signup: undefined
-}
 
 export type AuthNavigation =
   NativeStackNavigationProp<AuthStackParamList>

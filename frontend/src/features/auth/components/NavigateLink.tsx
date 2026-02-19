@@ -11,7 +11,7 @@ export function NavigateLink({ text, component }: NavigateLinkProps) {
   const navigation = useNavigation<AuthNavigation>()
 
   return (
-    <Pressable onPress={() => navigation.navigate(component)}>
+    <Pressable  onPress={() => navigation.navigate(component)}>
       <Text style={{ textAlign: 'center', marginTop: 20 }}>
         {text}
       </Text>

@@ -29,7 +29,7 @@ export function LoginScreen() {
       await login(credentials);
       setErrors(null);
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
+      const error = err as AxiosError<ErrorResponse>; 
       const messages = error.response?.data?.message || [error.message || 'Unknown error'];
       setErrors(messages);
     }
