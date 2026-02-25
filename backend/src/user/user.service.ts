@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import * as argon from 'argon2'
 
 @Injectable()
 export class UserService { 
@@ -9,6 +11,7 @@ export class UserService {
         return this.prisma.user.findUnique({
             where: { id },
             select: {
+                id: true,
                 name: true,
                 email: true,
                 imageUrl: true,
@@ -20,6 +23,35 @@ export class UserService {
         return this.prisma.user.findFirst({
             where: { email: email },
         });
+    }
+
+
+    async updateUser(id: number, dto: UpdateUserDto) {
+        const data: UpdateUserDto = {}
+
+        if (dto.name) {
+            data.name = dto.name
+        }
+
+        if (dto.password) {
+            data.password = await argon.hash(dto.password)
+        }
+
+        const user = await this.prisma.user.update({
+            where: { id },
+            data: {
+                name: data.name,
+                passwordHash: data.password
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                imageUrl: true,
+            }
+        }) as UpdateUserResponse;
+
+        return user;
     }
 
 }

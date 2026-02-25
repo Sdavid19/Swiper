@@ -35,13 +35,13 @@ export class AuthService {
         const user = await this.userService.findUserByEmail(dto.email);
 
         if(!user){
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('Invalid credentials!');
         }
 
         const validPassword = await argon.verify(user.passwordHash, dto.password)
 
         if(!validPassword){
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('Invalid credentials!');
         }
 
         const payload = {sub: user.id, username: user.name, email: user.email};

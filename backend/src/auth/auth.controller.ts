@@ -2,13 +2,10 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, Unauthorize
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto';
 import { SigninDto } from './dto/signin.dto';
-import { AuthGuard } from './auth.guard';
-import { UserService } from '../user';
-import { JwtPayload } from './interfaces';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService, private userService: UserService) {}
+  constructor(private authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('signup')
@@ -22,10 +19,4 @@ export class AuthController {
     return this.authService.signin(dto);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  async getProfile(@Request() req: {user: JwtPayload}) {
-    const userId = req.user.sub;
-    return await this.userService.findUserById(userId);
-  }
 }

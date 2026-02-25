@@ -1,37 +1,38 @@
 import { useState } from "react";
-import { Button, StyleSheet, TextInput, View, Alert, KeyboardAvoidingView, Platform, Text } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 
 import { LoginDto } from "../dtos/login.dto";
 import { AxiosError } from "axios";
 import { login } from "../services/auth.service";
 
-
-import { ErrorMessage } from "../components/ErrorMessages";
 import { NavigateLink } from "../components/NavigateLink";
+import { showSuccess } from "../../../core/services";
+import { InputField, PrimaryButton } from "../../../shared/components";
+import { ValidationErrors, ErrorResponse } from "../../../types";
 
-
-interface ErrorResponse {
-  message: string[];
-  statusCode: number;
-  error: string;
-}
+type LoginErrorResponse = ErrorResponse<ValidationErrors<LoginDto>>;
 
 export function LoginScreen() {
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [errors, setErrors] = useState<string[] | null>(null);
+
+  const [errors, setErrors] = useState<ValidationErrors<LoginDto> | null>(null);
+
+  const isButtonDisabled = () => {
+    return !email || !password;
+  }
 
   const handleLogin = async () => { 
-    const credentials: LoginDto = { email, password };
+    const credentials: LoginDto = {email, password};
 
     try {
       await login(credentials);
+      showSuccess('Logged in succesfully!');
       setErrors(null);
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>; 
-      const messages = error.response?.data?.message || [error.message || 'Unknown error'];
-      setErrors(messages);
+      const error = err as AxiosError<LoginErrorResponse>; 
+      setErrors(error.response?.data.error ?? null);
     }
   };
 
@@ -42,24 +43,30 @@ export function LoginScreen() {
     >
       
       <View style={styles.formContainer}>
-        <ErrorMessage message={errors} />
-        <TextInput
-          placeholder="Email"
+        <InputField
+          label="Email"
+          placeholder="example@gmail.com"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
-          style={styles.input}
+          errorMessages={errors?.email}
         />
-        <TextInput
+        <InputField
+          label="Password"
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
-          style={styles.input}
+          errorMessages={errors?.password}
         />
 
-        <Button title="Login" onPress={handleLogin} />
+        <PrimaryButton 
+          title="Login" 
+          onPress={handleLogin} 
+          disabled={isButtonDisabled()} 
+          style={styles.loginButton}
+        />
   
       <NavigateLink text="Not a member yet?" component="Signup" />
       </View>
@@ -80,10 +87,7 @@ const styles = StyleSheet.create({
     height: 300,
     justifyContent: 'flex-start',
   },
-  input: {
-    marginBottom: 12,
-    borderWidth: 1,
-    padding: 12,
-    borderRadius: 6,
+  loginButton:{
+    marginTop: 10
   }
 });

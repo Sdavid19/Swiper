@@ -12,7 +12,7 @@ export function NavigateLink({ text, component }: NavigateLinkProps) {
 
   return (
     <Pressable  onPress={() => navigation.navigate(component)}>
-      <Text style={{ textAlign: 'center', marginTop: 20 }}>
+      <Text style={{ textAlign: 'center', marginTop: 20, textDecorationLine: 'underline' }}>
         {text}
       </Text>
     </Pressable>
