@@ -6,9 +6,9 @@ import { AxiosError } from "axios";
 import { login } from "../services/auth.service";
 
 import { NavigateLink } from "../components/NavigateLink";
-import { showSuccess } from "../../../core/services";
 import { InputField, PrimaryButton } from "../../../shared/components";
-import { ValidationErrors, ErrorResponse } from "../../../types";
+import { ValidationErrors, ErrorResponse } from "../../../shared/types";
+import { showSuccess } from "../../../shared/utils/toast.service";
 
 type LoginErrorResponse = ErrorResponse<ValidationErrors<LoginDto>>;
 

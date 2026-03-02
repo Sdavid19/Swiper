@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#007AFF',
         padding: 12,
         borderRadius: 8,
-        opacity: 1,
+        opacity: 1
     },
     buttonDisabled: {
         backgroundColor: '#ccc',

@@ -1,14 +1,12 @@
 import { StyleProp, TextStyle, View, TextInput, TextInputProps, Text, StyleSheet, ViewStyle } from "react-native";
-import { Validator } from "../../types/validator";
 
 interface InputFieldProps extends TextInputProps {
     label?: string
     errorMessages?: string[],
     fieldStyle?: StyleProp<ViewStyle>,
-    validators?: Validator[];
 }
 
-export function InputField({label, errorMessages, fieldStyle, validators, ...props}: InputFieldProps){
+export function InputField({label, errorMessages, fieldStyle, ...props}: InputFieldProps){
 
 
     return (

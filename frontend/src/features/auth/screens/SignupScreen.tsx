@@ -5,9 +5,11 @@ import { signup } from "../services/auth.service";
 import { SignupDto } from "../dtos/signup.dto";
 import { NavigateLink } from "../components/NavigateLink";
 import { AxiosError } from "axios";
-import { showSuccess } from "../../../core/services";
 import { InputField, PrimaryButton } from "../../../shared/components";
-import { ErrorResponse, ValidationErrors } from "../../../types";
+import { ValidationErrors, ErrorResponse } from "../../../shared/types";
+import { showSuccess } from "../../../shared/utils/toast.service";
+import { useNavigation } from "@react-navigation/native";
+import { AuthNavigation } from "../../../navigation";
 
 type SignupErrorResponse = ErrorResponse<ValidationErrors<SignupDto>>;
 
@@ -17,6 +19,8 @@ export function SignupScreen() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<ValidationErrors<SignupDto> | null>(null);
+
+        const navigation = useNavigation<AuthNavigation>()
 
    const isButtonDisabled = () => {
     return !email || !password || !name;
@@ -29,6 +33,7 @@ export function SignupScreen() {
       await signup(credentials);
       showSuccess('Sucessfully signed up!')
       setErrors(null);
+      navigation.navigate('Login');
     } catch (err) {
       const error = err as AxiosError<SignupErrorResponse>; 
       setErrors(error.response?.data.error ?? null);

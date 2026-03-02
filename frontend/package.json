@@ -18,6 +18,8 @@
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.5",
     "expo": "~54.0.33",
+    "expo-file-system": "~19.0.21",
+    "expo-image-picker": "~17.0.10",
     "expo-status-bar": "~3.0.9",
     "lodash": "^4.17.23",
     "lucide-react-native": "^0.574.0",

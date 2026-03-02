@@ -24,7 +24,7 @@ export class AuthService {
             passwordHash: hash,
             isAdmin: false,
         },
-            select: { email: true, name: true },
+            select: { id: true, email: true, name: true, },
         });
 
         return user;
@@ -46,6 +46,6 @@ export class AuthService {
 
         const payload = {sub: user.id, username: user.name, email: user.email};
 
-        return {access_token: await this.jwtService.signAsync(payload), user: {email: user.email, name: user.name}};
+        return {access_token: await this.jwtService.signAsync(payload), user: {email: user.email, name: user.name, imageUrl: user.imageUrl}};
     }
 }

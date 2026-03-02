@@ -1,1 +1,1 @@
-export * from './toastService';
+export * from './image.service';

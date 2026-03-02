@@ -2,11 +2,13 @@ import axios, { AxiosError, AxiosInstance } from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { store } from '../../redux/store'
 import { logoutAction } from '../../redux/authSlice'
-import { showError } from '../services'
-import { ErrorResponse } from "../../types";
+import { showError } from '../../shared/utils/toast.service' 
+import { ErrorResponse } from "../../shared/types";
+
+export const API_URL = 'http://192.168.0.145:3000';
 
 const api: AxiosInstance = axios.create({
-  baseURL: 'http://192.168.0.145:3000',
+  baseURL: API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
