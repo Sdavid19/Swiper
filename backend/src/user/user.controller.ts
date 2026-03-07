@@ -7,13 +7,16 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { Express } from "express";
 import { diskStorage } from "multer";
 import { extname } from "path";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
+@ApiTags('users')
+@ApiBearerAuth()
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
-    @UseGuards(AuthGuard)
-    @Get('profile')
+  @UseGuards(AuthGuard)
+  @Get('profile')
         async getProfile(@Request() req: {user: JwtPayload}) {
         const userId = req.user.sub;
         return await this.userService.findUserById(userId);

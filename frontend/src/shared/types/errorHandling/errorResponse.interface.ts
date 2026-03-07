@@ -1,7 +1,7 @@
-import { ValidationErrors } from "./validationErrors.type";
+import { ValidationErrorMessage } from "./validationErrors.type";
 
 export interface ErrorResponse<T> {
-  message: string;
+  message: ValidationErrorMessage<T> | string;
   statusCode: number;
-  error?: ValidationErrors<T>;
+  error: string;
 }

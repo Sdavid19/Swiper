@@ -11,10 +11,8 @@ import { updateUserData } from "../../../redux/authSlice";
 import { showSuccess } from "../../../shared/utils/toast.service"; 
 import { InputField, PrimaryButton } from "../../../shared/components";
 import { AxiosError } from "axios";
-import { ErrorResponse, ValidationErrors } from "../../../shared/types";
+import { ErrorResponse, ValidationErrorMessage } from "../../../shared/types";
 import { ImageSelect } from "../components/ImageSelect";
-
-type UpdateProfileErrorResponse = ErrorResponse<ValidationErrors<UpdateUserDto>>;
 
 export function EditProfileScreen(){
 
@@ -27,7 +25,7 @@ export function EditProfileScreen(){
     const [password, setPassword] = useState<string | undefined>('');
     const [passwordAgain, setPasswordAgain] = useState<string | undefined>('');
 
-     const [errors, setErrors] = useState<ValidationErrors<UpdateUserDto> | null>(null);
+     const [errors, setErrors] = useState<ValidationErrorMessage<UpdateUserDto> | null>(null);
 
       const isButtonDisabled = () => {
         return !name || password !== passwordAgain || (name === user?.name && !password && !passwordAgain);
@@ -54,8 +52,12 @@ export function EditProfileScreen(){
             //navigation.navigate('Tabs', {screen: 'Profile'});
           }
         } catch (err) {
-           const error = err as AxiosError<UpdateProfileErrorResponse>; 
-           setErrors(error.response?.data.error ?? null);
+          const error = err as AxiosError<ErrorResponse<UpdateUserDto>>
+          const message = error.response?.data.message
+    
+          if (typeof message === "object") {
+            setErrors(message);
+          }
         }
     };
     
@@ -67,8 +69,7 @@ export function EditProfileScreen(){
         >
           
           <View style={styles.formContainer}>
-
-          <ImageSelect shape="oval" userImageUrl={user?.imageUrl} />
+            <ImageSelect shape="oval" userImageUrl={user?.imageUrl} />
 
             <InputField
               label="Name"

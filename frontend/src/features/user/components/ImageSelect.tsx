@@ -2,17 +2,17 @@ import { CircleUser, Edit3 } from "lucide-react-native";
 import { useState } from "react";
 import { Alert, Image, StyleSheet, View, TouchableOpacity, Platform } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
-import { getImage } from "../../../core/services";
+import { getImage } from "../../../api/services/image.service";
 import { uploadUserImage } from "../services/user.service";
 import { AppDispatch, updateUserData } from "../../../redux";
 import { useDispatch } from "react-redux";
 import * as FileSystem from 'expo-file-system';
-import api from "../../../core/api/client";
+import api from "../../../api/client";
 
 interface ImageSelectProps {
     shape?: ImagePicker.CropShape,
     aspect?: [number, number],
-    userImageUrl?: string
+    userImageUrl?: string | null
 }
 
 export function ImageSelect({shape, aspect, userImageUrl}: ImageSelectProps){

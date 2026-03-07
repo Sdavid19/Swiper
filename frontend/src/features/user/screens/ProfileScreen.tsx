@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from "../../../redux"
 import { logoutAction } from "../../../redux/authSlice"
 import { useNavigation } from "@react-navigation/native"
 import { AppNavigation } from "../../../navigation"
-import { getImage } from "../../../core/services"
+import { getImage } from "../../../api/services/image.service" 
 import { showSuccess } from "../../../shared/utils/toast.service"
 
 

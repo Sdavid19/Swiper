@@ -64,7 +64,7 @@ export class UserService {
             select: {
                 imageUrl: true
             }
-        }) as UpdateUserImageDto;
+        });
 
         return imageUrl;
     }

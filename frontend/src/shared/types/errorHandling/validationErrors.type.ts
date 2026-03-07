@@ -1,3 +1,3 @@
-export type ValidationErrors<T> = {
+export type ValidationErrorMessage<T> = {
   [K in keyof T]?: string[];
 };
