@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet } from "react-native"
+import { Text, View, StyleSheet, Image } from "react-native"
 import { NavigateCard } from "../components/NavigateCard"
 import { CircleUser } from "lucide-react-native"
 import { useSelector, useDispatch } from "react-redux"
@@ -6,7 +6,8 @@ import { AppDispatch, RootState } from "../../../redux"
 import { logoutAction } from "../../../redux/authSlice"
 import { useNavigation } from "@react-navigation/native"
 import { AppNavigation } from "../../../navigation"
-import { showSuccess } from "../../../core/services"
+import { getImage } from "../../../api/services/image.service" 
+import { showSuccess } from "../../../shared/utils/toast.service"
 
 
 export function ProfileScreen() {
@@ -24,7 +25,10 @@ export function ProfileScreen() {
   return (
     <View style={{ display: 'flex', justifyContent: 'center', paddingVertical: 100 }}>
       <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <CircleUser size={180} />
+        {user?.imageUrl ?
+        (<Image src={getImage(user.imageUrl)} style={{width: 200, height: 200, borderRadius: 100}}></Image> ) 
+          : 
+        (<CircleUser size={180} /> ) }
       </View>
 
       <View style={styles.infoContainer}>

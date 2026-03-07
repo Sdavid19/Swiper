@@ -1,38 +1,42 @@
 import { useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 
-import { LoginDto } from "../dtos/login.dto";
+import { SigninDto } from "../../../shared/types/generated";
 import { AxiosError } from "axios";
 import { login } from "../services/auth.service";
 
 import { NavigateLink } from "../components/NavigateLink";
-import { showSuccess } from "../../../core/services";
 import { InputField, PrimaryButton } from "../../../shared/components";
-import { ValidationErrors, ErrorResponse } from "../../../types";
+import { ValidationErrorMessage, ErrorResponse } from "../../../shared/types";
+import { showSuccess } from "../../../shared/utils/toast.service";
 
-type LoginErrorResponse = ErrorResponse<ValidationErrors<LoginDto>>;
 
 export function LoginScreen() {
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const [errors, setErrors] = useState<ValidationErrors<LoginDto> | null>(null);
+  const [errors, setErrors] = useState<ValidationErrorMessage<SigninDto> | null>(null);
+
 
   const isButtonDisabled = () => {
     return !email || !password;
   }
 
   const handleLogin = async () => { 
-    const credentials: LoginDto = {email, password};
+    const credentials: SigninDto = {email, password};
 
     try {
       await login(credentials);
       showSuccess('Logged in succesfully!');
       setErrors(null);
     } catch (err) {
-      const error = err as AxiosError<LoginErrorResponse>; 
-      setErrors(error.response?.data.error ?? null);
+      const error = err as AxiosError<ErrorResponse<SigninDto>>
+      const message = error.response?.data.message
+
+      if (typeof message === "object") {
+        setErrors(message);
+      }
     }
   };
 

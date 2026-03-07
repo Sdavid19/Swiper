@@ -23,4 +23,4 @@ export const showInfo = (message: string) => {
     text1: 'Info',
     text2: message,
   });
-};
+}; 

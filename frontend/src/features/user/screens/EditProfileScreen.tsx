@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { StyleSheet, TextInput, View, Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux";
 import { UpdateUserDto } from "../dto/update-user.dto";
@@ -8,12 +8,11 @@ import { updateUser } from "../services/user.service";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigation } from "../../../navigation/types";
 import { updateUserData } from "../../../redux/authSlice";
-import { showSuccess } from "../../../core/services";
+import { showSuccess } from "../../../shared/utils/toast.service"; 
 import { InputField, PrimaryButton } from "../../../shared/components";
 import { AxiosError } from "axios";
-import { ErrorResponse, ValidationErrors } from "../../../types";
-
-type UpdateProfileErrorResponse = ErrorResponse<ValidationErrors<UpdateUserDto>>;
+import { ErrorResponse, ValidationErrorMessage } from "../../../shared/types";
+import { ImageSelect } from "../components/ImageSelect";
 
 export function EditProfileScreen(){
 
@@ -26,7 +25,7 @@ export function EditProfileScreen(){
     const [password, setPassword] = useState<string | undefined>('');
     const [passwordAgain, setPasswordAgain] = useState<string | undefined>('');
 
-     const [errors, setErrors] = useState<ValidationErrors<UpdateUserDto> | null>(null);
+     const [errors, setErrors] = useState<ValidationErrorMessage<UpdateUserDto> | null>(null);
 
       const isButtonDisabled = () => {
         return !name || password !== passwordAgain || (name === user?.name && !password && !passwordAgain);
@@ -50,64 +49,75 @@ export function EditProfileScreen(){
           if(name || password){
             setErrors(null);
             showSuccess('Proifle updated successfully!')
-            navigation.navigate('Tabs', {screen: 'Profile'});
+            //navigation.navigate('Tabs', {screen: 'Profile'});
           }
         } catch (err) {
-           const error = err as AxiosError<UpdateProfileErrorResponse>; 
-           setErrors(error.response?.data.error ?? null);
+          const error = err as AxiosError<ErrorResponse<UpdateUserDto>>
+          const message = error.response?.data.message
+    
+          if (typeof message === "object") {
+            setErrors(message);
+          }
         }
     };
     
 
     return (
-         <KeyboardAvoidingView
-              style={styles.container}
-              behavior={Platform.OS === "ios" ? "padding" : undefined}
-            >
-              
-              <View style={styles.formContainer}>
-                <InputField
-                  label="Name"
-                  placeholder="Steve"
-                  value={name}
-                  onChangeText={setName}
-                  autoCapitalize="none"
-                  errorMessages={errors?.name}
-                />
-                <InputField
-                label="Password"
-                  placeholder="Password"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                  errorMessages={errors?.password}
-                />
-                <InputField
-                  label="Password again"
-                  placeholder="Password"
-                  value={passwordAgain}
-                  onChangeText={setPasswordAgain}
-                  secureTextEntry
-                />
-        
-                <PrimaryButton title="Save" onPress={handleUpdate} disabled={isButtonDisabled()} />
+      <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
           
-              </View>
-            </KeyboardAvoidingView>
+          <View style={styles.formContainer}>
+            <ImageSelect shape="oval" userImageUrl={user?.imageUrl} />
+
+            <InputField
+              label="Name"
+              placeholder="Steve"
+              value={name}
+              onChangeText={setName}
+              autoCapitalize="none"
+              errorMessages={errors?.name}
+            />
+            <InputField
+            label="Password"
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              errorMessages={errors?.password}
+            />
+            <InputField
+              label="Password again"
+              placeholder="Password"
+              value={passwordAgain}
+              onChangeText={setPasswordAgain}
+              secureTextEntry
+            />
+    
+            <PrimaryButton title="Save" onPress={handleUpdate} disabled={isButtonDisabled()} />
+      
+          </View>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center', 
     padding: 16,
     backgroundColor: '#fff',
   },
   formContainer: {
     width: '100%',
-    height: 300,
     justifyContent: 'flex-start',
-  }
+  },
+    image: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    padding: 0,
+    margin: 0
+  },
 });

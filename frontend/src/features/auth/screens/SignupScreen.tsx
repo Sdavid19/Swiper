@@ -1,22 +1,23 @@
 import { useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
-
 import { signup } from "../services/auth.service";
-import { SignupDto } from "../dtos/signup.dto";
+import { SignupDto } from "../../../shared/types/generated"; 
 import { NavigateLink } from "../components/NavigateLink";
 import { AxiosError } from "axios";
-import { showSuccess } from "../../../core/services";
 import { InputField, PrimaryButton } from "../../../shared/components";
-import { ErrorResponse, ValidationErrors } from "../../../types";
-
-type SignupErrorResponse = ErrorResponse<ValidationErrors<SignupDto>>;
+import { ValidationErrorMessage, ErrorResponse } from "../../../shared/types";
+import { showSuccess } from "../../../shared/utils/toast.service";
+import { useNavigation } from "@react-navigation/native";
+import { AuthNavigation } from "../../../navigation";
 
 export function SignupScreen() {
 
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [errors, setErrors] = useState<ValidationErrors<SignupDto> | null>(null);
+  const [errors, setErrors] = useState<ValidationErrorMessage<SignupDto> | null>(null);
+
+    const navigation = useNavigation<AuthNavigation>()
 
    const isButtonDisabled = () => {
     return !email || !password || !name;
@@ -29,9 +30,14 @@ export function SignupScreen() {
       await signup(credentials);
       showSuccess('Sucessfully signed up!')
       setErrors(null);
+      navigation.navigate('Login');
     } catch (err) {
-      const error = err as AxiosError<SignupErrorResponse>; 
-      setErrors(error.response?.data.error ?? null);
+      const error = err as AxiosError<ErrorResponse<SignupDto>>;
+      const message = error.response?.data.message;
+
+      if (typeof message === "object") {
+        setErrors(message);
+      }
     }
   };
 

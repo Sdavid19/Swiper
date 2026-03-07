@@ -1,10 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { User } from "../types/user.type"
+import { User } from "../shared/types/user.type"
+import { UserResponseDto } from "../shared/types/generated"
+
 
 type AuthState = {
-  user: User | null
+  user: UserState | null
   token: string | null
 }
+
+type UserState = {
+  id: number,
+  email: string,
+  name: string,
+  imageUrl?: string | null
+}
+
 
 const initialState: AuthState = {
   user: null,
@@ -15,7 +25,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setCredentials: (state: AuthState, action: PayloadAction<{ user: User; token: string }>) => {
+    setCredentials: (state: AuthState, action: PayloadAction<{ user: UserState; token: string }>) => {
       state.user = action.payload.user
       state.token = action.payload.token
     },
@@ -23,7 +33,7 @@ const authSlice = createSlice({
       state.user = null
       state.token = null
     },
-    updateUserData: (state: AuthState, action: PayloadAction<Partial<User>>) => {
+    updateUserData: (state: AuthState, action: PayloadAction<Partial<UserState>>) => {
       if (state.user) {
         state.user = { ...state.user, ...action.payload }
       }

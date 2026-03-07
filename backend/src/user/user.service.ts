@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import * as argon from 'argon2'
+import { UpdateUserImageDto } from "./dto/update-user-image.dto";
 
 @Injectable()
 export class UserService { 
@@ -27,10 +28,10 @@ export class UserService {
 
 
     async updateUser(id: number, dto: UpdateUserDto) {
-        const data: UpdateUserDto = {}
+        const data: UpdateUserDto = {};
 
         if (dto.name) {
-            data.name = dto.name
+            data.name = dto.name;
         }
 
         if (dto.password) {
@@ -52,6 +53,20 @@ export class UserService {
         }) as UpdateUserResponse;
 
         return user;
+    }
+
+    async updateUserImage(id: number, filename: string){
+        const imageUrl = this.prisma.user.update({
+            where: {id},
+            data: {
+                imageUrl: filename
+            },
+            select: {
+                imageUrl: true
+            }
+        });
+
+        return imageUrl;
     }
 
 }

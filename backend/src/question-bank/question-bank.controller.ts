@@ -1,7 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
 import { QuestionBankService } from "./question-bank.service";
 import { CreateBankDto } from "./dto";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
+@ApiTags('question-banks')
+@ApiBearerAuth()
 @Controller('question-banks')
 export class QuestionBankController{
     constructor(private readonly bankService: QuestionBankService) { }
