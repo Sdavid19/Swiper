@@ -1,4 +1,4 @@
-import { Body, Controller, FileTypeValidator, Get, HttpCode, HttpStatus, MaxFileSizeValidator, Param, ParseFilePipe, Patch, Post, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, MaxFileSizeValidator, Param, ParseFilePipe, Patch, Post, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthGuard } from "../auth/auth.guard";
 import { UserService } from "./user.service";
 import { JwtPayload } from "../auth/interfaces";
@@ -7,7 +7,9 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { Express } from "express";
 import { diskStorage } from "multer";
 import { extname } from "path";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { UserDto } from "./dto";
+import { UserImageDto } from "./dto/user-image";
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -16,6 +18,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @UseGuards(AuthGuard)
+  @ApiOkResponse({type: UserDto})
   @Get('profile')
         async getProfile(@Request() req: {user: JwtPayload}) {
         const userId = req.user.sub;
@@ -24,6 +27,7 @@ export class UserController {
 
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({type: UserDto})
     @Patch('profile')
     async updateProfile(
         @Request() req: { user: JwtPayload },
@@ -33,8 +37,8 @@ export class UserController {
         return this.userService.updateUser(userId, body);
     }
 
-    
     @Post('upload/:id')
+    @ApiOkResponse({type: UserImageDto})
     @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
         destination: './uploads',

@@ -16,12 +16,13 @@ export class CreateBankDto {
 
     @Type(() => Number)
     @IsInt()
-    @IsPositive()
     @ApiProperty()
     creatorId: number
 
+    @ApiProperty()
+    @Type(() => Number)
+    @IsInt()
     @Validate(CategoryExists)
-    @ApiProperty() 
     categoryId: number
 
     @IsString()

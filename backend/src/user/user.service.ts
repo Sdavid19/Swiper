@@ -1,15 +1,16 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import * as argon from 'argon2'
-import { UpdateUserImageDto } from "./dto/update-user-image.dto";
+import { UserDto } from "./dto";
+import { UserImageDto } from "./dto/user-image";
 
 @Injectable()
 export class UserService { 
     constructor(private readonly prisma: PrismaService) { }
     
     async findUserById(id: number) {
-        return this.prisma.user.findUnique({
+        const user = this.prisma.user.findUnique({
             where: { id },
             select: {
                 id: true,
@@ -18,6 +19,12 @@ export class UserService {
                 imageUrl: true,
             },
         });
+
+        if(!user){
+            throw new NotFoundException(`User with id ${id} not found`);
+        }
+
+        return user;
     }
 
     async findUserByEmail(email: string) {
@@ -27,7 +34,7 @@ export class UserService {
     }
 
 
-    async updateUser(id: number, dto: UpdateUserDto) {
+    async updateUser(id: number, dto: UpdateUserDto): Promise<UserDto> {
         const data: UpdateUserDto = {};
 
         if (dto.name) {
@@ -50,12 +57,12 @@ export class UserService {
                 email: true,
                 imageUrl: true,
             }
-        }) as UpdateUserResponse;
+        });
 
         return user;
     }
 
-    async updateUserImage(id: number, filename: string){
+    async updateUserImage(id: number, filename: string): Promise<UserImageDto>{
         const imageUrl = this.prisma.user.update({
             where: {id},
             data: {

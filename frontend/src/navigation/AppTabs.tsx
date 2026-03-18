@@ -1,23 +1,19 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { View, Text } from 'react-native'
-import { AppTabParamList } from './types'
 import { ProfileScreen } from '../features/user/screens/ProfileScreen'
+import { HomeScreen } from '../features/bank/screens/HomeScreen'
+import { BankScreen } from '../features/bank/screens/BanksScreen'
+import { EditBankStack } from './EditBankStack';
+import { ProfileStack } from './ProfileStack';
 
-const Tab = createBottomTabNavigator<AppTabParamList>()
+const Tab = createBottomTabNavigator();
 
-function HomeScreen() {
-  return (
-    <View>
-      <Text>Home</Text>
-    </View>
-  )
-}
 
 export function AppTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: true }}>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="BankStack" options={{headerShown: false}} component={EditBankStack} />
+      <Tab.Screen name="ProfileStack" options={{headerShown: false}} component={ProfileStack} />
     </Tab.Navigator>
   )
 }

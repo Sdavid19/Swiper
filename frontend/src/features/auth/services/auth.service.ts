@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import api from '../../../api/client'
-import { SigninDto, SigninResponseDto, SignupDto, SignupResponseDto } from '../../../shared/types/generated'
+import { SigninDto, SigninResponseDto, SignupDto, UserDto } from '../../../shared/types/generated'
 import { store } from '../../../redux/store'
 import { setCredentials, logoutAction } from '../../../redux/authSlice'
 
-export const login = async (data: SigninDto): Promise<SigninResponseDto> => {
+export const login = async (data: SigninDto): Promise<void> => {
 
-  const response = await api.post<SigninResponseDto>('/auth/login', data)
+  const response = await api.post<SigninResponseDto>('/auth/login', data);
 
   await AsyncStorage.setItem(
     'auth',
@@ -19,8 +19,6 @@ export const login = async (data: SigninDto): Promise<SigninResponseDto> => {
       token: response.data.access_token
     })
   )
-
-  return response.data
 }
 
 export const logout = async (): Promise<void> => {
@@ -28,7 +26,6 @@ export const logout = async (): Promise<void> => {
   store.dispatch(logoutAction())
 }
 
-export const signup = async (data: SignupDto): Promise<SignupResponseDto> => {
-  const response = await api.post<SignupResponseDto>('/auth/signup', data)
-  return response.data
+export const signup = async (data: SignupDto): Promise<void> => {
+  await api.post<UserDto>('/auth/signup', data);
 }

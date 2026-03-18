@@ -9,7 +9,6 @@ export function AppStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true, headerBackButtonDisplayMode: 'minimal' }}>
       <Stack.Screen name="Tabs" component={AppTabs} options={{headerShown: false}} />
-      <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{headerTitle: 'Edit profile'}} />
     </Stack.Navigator>
   )
 }

@@ -1,9 +1,9 @@
 import { NavigatorScreenParams } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import { BankDto } from "../shared/types/generated"
 
 export type AppStackParamList = {
   Tabs: NavigatorScreenParams<AppTabParamList>
-  EditProfile: undefined
 }
 
 export type AuthStackParamList = {
@@ -11,9 +11,23 @@ export type AuthStackParamList = {
   Signup: undefined
 }
 
+export type EditBankStackParamList = {
+  ShowBanks: undefined
+  EditBank: { bankId?: number, refresh?: () => void }
+  BankQuestions: { bankId: number }
+  EditQuestion: { questionId: number }
+}
+
+export type ProfileStackParamList = {
+  Profile: undefined,
+  EditProfile: undefined
+}
+
+
 export type AppTabParamList = {
   Home: undefined
-  Profile: undefined
+  ProfileStack: NavigatorScreenParams<ProfileNavigation>
+  BankStack: NavigatorScreenParams<EditBankStackParamList>
 }
 
 export type RootStackParamList = {
@@ -21,9 +35,14 @@ export type RootStackParamList = {
   AppStack: undefined
 }
 
-
 export type AuthNavigation =
   NativeStackNavigationProp<AuthStackParamList>
 
-  export type AppNavigation =
+export type AppNavigation =
   NativeStackNavigationProp<AppStackParamList>
+
+export type EditBankNavigation =
+  NativeStackNavigationProp<EditBankStackParamList>
+
+export type ProfileNavigation = 
+   NativeStackNavigationProp<ProfileStackParamList>

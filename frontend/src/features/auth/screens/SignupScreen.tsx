@@ -2,13 +2,14 @@ import { useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 import { signup } from "../services/auth.service";
 import { SignupDto } from "../../../shared/types/generated"; 
-import { NavigateLink } from "../components/NavigateLink";
+import { NavigateLink } from "../components/NavigateLink"; 
 import { AxiosError } from "axios";
 import { InputField, PrimaryButton } from "../../../shared/components";
 import { ValidationErrorMessage, ErrorResponse } from "../../../shared/types";
 import { showSuccess } from "../../../shared/utils/toast.service";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigation } from "../../../navigation";
+import { KeyRound, Mail, User } from "lucide-react-native";
 
 export function SignupScreen() {
 
@@ -55,6 +56,7 @@ export function SignupScreen() {
           value={name}
           onChangeText={setName}
           autoCapitalize="none"
+          Icon={User}
         />
         <InputField
           label="Email"
@@ -64,6 +66,7 @@ export function SignupScreen() {
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          Icon={Mail}
         />
         <InputField
           label="Password"
@@ -72,6 +75,7 @@ export function SignupScreen() {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+           Icon={KeyRound}
         />
 
          <PrimaryButton 

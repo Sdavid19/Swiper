@@ -3,29 +3,28 @@ import { useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux";
-import { UpdateUserDto } from "../dto/update-user.dto";
 import { updateUser } from "../services/user.service";
 import { useNavigation } from "@react-navigation/native";
-import { AppNavigation } from "../../../navigation/types";
 import { updateUserData } from "../../../redux/authSlice";
 import { showSuccess } from "../../../shared/utils/toast.service"; 
 import { InputField, PrimaryButton } from "../../../shared/components";
 import { AxiosError } from "axios";
 import { ErrorResponse, ValidationErrorMessage } from "../../../shared/types";
 import { ImageSelect } from "../components/ImageSelect";
+import { UpdateUserDto, UserDto } from "../../../shared/types/generated";
 
 export function EditProfileScreen(){
 
     const user = useSelector((state: RootState) => state.auth.user);
 
-    const navigation = useNavigation<AppNavigation>();
+    const navigation = useNavigation();
     const dispatch: AppDispatch = useDispatch();
 
     const [name, setName] = useState<string | undefined>(user?.name || undefined);
     const [password, setPassword] = useState<string | undefined>('');
     const [passwordAgain, setPasswordAgain] = useState<string | undefined>('');
 
-     const [errors, setErrors] = useState<ValidationErrorMessage<UpdateUserDto> | null>(null);
+    const [errors, setErrors] = useState<ValidationErrorMessage<UpdateUserDto> | null>(null);
 
       const isButtonDisabled = () => {
         return !name || password !== passwordAgain || (name === user?.name && !password && !passwordAgain);
