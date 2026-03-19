@@ -54,6 +54,7 @@ export class UserController {
         callback(null, true)
     }
     }))
+    @UseGuards(AuthGuard)
     uploadFile(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
         return this.userService.updateUserImage(+id, file.filename);
     }

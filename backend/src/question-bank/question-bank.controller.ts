@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, Query, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { QuestionBankService } from "./question-bank.service";
 import { CreateBankDto } from "./dto";
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { BankDto } from "./dto/bank.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
-import path, { extname } from "path";
+import { extname } from "path";
 import { BankImageDto } from "./dto/bank-image.dto";
 import { UpdateBankDto } from "./dto/update-bank.dto";
 import { AuthGuard } from "../auth/auth.guard";
@@ -24,15 +24,16 @@ export class QuestionBankController{
     @HttpCode(HttpStatus.OK)
     getBanks(
         @Body() filter: BankFilterDto,
+         @Request() req: { user: JwtPayload },
     ) {
         const categoryIds = filter.categoryIds; 
-        console.log(categoryIds)
-        return this.bankService.findAll(categoryIds);
+        return this.bankService.findAll(req.user.sub ,categoryIds);
     }
 
     @Get(':id')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({type: BankDto})
+    @UseGuards(AuthGuard)
     getBank(@Param('id') id: string) {
         return this.bankService.findById(+id);
     }
@@ -40,6 +41,7 @@ export class QuestionBankController{
     @Post("create")
     @HttpCode(HttpStatus.CREATED)
     @ApiCreatedResponse({type: BankDto})
+    @UseGuards(AuthGuard)
     createBank(@Body() dto: CreateBankDto) {
         return this.bankService.create(dto);
     }
@@ -47,12 +49,14 @@ export class QuestionBankController{
     @Put("/:id")
     @HttpCode(HttpStatus.OK)
     @ApiCreatedResponse({type: BankDto})
+    @UseGuards(AuthGuard)
     updateBank(@Param('id') id: string, @Body() dto: UpdateBankDto) {
         return this.bankService.update(+id, dto);
     }
 
     @Delete(':id')
     @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthGuard)
     deleteBank(@Param('id') id: string) {
         return this.bankService.delete(+id);
     }
@@ -74,6 +78,7 @@ export class QuestionBankController{
         callback(null, true)
     }
     }))
+    @UseGuards(AuthGuard)
     uploadFile(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
    
         return this.bankService.updateBankImage(+id, file.filename);

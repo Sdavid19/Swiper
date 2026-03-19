@@ -28,27 +28,30 @@ export class QuestionBankService {
         })
     }
     
-    findAll(categoryIds?: number[]): Promise<BankDto[]> {
+    findAll(userId: number, categoryIds?: number[]): Promise<BankDto[]> {
     return this.prisma.questionBank.findMany({
-        where: categoryIds && categoryIds.length > 0 ? {
-            categoryId: { in: categoryIds }
-        } : undefined,
+        where: {
+        creatorId: userId,
+        ...(categoryIds && categoryIds.length > 0
+            ? { categoryId: { in: categoryIds } }
+            : {}),
+        },
         include: {
-            category: true,
-            creator: {
-                select: {
-                    id: true,
-                    email: true,
-                    name: true,
-                    imageUrl: true
-                }
-            }
+        category: true,
+        creator: {
+            select: {
+            id: true,
+            email: true,
+            name: true,
+            imageUrl: true,
+            },
+        },
         },
         orderBy: {
-            title: 'asc'
-        }
+        title: 'asc',
+        },
     });
-}
+    }
 
     update(id: number, dto: UpdateBankDto): Promise<BankDto>{
         return this.prisma.questionBank.update({
