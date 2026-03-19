@@ -1,14 +1,14 @@
 import { Trash2 } from "lucide-react-native";
 import { Alert, TouchableOpacity } from "react-native";
-import { deleteBank } from "../services/bank.service";
+import { deleteBank } from "../../services/bank.service";
 import { AxiosError } from "axios";
-import { ErrorResponse } from "../../../shared/types";
-import { showSuccess } from "../../../shared/utils/toast.service";
+import { ErrorResponse } from "../../../../shared/types";
+import { showSuccess } from "../../../../shared/utils/toast.service";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { EditBankStackParamList } from "../../../navigation";
-import { BankScreen } from "../screens/BanksScreen";
+import { EditBankStackParamList } from "../../../../navigation";
+import { BankScreen } from "../../screens/BanksScreen";
 import { useDispatch } from "react-redux";
-import { removeBankAction } from "../../../redux/bankSlice";
+import { removeBankAction } from "../../../../redux/bankSlice";
 
 interface DeleteBankProps {
     bankId: number,

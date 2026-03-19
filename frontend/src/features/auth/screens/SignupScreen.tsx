@@ -75,7 +75,7 @@ export function SignupScreen() {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
-           Icon={KeyRound}
+          Icon={KeyRound}
         />
 
          <PrimaryButton 

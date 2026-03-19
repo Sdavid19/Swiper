@@ -11,7 +11,8 @@ import { InputField, PrimaryButton } from "../../../shared/components";
 import { AxiosError } from "axios";
 import { ErrorResponse, ValidationErrorMessage } from "../../../shared/types";
 import { ImageSelect } from "../components/ImageSelect";
-import { UpdateUserDto, UserDto } from "../../../shared/types/generated";
+import { UpdateUserDto } from "../../../shared/types/generated";
+import { KeyRound, User } from "lucide-react-native";
 
 export function EditProfileScreen(){
 
@@ -77,6 +78,7 @@ export function EditProfileScreen(){
               onChangeText={setName}
               autoCapitalize="none"
               errorMessages={errors?.name}
+              Icon={User}
             />
             <InputField
             label="Password"
@@ -85,6 +87,7 @@ export function EditProfileScreen(){
               onChangeText={setPassword}
               secureTextEntry
               errorMessages={errors?.password}
+              Icon={KeyRound}
             />
             <InputField
               label="Password again"
@@ -92,6 +95,7 @@ export function EditProfileScreen(){
               value={passwordAgain}
               onChangeText={setPasswordAgain}
               secureTextEntry
+              Icon={KeyRound}
             />
     
             <PrimaryButton title="Save" onPress={handleUpdate} disabled={isButtonDisabled()} />

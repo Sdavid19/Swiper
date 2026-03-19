@@ -7,7 +7,7 @@ export const getAllBanks = async (): Promise<BankDto[]> => {
 }
 
 export const getAllBanksWithFilter = async (
-  filter: BankFilterDto
+  filter?: BankFilterDto
 ): Promise<BankDto[]> => {
   const response = await api.post("/question-banks", filter);
   return response.data;

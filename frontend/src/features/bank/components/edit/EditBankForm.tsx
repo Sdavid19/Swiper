@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { BankDto, CategoryDto, CreateBankDto, UpdateBankDto } from "../../../shared/types/generated";
-import { EditBankScreenMode } from "../screens/EditBankScreen";
+import { BankDto, CategoryDto, CreateBankDto, UpdateBankDto } from "../../../../shared/types/generated";
+import { EditBankScreenMode } from "../../screens/EditBankScreen";
 import { StyleSheet, View } from "react-native";
-import { InputField, PrimaryButton } from "../../../shared/components";
-import { CheckboxField } from "../../../shared/components/CheckBoxField";
-import { PickerSelect } from "../../../shared/components/PickerSelect";
-import { createBank, updateBank } from "../services/bank.service";
-import { showSuccess } from "../../../shared/utils/toast.service";
+import { InputField, PrimaryButton } from "../../../../shared/components";
+import { CheckboxField } from "../../../../shared/components/CheckBoxField";
+import { PickerSelect } from "../../../../shared/components/PickerSelect";
+import { createBank, updateBank } from "../../services/bank.service";
+import { showSuccess } from "../../../../shared/utils/toast.service";
 import { AxiosError } from "axios";
-import { ErrorResponse, ValidationErrorMessage } from "../../../shared/types";
+import { ErrorResponse, ValidationErrorMessage } from "../../../../shared/types";
 import { useDispatch } from "react-redux";
-import { addBankAction, updateBankAction } from "../../../redux/bankSlice";
+import { addBankAction, updateBankAction } from "../../../../redux/bankSlice";
 
 export interface EditBankFormProps{
     screenMode: EditBankScreenMode,

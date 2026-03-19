@@ -1,16 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 
 type BadgeProps = {
-  text: string
+  text: string,
+  color: string
 }
 
 
-export function Badge({text}: BadgeProps){
-    return (
-        <View style={styles.container}>
-            <Text style={styles.text}>{text}</Text>
-        </View>
-    );
+export function Badge({ text, color }: BadgeProps) {
+  return (
+    <View style={[styles.container, { backgroundColor: color }]}>
+      <Text style={styles.text}>{text}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -19,7 +20,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 3,
     borderRadius: 20,
-    backgroundColor: '#007AFF',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'

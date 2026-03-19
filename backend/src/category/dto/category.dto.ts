@@ -9,4 +9,7 @@ export class CategoryDto {
 
     @ApiProperty()
     slug: string;
+
+    @ApiProperty()
+    color: string;
 }

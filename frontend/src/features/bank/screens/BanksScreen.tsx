@@ -3,32 +3,24 @@ import { getAllBanks } from "../services/bank.service";
 import { PrimaryButton } from "../../../shared/components";
 import { useNavigation } from "@react-navigation/native";
 import { EditBankNavigation, EditBankStackParamList } from "../../../navigation";
-import { BankFilterList } from "../components/BankFilterList";
+import { BankFilterList } from "../components/list/BankFilterList";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux";
 import { setBanks } from "../../../redux/bankSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type ShowBankProps = NativeStackScreenProps<EditBankStackParamList, "ShowBanks">;
 
 export function BankScreen({route}: ShowBankProps) {
   const navigation = useNavigation<EditBankNavigation>()
 
-  const banks = useSelector((state: RootState) => state.bank);
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    getAllBanks().then(res => dispatch(setBanks(res)));
-  }, []);
 
   return (
     <View style={styles.container}>
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>My banks</Text>
-      </View>
-
-      <BankFilterList banks={banks} setBanks={setBanks} />
+  
+      <BankFilterList />
       
       <PrimaryButton 
         title="Add new" 

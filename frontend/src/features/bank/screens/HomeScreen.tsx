@@ -2,7 +2,7 @@ import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { getAllBanks } from "../services/bank.service";
 import { useCallback, useEffect, useState } from "react";
 import { BankDto } from "../../../shared/types/generated";
-import { BankCard } from "../components/BankCard";
+import { BankCard } from "../components/list/BankCard";
 import { NavigateLink } from "../components/NavigateLink";
 import { useFocusEffect } from "@react-navigation/native";
 

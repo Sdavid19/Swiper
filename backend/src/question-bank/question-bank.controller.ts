@@ -23,11 +23,11 @@ export class QuestionBankController{
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
     getBanks(
-        @Request() req: { user: JwtPayload },
-        @Body() filters: BankFilterDto,
+        @Body() filter: BankFilterDto,
     ) {
-        const categoryId = filters.categoryId !== undefined ? +filters.categoryId : undefined;
-        return this.bankService.findAll(categoryId, filters.search);
+        const categoryIds = filter.categoryIds; 
+        console.log(categoryIds)
+        return this.bankService.findAll(categoryIds);
     }
 
     @Get(':id')

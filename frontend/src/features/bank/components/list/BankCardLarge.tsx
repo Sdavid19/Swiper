@@ -1,19 +1,28 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import { Badge } from "../../../shared/components/Badge";
-import { BankDto } from "../../../shared/types/generated";
-import { PrimaryButton } from "../../../shared/components";
+import { Badge } from "../../../../shared/components/Badge";
+import { BankDto } from "../../../../shared/types/generated";
+import { PrimaryButton } from "../../../../shared/components";
+import { useNavigation } from "@react-navigation/native";
+import { EditBankNavigation } from "../../../../navigation";
+import { getImage } from "../../../../api/services/image.service";
 
 type CardProps = {
-  bank: BankDto,
-   
+  bank: BankDto
 }
 
-export function BankCard({bank}: CardProps){
+export function BankCardLarge({bank}: CardProps){
+
+  const navigation = useNavigation<EditBankNavigation>()
+
+  const onButtonPress = (id: number) => {
+      navigation.navigate('EditBank', {bankId: id});
+  }
+
     return (
       <View key={bank.id} style={styles.container}>
         <View style={styles.imageWrapper}>
           <Image 
-            source={{ uri: 'https://placecats.com/200/100' }} 
+            source={{ uri: bank.imageUrl ? getImage(bank.imageUrl) : 'https://placecats.com/200/100' }}
             style={styles.image} 
           />
         </View>
@@ -22,17 +31,15 @@ export function BankCard({bank}: CardProps){
             <View>
               <View style={styles.infoCotainer}>
                   <Text style={styles.bankTitle}>{bank.title}</Text>
-                  <Badge text={bank.category.name} />
+                  <Badge text={bank.category.name} color={bank.category.color} />
               </View>
 
               <View style={styles.descContainer}>
                 <Text style={styles.desc}>{bank.description}</Text>
               </View>
             </View>
-            
-
           <View style={styles.buttonContainer}>
-            <PrimaryButton style={{width: 60}} title="Start" />
+            <PrimaryButton onPress={() => onButtonPress(bank.id)} style={{width: 60}} title="View" />
           </View>
         </View>
       </View>
@@ -41,20 +48,19 @@ export function BankCard({bank}: CardProps){
 
 const styles = StyleSheet.create({
   container: {
-    width: 270,
-    marginVertical: 10,
-    marginHorizontal: 10,
+  width: "95%",
+  marginVertical: 10,
 
-    backgroundColor: "white",
-    borderRadius: 10,
+  backgroundColor: "white",
+  borderRadius: 10,
 
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+  shadowColor: "#000",
+  shadowOffset: { width: 2, height: 3 },
+  shadowOpacity: 0.3,
+  shadowRadius: 2,
 
-    elevation: 5
-  },
+  elevation: 5,
+},
   imageWrapper: {
     width: '100%',
     height: 175,

@@ -578,12 +578,16 @@
           },
           "slug": {
             "type": "string"
+          },
+          "color": {
+            "type": "string"
           }
         },
         "required": [
           "id",
           "name",
-          "slug"
+          "slug",
+          "color"
         ]
       },
       "CreateCategoryDto": {
@@ -591,23 +595,24 @@
         "properties": {
           "name": {
             "type": "string"
+          },
+          "color": {
+            "type": "string"
           }
         },
         "required": [
-          "name"
+          "name",
+          "color"
         ]
       },
       "BankFilterDto": {
         "type": "object",
         "properties": {
-          "categoryId": {
-            "type": "number"
-          },
-          "search": {
-            "type": "string"
-          },
-          "onlyMine": {
-            "type": "boolean"
+          "categoryIds": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
           }
         }
       },

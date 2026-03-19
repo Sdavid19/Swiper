@@ -11,6 +11,7 @@
     "generate:api": "openapi-ts"
   },
   "dependencies": {
+    "@gorhom/bottom-sheet": "^5.2.8",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/bottom-tabs": "^7.13.0",
     "@react-navigation/elements": "^2.9.5",
