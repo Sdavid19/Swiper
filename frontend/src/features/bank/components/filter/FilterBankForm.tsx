@@ -16,7 +16,7 @@ export function FilterBankForm({categories, selected, setSelected, setVisible}: 
         setSelected((prev) =>
         prev.includes(id)
             ? prev.filter((i) => i !== id)
-            : [...prev, id]
+            : [...prev, id] 
         );
     };
 

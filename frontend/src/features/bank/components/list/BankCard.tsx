@@ -8,6 +8,15 @@ type CardProps = {
 }
 
 export function BankCard({bank}: CardProps){
+
+  const shortenString = (word: string, letterNumberToShow: number) => {
+    if(word.length > letterNumberToShow){
+      return word.slice(0, letterNumberToShow) + "...";
+    } else {
+      return word;
+    }
+  }
+
     return (
       <View key={bank.id} style={styles.container}>
         <View style={styles.imageWrapper}>
@@ -20,12 +29,14 @@ export function BankCard({bank}: CardProps){
         <View style={styles.cardBody}>
             <View>
               <View style={styles.infoCotainer}>
-                  <Text style={styles.bankTitle}>{bank.title}</Text>
+                  <Text style={styles.bankTitle}>{shortenString(bank.title, 12)}</Text>
                   <Badge color={bank.category.color} text={bank.category.name} />
               </View>
 
               <View style={styles.descContainer}>
-                <Text style={styles.desc}>{bank.description}</Text>
+                <Text style={styles.desc} numberOfLines={1} ellipsizeMode="tail">
+                  {shortenString(bank.description, 25)}
+                </Text>
               </View>
             </View>
             

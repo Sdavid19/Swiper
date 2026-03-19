@@ -35,7 +35,7 @@ export function BankCardLarge({bank}: CardProps){
               </View>
 
               <View style={styles.descContainer}>
-                <Text style={styles.desc}>{bank.description}</Text>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.desc}>{bank.description}</Text>
               </View>
             </View>
           <View style={styles.buttonContainer}>
