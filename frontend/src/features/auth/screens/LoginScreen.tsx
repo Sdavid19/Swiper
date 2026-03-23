@@ -9,12 +9,13 @@ import { NavigateLink } from "../components/NavigateLink";
 import { InputField, PrimaryButton } from "../../../shared/components";
 import { ValidationErrorMessage, ErrorResponse } from "../../../shared/types";
 import { showSuccess } from "../../../shared/utils/toast.service";
+import { KeyRound, Mail } from "lucide-react-native";
 
 
 export function LoginScreen() {
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>('sulyokdavid03@gmail.com');
+  const [password, setPassword] = useState<string>('password');
 
   const [errors, setErrors] = useState<ValidationErrorMessage<SigninDto> | null>(null);
 
@@ -55,6 +56,7 @@ export function LoginScreen() {
           keyboardType="email-address"
           autoCapitalize="none"
           errorMessages={errors?.email}
+          Icon={Mail}
         />
         <InputField
           label="Password"
@@ -63,6 +65,7 @@ export function LoginScreen() {
           onChangeText={setPassword}
           secureTextEntry
           errorMessages={errors?.password}
+          Icon={KeyRound}
         />
 
         <PrimaryButton 

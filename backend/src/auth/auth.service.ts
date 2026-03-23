@@ -6,7 +6,7 @@ import { JwtService } from "@nestjs/jwt";
 import { SigninDto } from "./dto/signin.dto";
 import { SignupDto } from "./dto";
 import { SigninResponseDto } from "./dto/signin.response.dto";
-import { SignupResponseDto } from "./dto/signup.response.dto";
+import { UserDto } from "../user/dto";
 
 @Injectable()
 export class AuthService {
@@ -16,18 +16,18 @@ export class AuthService {
         private userService: UserService, 
         private jwtService: JwtService){}
 
-    async signup(dto: SignupDto) {
+    async signup(dto: SignupDto): Promise<UserDto> {
         const hash = await argon.hash(dto.password);
 
         const existing = await this.userService.findUserByEmail(dto.email);
 
         if (existing) {
-        throw new BadRequestException({
-            statusCode: 400,
-            error: "Field error",
-            message: {
-                email: ["Email already exists"]
-            }
+            throw new BadRequestException({
+                statusCode: 400,
+                error: "Field error",
+                message: {
+                    email: ["Email already exists"]
+                }
             });
         }
 
@@ -41,11 +41,11 @@ export class AuthService {
             select: { id: true, email: true, name: true, imageUrl: true},
         });
 
-        return user as SignupResponseDto;
+        return user;
     }
 
 
-    async signin(dto: SigninDto) { 
+    async signin(dto: SigninDto): Promise<SigninResponseDto> { 
         const user = await this.userService.findUserByEmail(dto.email);
 
         if(!user){
@@ -63,6 +63,7 @@ export class AuthService {
         return {
             access_token: await this.jwtService.signAsync(payload), 
             user: {
+                id: user.id,
                 email: user.email, 
                 name: user.name, 
                 imageUrl: user.imageUrl

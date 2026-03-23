@@ -1,12 +1,10 @@
 import api from "../../../api/client";
-import { UpdateUserResponse } from "../dto/update-user-respone.dto";
-import { UpdateUserDto } from "../dto/update-user.dto";
-import { UpdateUserImageDto } from "../dto/update.user.image.dto";
+import { UpdateUserDto, UserImageDto } from "../../../shared/types/generated";
 
 export const updateUser = async (
   data: UpdateUserDto
-): Promise<UpdateUserResponse> => {
-  const response = await api.patch<UpdateUserResponse>("/users/profile", data);
+): Promise<UpdateUserDto> => {
+  const response = await api.patch<UpdateUserDto>("/users/profile", data);
   return response.data;
 };
 
@@ -16,7 +14,7 @@ export const uploadUserImage = async (
   uri: string,
   type?: string,
   name?: string | null
-): Promise<UpdateUserImageDto> => {
+): Promise<UserImageDto> => {
   const formData = new FormData();
   formData.append("file", {
     uri,
@@ -24,7 +22,7 @@ export const uploadUserImage = async (
     name: name ?? "avatar.jpeg",
   } as any);
 
-  const response = await api.post<UpdateUserImageDto>(
+  const response = await api.post<UserImageDto>(
     `/users/upload/${userId}`,
     formData,
     {

@@ -1,6 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { User } from "../shared/types/user.type"
-import { UserResponseDto } from "../shared/types/generated"
 
 
 type AuthState = {

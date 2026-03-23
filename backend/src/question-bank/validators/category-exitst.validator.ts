@@ -1,11 +1,11 @@
-import { ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { Injectable } from '@nestjs/common';
+import { ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { CategoryService } from '../../category';
 
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class CategoryExists implements ValidatorConstraintInterface {
-  constructor(private categoryService: CategoryService) {}
+  constructor(private readonly categoryService: CategoryService) {}
 
   async validate(categoryId: number) {
     const category = await this.categoryService.findById(categoryId);
@@ -13,6 +13,6 @@ export class CategoryExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'Category does not exist';
+    return 'Category not found';
   }
 }

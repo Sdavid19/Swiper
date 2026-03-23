@@ -3,29 +3,29 @@ import { useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux";
-import { UpdateUserDto } from "../dto/update-user.dto";
 import { updateUser } from "../services/user.service";
 import { useNavigation } from "@react-navigation/native";
-import { AppNavigation } from "../../../navigation/types";
 import { updateUserData } from "../../../redux/authSlice";
 import { showSuccess } from "../../../shared/utils/toast.service"; 
 import { InputField, PrimaryButton } from "../../../shared/components";
 import { AxiosError } from "axios";
 import { ErrorResponse, ValidationErrorMessage } from "../../../shared/types";
 import { ImageSelect } from "../components/ImageSelect";
+import { UpdateUserDto } from "../../../shared/types/generated";
+import { KeyRound, User } from "lucide-react-native";
 
 export function EditProfileScreen(){
 
     const user = useSelector((state: RootState) => state.auth.user);
 
-    const navigation = useNavigation<AppNavigation>();
+    const navigation = useNavigation();
     const dispatch: AppDispatch = useDispatch();
 
     const [name, setName] = useState<string | undefined>(user?.name || undefined);
     const [password, setPassword] = useState<string | undefined>('');
     const [passwordAgain, setPasswordAgain] = useState<string | undefined>('');
 
-     const [errors, setErrors] = useState<ValidationErrorMessage<UpdateUserDto> | null>(null);
+    const [errors, setErrors] = useState<ValidationErrorMessage<UpdateUserDto> | null>(null);
 
       const isButtonDisabled = () => {
         return !name || password !== passwordAgain || (name === user?.name && !password && !passwordAgain);
@@ -78,6 +78,7 @@ export function EditProfileScreen(){
               onChangeText={setName}
               autoCapitalize="none"
               errorMessages={errors?.name}
+              Icon={User}
             />
             <InputField
             label="Password"
@@ -86,6 +87,7 @@ export function EditProfileScreen(){
               onChangeText={setPassword}
               secureTextEntry
               errorMessages={errors?.password}
+              Icon={KeyRound}
             />
             <InputField
               label="Password again"
@@ -93,6 +95,7 @@ export function EditProfileScreen(){
               value={passwordAgain}
               onChangeText={setPasswordAgain}
               secureTextEntry
+              Icon={KeyRound}
             />
     
             <PrimaryButton title="Save" onPress={handleUpdate} disabled={isButtonDisabled()} />

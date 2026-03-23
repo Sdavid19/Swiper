@@ -4,8 +4,7 @@ import { SignupDto } from './dto';
 import { SigninDto } from './dto/signin.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { SigninResponseDto } from './dto/signin.response.dto';
-import { UserResponseDto } from '../user/dto';
-import { SignupResponseDto } from './dto/signup.response.dto';
+import { UserDto } from '../user/dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -14,7 +13,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  @ApiOkResponse({type: SignupResponseDto})
+  @ApiOkResponse({type: UserDto})
   signUp(@Body() dto: SignupDto) {
     return this.authService.signup(dto);
   }

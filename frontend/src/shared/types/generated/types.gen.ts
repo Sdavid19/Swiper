@@ -10,11 +10,11 @@ export type SignupDto = {
     name: string;
 };
 
-export type SignupResponseDto = {
+export type UserDto = {
     id: number;
     email: string;
     name: string;
-    imageUrl?: string;
+    imageUrl: string | null;
 };
 
 export type SigninDto = {
@@ -22,16 +22,9 @@ export type SigninDto = {
     password: string;
 };
 
-export type UserResponseDto = {
-    id: number;
-    email: string;
-    name: string;
-    imageUrl: string | null;
-};
-
 export type SigninResponseDto = {
     access_token: string;
-    user: UserResponseDto;
+    user: UserDto;
 };
 
 export type UpdateUserDto = {
@@ -39,8 +32,37 @@ export type UpdateUserDto = {
     password?: string;
 };
 
+export type UserImageDto = {
+    imageUrl: string | null;
+};
+
+export type CategoryDto = {
+    id: number;
+    name: string;
+    slug: string;
+    color: string;
+};
+
 export type CreateCategoryDto = {
     name: string;
+    color: string;
+};
+
+export type BankFilterDto = {
+    categoryIds?: Array<number>;
+};
+
+export type BankDto = {
+    id: number;
+    title: string;
+    description: string;
+    public: boolean;
+    usageCount: number;
+    createdAt: string;
+    updatedAt: string;
+    creator: UserDto;
+    category: CategoryDto;
+    imageUrl: string | null;
 };
 
 export type CreateBankDto = {
@@ -52,6 +74,19 @@ export type CreateBankDto = {
     public?: boolean;
 };
 
+export type UpdateBankDto = {
+    title: string;
+    description?: string;
+    creatorId: number;
+    categoryId: number;
+    imageUrl?: string;
+    public?: boolean;
+};
+
+export type BankImageDto = {
+    imageUrl: string | null;
+};
+
 export type AuthControllerSignUpData = {
     body: SignupDto;
     path?: never;
@@ -60,7 +95,7 @@ export type AuthControllerSignUpData = {
 };
 
 export type AuthControllerSignUpResponses = {
-    200: SignupResponseDto;
+    200: UserDto;
 };
 
 export type AuthControllerSignUpResponse = AuthControllerSignUpResponses[keyof AuthControllerSignUpResponses];
@@ -86,8 +121,10 @@ export type UserControllerGetProfileData = {
 };
 
 export type UserControllerGetProfileResponses = {
-    200: unknown;
+    200: UserDto;
 };
+
+export type UserControllerGetProfileResponse = UserControllerGetProfileResponses[keyof UserControllerGetProfileResponses];
 
 export type UserControllerUpdateProfileData = {
     body: UpdateUserDto;
@@ -97,8 +134,10 @@ export type UserControllerUpdateProfileData = {
 };
 
 export type UserControllerUpdateProfileResponses = {
-    200: unknown;
+    200: UserDto;
 };
+
+export type UserControllerUpdateProfileResponse = UserControllerUpdateProfileResponses[keyof UserControllerUpdateProfileResponses];
 
 export type UserControllerUploadFileData = {
     body?: never;
@@ -110,8 +149,10 @@ export type UserControllerUploadFileData = {
 };
 
 export type UserControllerUploadFileResponses = {
-    201: unknown;
+    200: UserImageDto;
 };
+
+export type UserControllerUploadFileResponse = UserControllerUploadFileResponses[keyof UserControllerUploadFileResponses];
 
 export type CategoryControllerGetAllCategoriesData = {
     body?: never;
@@ -121,8 +162,10 @@ export type CategoryControllerGetAllCategoriesData = {
 };
 
 export type CategoryControllerGetAllCategoriesResponses = {
-    200: unknown;
+    200: Array<CategoryDto>;
 };
+
+export type CategoryControllerGetAllCategoriesResponse = CategoryControllerGetAllCategoriesResponses[keyof CategoryControllerGetAllCategoriesResponses];
 
 export type CategoryControllerCreateCategoryData = {
     body: CreateCategoryDto;
@@ -132,8 +175,10 @@ export type CategoryControllerCreateCategoryData = {
 };
 
 export type CategoryControllerCreateCategoryResponses = {
-    201: unknown;
+    200: CategoryDto;
 };
+
+export type CategoryControllerCreateCategoryResponse = CategoryControllerCreateCategoryResponses[keyof CategoryControllerCreateCategoryResponses];
 
 export type CategoryControllerDeleteCategoryData = {
     body?: never;
@@ -149,27 +194,14 @@ export type CategoryControllerDeleteCategoryResponses = {
 };
 
 export type QuestionBankControllerGetBanksData = {
-    body?: never;
-    path?: never;
-    query: {
-        category: string;
-    };
-    url: '/question-banks';
-};
-
-export type QuestionBankControllerGetBanksResponses = {
-    200: unknown;
-};
-
-export type QuestionBankControllerCreateBankData = {
-    body: CreateBankDto;
+    body: BankFilterDto;
     path?: never;
     query?: never;
     url: '/question-banks';
 };
 
-export type QuestionBankControllerCreateBankResponses = {
-    201: unknown;
+export type QuestionBankControllerGetBanksResponses = {
+    200: unknown;
 };
 
 export type QuestionBankControllerDeleteBankData = {
@@ -184,3 +216,61 @@ export type QuestionBankControllerDeleteBankData = {
 export type QuestionBankControllerDeleteBankResponses = {
     200: unknown;
 };
+
+export type QuestionBankControllerGetBankData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/question-banks/{id}';
+};
+
+export type QuestionBankControllerGetBankResponses = {
+    200: BankDto;
+};
+
+export type QuestionBankControllerGetBankResponse = QuestionBankControllerGetBankResponses[keyof QuestionBankControllerGetBankResponses];
+
+export type QuestionBankControllerUpdateBankData = {
+    body: UpdateBankDto;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/question-banks/{id}';
+};
+
+export type QuestionBankControllerUpdateBankResponses = {
+    201: BankDto;
+};
+
+export type QuestionBankControllerUpdateBankResponse = QuestionBankControllerUpdateBankResponses[keyof QuestionBankControllerUpdateBankResponses];
+
+export type QuestionBankControllerCreateBankData = {
+    body: CreateBankDto;
+    path?: never;
+    query?: never;
+    url: '/question-banks/create';
+};
+
+export type QuestionBankControllerCreateBankResponses = {
+    201: BankDto;
+};
+
+export type QuestionBankControllerCreateBankResponse = QuestionBankControllerCreateBankResponses[keyof QuestionBankControllerCreateBankResponses];
+
+export type QuestionBankControllerUploadFileData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/question-banks/upload/{id}';
+};
+
+export type QuestionBankControllerUploadFileResponses = {
+    200: BankImageDto;
+};
+
+export type QuestionBankControllerUploadFileResponse = QuestionBankControllerUploadFileResponses[keyof QuestionBankControllerUploadFileResponses];

@@ -1,7 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { QuestionBankService } from "./question-bank.service";
-import { CreateBankDto } from "./dto";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { CreateBankDto } from "./dto/bank/create-bank.dto";
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { BankDto } from "./dto/bank/bank.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { diskStorage } from "multer";
+import { extname } from "path";
+import { BankImageDto } from "./dto/bank/bank-image.dto";
+import { UpdateBankDto } from "./dto/bank/update-bank.dto";
+import { AuthGuard } from "../auth/auth.guard";
+import { JwtPayload } from "../auth/interfaces";
+import { BankFilterDto } from "./dto/bank/bank-filter.dto";
+
 
 @ApiTags('question-banks')
 @ApiBearerAuth()
@@ -9,19 +19,68 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 export class QuestionBankController{
     constructor(private readonly bankService: QuestionBankService) { }
 
-    @Get()
-    getBanks(@Query('category') category?: string) {
-        const categoryId = category !== undefined ? +category : undefined;
-        return this.bankService.findAll(categoryId);
+    @Post()
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    getBanks(
+        @Body() filter: BankFilterDto,
+         @Request() req: { user: JwtPayload },
+    ) {
+        const categoryIds = filter.categoryIds; 
+        return this.bankService.findAll(req.user.sub ,categoryIds);
     }
 
-    @Post()
+    @Get(':id')
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({type: BankDto})
+    @UseGuards(AuthGuard)
+    getBank(@Param('id') id: string) {
+        return this.bankService.findById(+id);
+    }
+
+    @Post("create")
+    @HttpCode(HttpStatus.CREATED)
+    @ApiCreatedResponse({type: BankDto})
+    @UseGuards(AuthGuard)
     createBank(@Body() dto: CreateBankDto) {
         return this.bankService.create(dto);
     }
 
+    @Put("/:id")
+    @HttpCode(HttpStatus.OK)
+    @ApiCreatedResponse({type: BankDto})
+    @UseGuards(AuthGuard)
+    updateBank(@Param('id') id: string, @Body() dto: UpdateBankDto) {
+        return this.bankService.update(+id, dto);
+    }
+
     @Delete(':id')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthGuard)
     deleteBank(@Param('id') id: string) {
         return this.bankService.delete(+id);
+    }
+
+    @Post('upload/:id')
+    @ApiOkResponse({type: BankImageDto})
+    @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        callback(null, uniqueSuffix + extname(file.originalname));
+        }
+    }),
+    fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+        return callback(new Error('Only image files allowed'), false);
+        }
+        callback(null, true)
+    }
+    }))
+    @UseGuards(AuthGuard)
+    uploadFile(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+   
+        return this.bankService.updateBankImage(+id, file.filename);
     }
 }

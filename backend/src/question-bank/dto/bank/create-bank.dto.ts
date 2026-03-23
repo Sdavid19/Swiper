@@ -1,6 +1,6 @@
 import { Type } from "class-transformer"
 import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, Validate } from "class-validator"
-import { CategoryExists } from "../validators/category-exitst.validator"
+import { CategoryExists } from "../../validators/category-exitst.validator"
 import { ApiProperty } from "@nestjs/swagger"
 
 export class CreateBankDto {
@@ -16,12 +16,13 @@ export class CreateBankDto {
 
     @Type(() => Number)
     @IsInt()
-    @IsPositive()
     @ApiProperty()
     creatorId: number
 
+    @ApiProperty()
+    @Type(() => Number)
+    @IsInt()
     @Validate(CategoryExists)
-    @ApiProperty() 
     categoryId: number
 
     @IsString()

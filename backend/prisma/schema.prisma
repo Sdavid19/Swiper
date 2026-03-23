@@ -91,6 +91,7 @@ model Category {
   id   Int    @id @default(autoincrement())
   name String @unique
   slug String @unique
+  color String @default("#007AFF")
 
   banks QuestionBank[]
 }

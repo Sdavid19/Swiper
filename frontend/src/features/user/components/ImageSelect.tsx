@@ -17,7 +17,6 @@ interface ImageSelectProps {
 
 export function ImageSelect({shape, aspect, userImageUrl}: ImageSelectProps){
     
-    const [image, setImage] = useState<string | null>(null);
     const dispatch: AppDispatch = useDispatch();
     
     const pickImage = async () => {
@@ -37,16 +36,14 @@ export function ImageSelect({shape, aspect, userImageUrl}: ImageSelectProps){
         });
     
         if (!result.canceled) {
-            const asset = result.assets[0];
-                
             try{
                 const asset = result.assets[0];
             
-               const response = await uploadUserImage(1, asset.uri, asset.mimeType, asset.fileName);
-               dispatch(updateUserData({imageUrl: response.imageUrl}))
+                const response = await uploadUserImage(1, asset.uri, asset.mimeType, asset.fileName);
+                dispatch(updateUserData({imageUrl: response.imageUrl}))
             }
             catch(error){
-                  console.log('Image upload failed:', error instanceof Error ? error.message : error);
+                console.log('Image upload failed:', error instanceof Error ? error.message : error);
             }
         }
     };
@@ -54,13 +51,10 @@ export function ImageSelect({shape, aspect, userImageUrl}: ImageSelectProps){
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={pickImage}>
-                {image ? (
-                    <Image source={{ uri: image }} style={styles.image} />
+                {userImageUrl ? (
+                    <Image source={{uri: getImage(userImageUrl)}} style={styles.image} />
                 ) : (
-                    userImageUrl ?
-                        (<Image source={{uri: getImage(userImageUrl)}} style={styles.image} />)
-                            : 
-                        (<CircleUser size={200} color="#999" />)
+                    <CircleUser size={200} color="#999" />
                 )}
                 <View style={styles.editIcon}>
                     <Edit3 size={20} color="white" />
