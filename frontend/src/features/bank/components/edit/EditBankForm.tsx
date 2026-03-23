@@ -11,6 +11,8 @@ import { AxiosError } from "axios";
 import { ErrorResponse, ValidationErrorMessage } from "../../../../shared/types";
 import { useDispatch } from "react-redux";
 import { addBankAction, updateBankAction } from "../../../../redux/bankSlice";
+import { useNavigation } from "@react-navigation/native";
+import { EditBankNavigation } from "../../../../navigation";
 
 export interface EditBankFormProps{
     screenMode: EditBankScreenMode,
@@ -24,6 +26,8 @@ export function EditBankForm({creatorId, screenMode, bank, setBank, categories}:
 
     const dispatch = useDispatch();
 
+    const navigation = useNavigation<EditBankNavigation>()
+
      const [form, setForm] = useState<CreateBankDto>({
         title: "",
         description: "",
@@ -36,6 +40,11 @@ export function EditBankForm({creatorId, screenMode, bank, setBank, categories}:
 
     const buttonDisabled = () => {
       return !form.title || !form.categoryId;
+    }
+
+    const navigateToQuestionBank = () => {
+      if(!bank) return;
+      navigation.navigate("BankQuestions", {bankId: bank.id})
     }
 
     const categoryOptions = categories.map(c => ({
@@ -139,6 +148,7 @@ export function EditBankForm({creatorId, screenMode, bank, setBank, categories}:
             title="View questions"
             style={{ width: "40%" }}
             disabled={!isEditable}
+            onPress={navigateToQuestionBank}
           />
 
           <CheckboxField

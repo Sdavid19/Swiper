@@ -43,7 +43,6 @@ export function EditBankScreen({ route }: EditBankProps) {
   const isEditable = screenMode !== "View";
   const isCreateMode = screenMode === "Create";
   
-
   const loadData = async () => {
     try {
       const cats = await getCategories();

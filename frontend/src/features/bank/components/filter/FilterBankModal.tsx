@@ -39,10 +39,11 @@ export function FilterBankModal({ visible, setVisible, selected, setSelected }: 
       slideAnim.setValue(300);
     }
   }, [visible]);
-
     
    useEffect(() => {
-    getCategories().then(cats => setCategories(cats));
+    getCategories()
+      .then(cats => setCategories(cats))
+      .catch(err => console.log(err));
   }, []);
 
   useEffect(() => {

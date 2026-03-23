@@ -1,16 +1,16 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { QuestionBankService } from "./question-bank.service";
-import { CreateBankDto } from "./dto";
+import { CreateBankDto } from "./dto/bank/create-bank.dto";
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
-import { BankDto } from "./dto/bank.dto";
+import { BankDto } from "./dto/bank/bank.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { extname } from "path";
-import { BankImageDto } from "./dto/bank-image.dto";
-import { UpdateBankDto } from "./dto/update-bank.dto";
+import { BankImageDto } from "./dto/bank/bank-image.dto";
+import { UpdateBankDto } from "./dto/bank/update-bank.dto";
 import { AuthGuard } from "../auth/auth.guard";
 import { JwtPayload } from "../auth/interfaces";
-import { BankFilterDto } from "./dto/bank-filter.dto";
+import { BankFilterDto } from "./dto/bank/bank-filter.dto";
 
 
 @ApiTags('question-banks')

@@ -22,12 +22,12 @@ export class AuthService {
         const existing = await this.userService.findUserByEmail(dto.email);
 
         if (existing) {
-        throw new BadRequestException({
-            statusCode: 400,
-            error: "Field error",
-            message: {
-                email: ["Email already exists"]
-            }
+            throw new BadRequestException({
+                statusCode: 400,
+                error: "Field error",
+                message: {
+                    email: ["Email already exists"]
+                }
             });
         }
 

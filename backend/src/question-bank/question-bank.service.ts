@@ -1,12 +1,11 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import { CreateBankDto } from "./dto";
-import { BankDto } from "./dto/bank.dto";
-import { BankImageDto } from "./dto/bank-image.dto";
-import { UpdateBankDto } from "./dto/update-bank.dto";
+import { CreateBankDto } from "./dto/bank/create-bank.dto";
+import { BankDto } from "./dto/bank/bank.dto";
+import { BankImageDto } from "./dto/bank/bank-image.dto";
+import { UpdateBankDto } from "./dto/bank/update-bank.dto";
 import * as fs from 'fs';
-import path, { extname } from "path";
-import { Prisma } from "@prisma/client";
+import path from "path";
 
 @Injectable()
 export class QuestionBankService { 
