@@ -81,10 +81,10 @@ list: {
     flex: 1,
     marginBottom: 10
   },
-    emptycontainer: {
+  emptycontainer: {
     flex: 1,
     marginBottom: 10,
     justifyContent: 'center',
     alignItems: 'center'
   },
-});
+}); 

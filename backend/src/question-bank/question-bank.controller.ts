@@ -11,10 +11,9 @@ import { UpdateBankDto } from "./dto/bank/update-bank.dto";
 import { AuthGuard } from "../auth/auth.guard";
 import { JwtPayload } from "../auth/interfaces";
 import { BankFilterDto } from "./dto/bank/bank-filter.dto";
-import { CreateQuestionDto } from "./dto/question/create-question.dto";
-import { CreateQuestionsDto } from "./dto/question/create-questions.dto";
-import { QuestionDto } from "./dto/question/question.dto";
-
+import { CreateQuestionDto } from "../question/dto/create-question.dto";
+import { CreateQuestionsDto } from "../question/dto/create-questions.dto";
+import { QuestionDto } from "../question/dto/question.dto";
 
 @ApiTags('question-banks')
 @ApiBearerAuth()
@@ -25,9 +24,8 @@ export class QuestionBankController{
     @Post()
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
-    getBanks(
-        @Body() filter: BankFilterDto,
-         @Request() req: { user: JwtPayload },
+    getBanks(@Body() filter: BankFilterDto,
+    @Request() req: { user: JwtPayload },
     ) {
         const categoryIds = filter.categoryIds; 
         return this.bankService.findAll(req.user.sub ,categoryIds);
@@ -48,19 +46,15 @@ export class QuestionBankController{
     getQuestionsByBank(@Param('id') id: string) {
         return this.bankService.findQuestionsByBank(+id);
     }
-
     
     @Post(':id/questions')
     @HttpCode(HttpStatus.CREATED)
-    @ApiOkResponse({ type: [CreateQuestionDto] })
+    @ApiOkResponse({ type: CreateQuestionDto })
     @UseGuards(AuthGuard)
-    createQuestionsForBank(
-    @Param('id') id: string,
-    @Body() dto: CreateQuestionsDto,
+    createQuestionsForBank(@Param('id') id: string, @Body() dto: CreateQuestionDto,
     ) {
-        return this.bankService.createQuestions(+id, dto.questions);
+        return this.bankService.createQuestion(+id, dto);
     }
-
 
     @Post("create")
     @HttpCode(HttpStatus.CREATED)

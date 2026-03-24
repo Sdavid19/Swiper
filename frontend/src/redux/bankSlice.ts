@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { BankDto } from "../shared/types/generated";
 
+
 const banksSlice = createSlice({
   name: 'banks',
   initialState: [] as BankDto[],

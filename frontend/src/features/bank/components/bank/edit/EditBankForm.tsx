@@ -104,42 +104,42 @@ export function EditBankForm({creatorId, screenMode, bank, setBank, categories}:
          <View style={styles.formContainer}>
 
             <InputField
-            label="Title"
-            value={form.title}
-            onChangeText={(text) => setField("title", text)}
-            autoCapitalize="none"
-            editable={isEditable}
-            errorMessages={errors?.title}
-            />
+              label="Title"
+              value={form.title}
+              onChangeText={(text) => setField("title", text)}
+              autoCapitalize="none"
+              editable={isEditable}
+              errorMessages={errors?.title}
+              />
 
-            <InputField
-            label="Description"
-            value={form.description}
-            onChangeText={(text) => setField("description", text)}
-            autoCapitalize="none"
-            style={styles.descriptionField}
-            multiline
-            numberOfLines={4}
-            editable={isEditable}
-            errorMessages={errors?.description}
+              <InputField
+              label="Description"
+              value={form.description}
+              onChangeText={(text) => setField("description", text)}
+              autoCapitalize="none"
+              style={styles.descriptionField}
+              multiline
+              numberOfLines={4}
+              editable={isEditable}
+              errorMessages={errors?.description}
             />
 
             <PickerSelect
-            title="Category"
-            value={form.categoryId}
-            onValueChange={(value) =>
-                isEditable && setField("categoryId", value ? Number(value) : 0)
-            }
-            items={categoryOptions}
-            placeholder={{ label: "Select category", value: null }}
-            style={{
-                inputIOSContainer: {
-                zIndex: 100,
-                padding: 20
+              title="Category"
+              value={form.categoryId}
+              onValueChange={(value) =>
+                  isEditable && setField("categoryId", value ? Number(value) : 0)
               }
-            }}
-            disabled={!isEditable}
-            errorMessages={errors?.categoryId}
+              items={categoryOptions}
+              placeholder={{ label: "Select category", value: null }}
+              style={{
+                  inputIOSContainer: {
+                  zIndex: 100,
+                  padding: 20
+                }
+              }}
+              disabled={!isEditable}
+              errorMessages={errors?.categoryId}
             />
 
         <View style={styles.bottomRow}>

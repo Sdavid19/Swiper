@@ -1,21 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
-import { getAllBanks } from "../services/bank.service";
 import { PrimaryButton } from "../../../shared/components";
 import { useNavigation } from "@react-navigation/native";
 import { EditBankNavigation, EditBankStackParamList } from "../../../navigation";
 import { BankFilterList } from "../components/bank/list/BankFilterList";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../redux";
-import { setBanks } from "../../../redux/bankSlice";
-import { useEffect, useState } from "react";
 
 type ShowBankProps = NativeStackScreenProps<EditBankStackParamList, "ShowBanks">;
 
 export function BankScreen({route}: ShowBankProps) {
   const navigation = useNavigation<EditBankNavigation>()
-
-
 
   return (
     <View style={styles.container}>

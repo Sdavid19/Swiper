@@ -13,7 +13,6 @@ type UserState = {
   imageUrl?: string | null
 }
 
-
 const initialState: AuthState = {
   user: null,
   token: null,
