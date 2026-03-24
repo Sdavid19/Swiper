@@ -2,8 +2,8 @@ import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { getAllBanks } from "../services/bank.service";
 import { useCallback, useEffect, useState } from "react";
 import { BankDto } from "../../../shared/types/generated";
-import { BankCard } from "../components/list/BankCard";
-import { NavigateLink } from "../components/NavigateLink";
+import { BankCard } from "../components/bank/list/BankCard";
+import { NavigateLink } from "../components/bank/NavigateLink";
 import { useFocusEffect } from "@react-navigation/native";
 
 export function HomeScreen() {

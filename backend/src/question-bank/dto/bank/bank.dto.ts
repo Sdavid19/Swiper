@@ -31,5 +31,5 @@ export class BankDto {
     category: CategoryDto;
     
     @ApiProperty({ nullable: true, type: String })
-    imageUrl: string |null
+    imageUrl: string | null
 }

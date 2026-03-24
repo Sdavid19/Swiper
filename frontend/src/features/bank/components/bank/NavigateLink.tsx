@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import { Pressable, Text } from 'react-native'
-import { AppNavigation, EditBankNavigation, EditBankStackParamList } from '../../../navigation'
+import { AppNavigation, EditBankNavigation, EditBankStackParamList } from '../../../../navigation'
 
 type NavigateLinkProps = {
   text: string

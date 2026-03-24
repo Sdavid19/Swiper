@@ -1,10 +1,10 @@
 import { Edit3, ImageIcon } from "lucide-react-native";
 import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { getImage } from "../../../../api/services/image.service";
-import { showInfo } from "../../../../shared/utils/toast.service";
+import { getImage } from "../../../../../api/services/image.service";
+import { showInfo } from "../../../../../shared/utils/toast.service";
 import { useState, useEffect } from "react";
-import { uploadBankImage } from "../../services/bank.service";
+import { uploadBankImage } from "../../../services/bank.service";
 
 interface ImageSelectProps {
   shape?: ImagePicker.CropShape;

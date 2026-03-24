@@ -65,6 +65,21 @@ export type BankDto = {
     imageUrl: string | null;
 };
 
+export type QuestionDto = {
+    id: number;
+    text: string;
+    imageUrl: string | null;
+    bankId: number;
+};
+
+export type CreateQuestionsDto = {
+    [key: string]: unknown;
+};
+
+export type CreateQuestionDto = {
+    text: string;
+};
+
 export type CreateBankDto = {
     title: string;
     description?: string;
@@ -246,6 +261,36 @@ export type QuestionBankControllerUpdateBankResponses = {
 };
 
 export type QuestionBankControllerUpdateBankResponse = QuestionBankControllerUpdateBankResponses[keyof QuestionBankControllerUpdateBankResponses];
+
+export type QuestionBankControllerGetQuestionsByBankData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/question-banks/{id}/questions';
+};
+
+export type QuestionBankControllerGetQuestionsByBankResponses = {
+    200: Array<QuestionDto>;
+};
+
+export type QuestionBankControllerGetQuestionsByBankResponse = QuestionBankControllerGetQuestionsByBankResponses[keyof QuestionBankControllerGetQuestionsByBankResponses];
+
+export type QuestionBankControllerCreateQuestionsForBankData = {
+    body: CreateQuestionsDto;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/question-banks/{id}/questions';
+};
+
+export type QuestionBankControllerCreateQuestionsForBankResponses = {
+    200: Array<CreateQuestionDto>;
+};
+
+export type QuestionBankControllerCreateQuestionsForBankResponse = QuestionBankControllerCreateQuestionsForBankResponses[keyof QuestionBankControllerCreateQuestionsForBankResponses];
 
 export type QuestionBankControllerCreateBankData = {
     body: CreateBankDto;

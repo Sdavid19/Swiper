@@ -1,10 +1,10 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import { Badge } from "../../../../shared/components/Badge";
-import { BankDto } from "../../../../shared/types/generated";
-import { PrimaryButton } from "../../../../shared/components";
+import { Badge } from "../../../../../shared/components/Badge";
+import { BankDto } from "../../../../../shared/types/generated";
+import { PrimaryButton } from "../../../../../shared/components";
 import { useNavigation } from "@react-navigation/native";
-import { EditBankNavigation } from "../../../../navigation";
-import { getImage } from "../../../../api/services/image.service";
+import { EditBankNavigation } from "../../../../../navigation";
+import { getImage } from "../../../../../api/services/image.service";
 
 type CardProps = {
   bank: BankDto

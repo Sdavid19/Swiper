@@ -5,12 +5,12 @@ import { useEffect, useState, useMemo, useLayoutEffect } from "react";
 import { getBankById } from "../services/bank.service";
 import { BankDto, CategoryDto } from "../../../shared/types/generated";
 import { getCategories } from "../services/category.service";
-import { ImageSelect } from "../components/edit/ImageSelect";
+import { ImageSelect } from "../components/bank/edit/ImageSelect";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux";
-import { EditBankForm } from "../components/edit/EditBankForm";
+import { EditBankForm } from "../components/bank/edit/EditBankForm";
 import { useNavigation } from "@react-navigation/native";
-import { DeleteBank } from "../components/edit/DeleteBank";
+import { DeleteBank } from "../components/bank/edit/DeleteBank";
 
 type EditBankProps = NativeStackScreenProps<EditBankStackParamList, "EditBank">;
 export type EditBankScreenMode = "View" | "Edit" | "Create";

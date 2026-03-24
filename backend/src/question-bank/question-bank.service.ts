@@ -6,6 +6,8 @@ import { BankImageDto } from "./dto/bank/bank-image.dto";
 import { UpdateBankDto } from "./dto/bank/update-bank.dto";
 import * as fs from 'fs';
 import path from "path";
+import { CreateQuestionDto } from "./dto/question/create-question.dto";
+import { QuestionDto } from "./dto/question/question.dto";
 
 @Injectable()
 export class QuestionBankService { 
@@ -124,5 +126,27 @@ export class QuestionBankService {
         });
 
     return imageUrl;
+}
+
+    async findQuestionsByBank(id: number): Promise<QuestionDto[]>{
+      const questions =  this.prisma.question.findMany({
+            where: {bankId: id},
+        });
+
+        return questions;
+    }
+
+    async createQuestions(bankId: number, questions: CreateQuestionDto[]) {
+        const result = await this.prisma.question.createMany({
+            data: questions.map(q => ({
+                text: q.text,
+                bankId: bankId,
+            })),
+            skipDuplicates: true,
+        });
+
+    return {
+        message: `${result.count} questions created`,
+    };
 }
 }

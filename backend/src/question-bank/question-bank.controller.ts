@@ -11,6 +11,9 @@ import { UpdateBankDto } from "./dto/bank/update-bank.dto";
 import { AuthGuard } from "../auth/auth.guard";
 import { JwtPayload } from "../auth/interfaces";
 import { BankFilterDto } from "./dto/bank/bank-filter.dto";
+import { CreateQuestionDto } from "./dto/question/create-question.dto";
+import { CreateQuestionsDto } from "./dto/question/create-questions.dto";
+import { QuestionDto } from "./dto/question/question.dto";
 
 
 @ApiTags('question-banks')
@@ -37,6 +40,27 @@ export class QuestionBankController{
     getBank(@Param('id') id: string) {
         return this.bankService.findById(+id);
     }
+
+    @Get(':id/questions')
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({ type: QuestionDto, isArray: true })
+    @UseGuards(AuthGuard)
+    getQuestionsByBank(@Param('id') id: string) {
+        return this.bankService.findQuestionsByBank(+id);
+    }
+
+    
+    @Post(':id/questions')
+    @HttpCode(HttpStatus.CREATED)
+    @ApiOkResponse({ type: [CreateQuestionDto] })
+    @UseGuards(AuthGuard)
+    createQuestionsForBank(
+    @Param('id') id: string,
+    @Body() dto: CreateQuestionsDto,
+    ) {
+        return this.bankService.createQuestions(+id, dto.questions);
+    }
+
 
     @Post("create")
     @HttpCode(HttpStatus.CREATED)

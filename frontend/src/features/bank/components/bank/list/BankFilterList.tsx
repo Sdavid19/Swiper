@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { BankCardLarge } from "./BankCardLarge";;
-import { InputField } from "../../../../shared/components";
+import { InputField } from "../../../../../shared/components";
 import { Search, SlidersHorizontal } from "lucide-react-native";
 import { FilterBankModal } from "../filter/FilterBankModal";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux";
-import { setBanks } from "../../../../redux/bankSlice";
-import { getAllBanksWithFilter } from "../../services/bank.service";
+import { RootState } from "../../../../../redux";
+import { setBanks } from "../../../../../redux/bankSlice";
+import { getAllBanksWithFilter } from "../../../services/bank.service";
 
 export function BankFilterList( ){
 

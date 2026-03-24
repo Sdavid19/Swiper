@@ -8,11 +8,11 @@ import {
 } from "react-native";
 import { X } from "lucide-react-native";
 import { FilterBankForm } from "./FilterBankForm";
-import { CategoryDto } from "../../../../shared/types/generated";
-import { getCategories } from "../../services/category.service";
+import { CategoryDto } from "../../../../../shared/types/generated";
+import { getCategories } from "../../../services/category.service";
 import { useDispatch } from "react-redux";
-import { getAllBanksWithFilter } from "../../services/bank.service";
-import { setBanks } from "../../../../redux/bankSlice";
+import { getAllBanksWithFilter } from "../../../services/bank.service";
+import { setBanks } from "../../../../../redux/bankSlice";
 
 interface FilterBankModalProps {
   visible: boolean;

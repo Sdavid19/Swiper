@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import { Badge } from "../../../../shared/components/Badge";
-import { BankDto } from "../../../../shared/types/generated";
-import { PrimaryButton } from "../../../../shared/components";
+import { Badge } from "../../../../../shared/components/Badge";
+import { BankDto } from "../../../../../shared/types/generated";
+import { PrimaryButton } from "../../../../../shared/components";
 
 type CardProps = {
   bank: BankDto,

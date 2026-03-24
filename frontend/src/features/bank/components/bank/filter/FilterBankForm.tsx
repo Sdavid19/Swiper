@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { PrimaryButton } from "../../../../shared/components";
-import { CategoryDto } from "../../../../shared/types/generated";
+import { PrimaryButton } from "../../../../../shared/components";
+import { CategoryDto } from "../../../../../shared/types/generated";
 import { ToggleButton } from "./ToggleButton";
 
 interface FilterBankFormProps {

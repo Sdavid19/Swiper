@@ -3,7 +3,7 @@ import { getAllBanks } from "../services/bank.service";
 import { PrimaryButton } from "../../../shared/components";
 import { useNavigation } from "@react-navigation/native";
 import { EditBankNavigation, EditBankStackParamList } from "../../../navigation";
-import { BankFilterList } from "../components/list/BankFilterList";
+import { BankFilterList } from "../components/bank/list/BankFilterList";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux";
@@ -25,7 +25,8 @@ export function BankScreen({route}: ShowBankProps) {
       <PrimaryButton 
         title="Add new" 
         style={styles.addButton} 
-        onPress={() => navigation.navigate('EditBank', {bankId: undefined})} />
+        onPress={() => navigation.navigate('EditBank', {bankId: undefined})} 
+      />
     </View>
   );
 }

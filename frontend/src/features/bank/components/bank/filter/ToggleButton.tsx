@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import { CategoryDto } from "../../../../shared/types/generated";
+import { CategoryDto } from "../../../../../shared/types/generated";
 
 interface ToggleButtonProps {
     isSelected: boolean
