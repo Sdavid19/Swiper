@@ -184,9 +184,9 @@ const styles = StyleSheet.create({
   },
 
   formContainer: {
-    width: "100%",
-    alignItems: "stretch"
-  },
+    flex: 1,
+    justifyContent: "space-between"
+    },
   bottomRow: {
     flexDirection: "row",
     justifyContent: "space-between",

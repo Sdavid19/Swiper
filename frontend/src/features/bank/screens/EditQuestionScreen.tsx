@@ -23,7 +23,7 @@ export function EditQuestionScreen({route}: EditQuestionProps){
     const questionId = route.params.questionId;
     const user = useSelector((state: RootState) => state.auth.user);
     const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
-     const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     const [question, setQuestion] = useState<QuestionDto>();
 
@@ -68,7 +68,7 @@ export function EditQuestionScreen({route}: EditQuestionProps){
 
     return (
       <KeyboardAwareScrollView
-        contentContainerStyle={styles.container}
+        contentContainerStyle={[styles.container, { flexGrow: 1 }]}
         enableOnAndroid={true}
         keyboardOpeningTime={0}
         keyboardShouldPersistTaps="handled"
@@ -83,6 +83,7 @@ export function EditQuestionScreen({route}: EditQuestionProps){
         />
 
         <EditQuestionForm 
+          bankId={route.params.bankId}
           screenMode={screenMode}
           question={question}
           setQuestion={setQuestion} 
@@ -93,9 +94,7 @@ export function EditQuestionScreen({route}: EditQuestionProps){
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    display: "flex",
-    alignItems: "stretch",
-    height: "100%"
+     paddingHorizontal: 20,
+     justifyContent: 'space-between'
   }
 });

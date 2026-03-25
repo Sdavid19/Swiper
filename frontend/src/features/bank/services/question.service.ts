@@ -1,8 +1,13 @@
 import api from "../../../api/client";
-import { QuestionDto, UpdateQuestionDto } from "../../../shared/types/generated";
+import { CreateQuestionDto, QuestionDto, UpdateQuestionDto } from "../../../shared/types/generated";
 
 export const getQuestionsByBank = async (bankId: number): Promise<QuestionDto[]> => {
     const response = await api.get(`/question-banks/${bankId}/questions`);
+    return response.data;
+}
+
+export const createQuestion = async (bankId: number, dto: CreateQuestionDto): Promise<QuestionDto> => {
+    const response = await api.post(`/question-banks/${bankId}/questions`, dto);
     return response.data;
 }
 

@@ -99,6 +99,8 @@ export function EditBankScreen({ route }: EditBankProps) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingBottom: 30
+    paddingBottom: 30,
+    flex: 1,
+    justifyContent: "space-between"
   }
 });

@@ -6,18 +6,19 @@ import { EditQuestionScreenMode } from "../../screens/EditQuestionScreen";
 import { ErrorResponse, ValidationErrorMessage } from "../../../../shared/types";
 import { showSuccess } from "../../../../shared/utils/toast.service";
 import { AxiosError } from "axios";
-import { updateQuestion } from "../../services/question.service";
+import { createQuestion, updateQuestion } from "../../services/question.service";
 import { useDispatch } from "react-redux";
-import { updateQuestionAction } from "../../../../redux/questionSlice";
+import { addQuestionAction, updateQuestionAction } from "../../../../redux/questionSlice";
 
 interface EditQuestionFormProps {
     screenMode: EditQuestionScreenMode,
+    bankId: number,
     question?: QuestionDto,
     setQuestion: React.Dispatch<React.SetStateAction<QuestionDto | undefined>>
 }
 
-export function EditQuestionForm({screenMode, question, setQuestion}: EditQuestionFormProps){
-    const [text, setText] = useState('');
+export function EditQuestionForm({screenMode, bankId, question, setQuestion}: EditQuestionFormProps){
+    const [text, setText] = useState("");
     const [errors, setErrors] = useState<ValidationErrorMessage<CreateQuestionDto> | null>(null);
 
     const dispatch = useDispatch();
@@ -25,7 +26,6 @@ export function EditQuestionForm({screenMode, question, setQuestion}: EditQuesti
     const setUpDataForUpdate = () => {
         if(!question) return;
         setText(question.text);
-        console.log(question.text)
     }
 
         const saveQuestion = async () => {
@@ -34,9 +34,12 @@ export function EditQuestionForm({screenMode, question, setQuestion}: EditQuesti
                 const response = await updateQuestion(question.id, {text});
                 setQuestion(response);
                 dispatch(updateQuestionAction(response));
-                showSuccess('Bank updated succesfully!');
+                showSuccess('Question updated succesfully!');
             } else {
-                console.log("create")
+                const response = await createQuestion(bankId, {text});
+                setQuestion(response);
+                dispatch(addQuestionAction(response));
+                showSuccess('Question created succesfully!');
             }
         } catch (err) {
             const error = err as AxiosError<ErrorResponse<CreateQuestionDto>>
@@ -71,7 +74,8 @@ export function EditQuestionForm({screenMode, question, setQuestion}: EditQuesti
 }
 
 const styles = StyleSheet.create({
-   formContainer: {
-    width: "100%",
-  },
+    formContainer: {
+        flex: 1,
+        justifyContent: "space-evenly"
+    }
 });

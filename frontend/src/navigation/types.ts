@@ -15,7 +15,7 @@ export type EditBankStackParamList = {
   ShowBanks: undefined
   EditBank: { bankId?: number, refresh?: () => void }
   BankQuestions: { bankId: number }
-  EditQuestion: { questionId?: number }
+  EditQuestion: { bankId: number, questionId?: number }
 }
 
 export type ProfileStackParamList = {

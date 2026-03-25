@@ -34,6 +34,5 @@ export class QuestionController {
         return this.questionService.deleteQuestion(+id);
     }
 
-        
-
+    
 }

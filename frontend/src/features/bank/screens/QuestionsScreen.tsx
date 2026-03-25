@@ -44,7 +44,7 @@ export function QuestionsScreen({ route }: EditBankProps) {
       <PrimaryButton
         title="Add new" 
         style={styles.addButton} 
-        onPress={() => navigation.navigate("EditQuestion", {questionId: undefined})} 
+        onPress={() => navigation.navigate("EditQuestion", {bankId ,questionId: undefined})} 
       />
     </View>
   );

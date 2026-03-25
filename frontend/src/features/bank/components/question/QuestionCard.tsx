@@ -14,7 +14,7 @@ export function QuestionCard({question}: QuestionCardProps){
     const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
 
     return (
-    <TouchableOpacity style={styles.cardContainer} onPress={() => navigation.navigate("EditQuestion", {questionId: question.id})}>
+    <TouchableOpacity style={styles.cardContainer} onPress={() => navigation.navigate("EditQuestion", {bankId: question.bankId, questionId: question.id})}>
         <View style={styles.cardContent}>
             <Image
                 style={styles.cardImage}
