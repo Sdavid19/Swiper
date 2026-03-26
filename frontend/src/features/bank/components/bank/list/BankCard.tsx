@@ -2,6 +2,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { Badge } from "../../../../../shared/components/Badge";
 import { BankDto } from "../../../../../shared/types/generated";
 import { PrimaryButton } from "../../../../../shared/components";
+import { getImage } from "../../../../../api/services/image.service";
 
 type CardProps = {
   bank: BankDto,
@@ -21,7 +22,7 @@ export function BankCard({bank}: CardProps){
       <View key={bank.id} style={styles.container}>
         <View style={styles.imageWrapper}>
           <Image 
-            source={{ uri: 'https://placecats.com/200/100' }} 
+            source={{ uri: bank.imageUrl ? getImage(bank.imageUrl) : 'https://placecats.com/200/100' }}
             style={styles.image} 
           />
         </View>

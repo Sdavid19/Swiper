@@ -4,6 +4,10 @@ import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
 import { showInfo } from "../../../../shared/utils/toast.service";
 import { getImage } from "../../../../api/services/image.service";
+import * as ImageManipulator from "expo-image-manipulator";
+import { uploadQuestionImage } from "../../services/question.service";
+import { useDispatch } from "react-redux";
+import { updateQuestionImageAction } from "../../../../redux/questionSlice";
 
 interface ImageSelectProps {
   shape?: ImagePicker.CropShape;
@@ -21,6 +25,7 @@ export function QuestionImageSelect({
   questionId,
 }: ImageSelectProps) {
   const [image, setImage] = useState<string | null>(imageUrl ?? null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setImage(imageUrl ?? null);
@@ -29,12 +34,12 @@ export function QuestionImageSelect({
   const pickImage = async () => {
     if (disabled) return;
 
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permissionResult.granted) {
-      showInfo("Permission to access the media library is required.");
-      return;
-    }
+  const permissionResult =
+    await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (!permissionResult.granted) {
+    showInfo("Permission to access the media library is required.");
+    return;
+  }
 
 
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -45,20 +50,27 @@ export function QuestionImageSelect({
       shape: shape || "rectangle",
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && questionId) {
       try {
         const asset = result.assets[0];
 
-        // const response = await uploadBankImage(
-        //   questionId || 2,
-        //   asset.uri,
-        //   asset.mimeType,
-        //   asset.fileName
-        // );
+       const manipulated = await ImageManipulator.manipulateAsync(
+          asset.uri,
+          [{ resize: { width: 800 } }],
+          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+        );
 
-        // if (!response.imageUrl) return;
+        const response = await uploadQuestionImage(
+          questionId,
+          manipulated.uri,
+          'image/jpeg',
+          asset.fileName
+        );
+       
+        if (!response.imageUrl) return;
+        setImage(response.imageUrl);
+        dispatch(updateQuestionImageAction({id: questionId, imageUrl: response.imageUrl}));
 
-        // setImage(response.imageUrl);
       } catch (error) {
         console.log(
           "Image upload failed:",

@@ -47,6 +47,9 @@ export class UserController {
         callback(null, uniqueSuffix + extname(file.originalname));
         }
     }),
+    limits: {
+        fileSize: 1024 * 1024
+    },
     fileFilter: (req, file, callback) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
         return callback(new Error('Only image files allowed'), false);

@@ -1,5 +1,5 @@
 import api from "../../../api/client";
-import { CreateQuestionDto, QuestionDto, UpdateQuestionDto } from "../../../shared/types/generated";
+import { CreateQuestionDto, QuestionDto, QuestionImageDto, UpdateQuestionDto } from "../../../shared/types/generated";
 
 export const getQuestionsByBank = async (bankId: number): Promise<QuestionDto[]> => {
     const response = await api.get(`/question-banks/${bankId}/questions`);
@@ -25,3 +25,29 @@ export const deleteQuestion = async (id: number): Promise<QuestionDto[]> => {
     const response = await api.delete(`/questions/${id}`);
     return response.data;
 }
+
+export const uploadQuestionImage = async (
+  questionId: number,
+  uri: string,
+  type?: string,
+  name?: string | null
+): Promise<QuestionImageDto> => {
+  const formData = new FormData();
+  formData.append("file", {
+    uri,
+    type: type ?? "image/jpeg",
+    name: name ?? "avatar.jpeg",
+  } as any);
+
+  const response = await api.post<QuestionImageDto>(
+    `/questions/upload/${questionId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return response.data;
+};

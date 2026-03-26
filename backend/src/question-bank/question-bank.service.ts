@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import path from "path";
 import { CreateQuestionDto } from "../question/dto/create-question.dto";
 import { QuestionDto } from "../question/dto/question.dto";
+import sharp from "sharp";
 
 @Injectable()
 export class QuestionBankService { 
@@ -104,28 +105,35 @@ export class QuestionBankService {
 
     async updateBankImage(id: number, filename: string): Promise<BankImageDto | null> {
         const bank = await this.prisma.questionBank.findUnique({
-        where: { id }
-    });
-
+                    where: { id }
+                });
+        
         if (!bank) {
-            throw new NotFoundException(`Questionbank with id ${id} not found`);
+            throw new NotFoundException(`Question with id ${id} not found`);
         }
 
-        if (bank.imageUrl) {
-            const oldImagePath = path.join(process.cwd(), 'uploads', bank.imageUrl);
+        const uploadsDir = path.join(process.cwd(), 'uploads');
+        const oldImagePath = bank.imageUrl ? path.join(uploadsDir, bank.imageUrl) : null;
+        const newImagePath = path.join(uploadsDir, `optimized-${filename}`);
 
-            if (fs.existsSync(oldImagePath)) {
-                fs.unlinkSync(oldImagePath);
-            }
+        await sharp(path.join(uploadsDir, filename))
+            .resize(800)
+            .jpeg({ quality: 70 })
+            .toFile(newImagePath);
+
+        fs.unlinkSync(path.join(uploadsDir, filename));
+
+        if (oldImagePath && fs.existsSync(oldImagePath)) {
+            fs.unlinkSync(oldImagePath);
         }
 
         const imageUrl = await this.prisma.questionBank.update({
             where: { id },
-            data: { imageUrl: filename },
+            data: { imageUrl: `optimized-${filename}` },
             select: { imageUrl: true }
         });
 
-    return imageUrl;
+        return imageUrl;
 }
 
     async findQuestionsByBank(id: number): Promise<QuestionDto[]>{

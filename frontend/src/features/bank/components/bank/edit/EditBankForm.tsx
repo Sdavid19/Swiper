@@ -185,7 +185,8 @@ const styles = StyleSheet.create({
 
   formContainer: {
     flex: 1,
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    paddingBottom: 50
     },
   bottomRow: {
     flexDirection: "row",

@@ -4,6 +4,7 @@ import { QuestionDto } from "../../../../shared/types/generated";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { EditBankStackParamList } from "../../../../navigation";
+import { getImage } from "../../../../api/services/image.service";
 
 interface QuestionCardProps {
     question: QuestionDto
@@ -18,7 +19,7 @@ export function QuestionCard({question}: QuestionCardProps){
         <View style={styles.cardContent}>
             <Image
                 style={styles.cardImage}
-                source={{ uri: "https://placecats.com/250/400" }}
+                source={{ uri: question.imageUrl ? getImage(question.imageUrl) : 'https://placecats.com/200/100' }}
             />
             <Text style={styles.cardText}>{question.text}</Text>
         </View>

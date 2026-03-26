@@ -94,7 +94,10 @@ export class QuestionBankController{
         return callback(new Error('Only image files allowed'), false);
         }
         callback(null, true)
-    }
+    },
+     limits: {
+        fileSize: 1024 * 1024
+    },
     }))
     @UseGuards(AuthGuard)
     uploadFile(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {

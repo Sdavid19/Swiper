@@ -1,5 +1,5 @@
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { EditBankStackParamList } from "../../../navigation";
 import { useEffect, useState, useMemo, useLayoutEffect } from "react";
 import { deleteBank, getBankById } from "../services/bank.service";
@@ -18,30 +18,28 @@ type EditBankProps = NativeStackScreenProps<EditBankStackParamList, "EditBank">;
 export type EditBankScreenMode = "View" | "Edit" | "Create";
 
 export function EditBankScreen({ route }: EditBankProps) {
-
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
-
   const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
- 
+
   const [bank, setBank] = useState<BankDto>();
   const [categories, setCategories] = useState<CategoryDto[]>([]);
 
   useLayoutEffect(() => {
     if (!bank) return;
     navigation.setOptions({
-      headerRight: () =>
-      <DeleteButton
-        onDelete={async () => {
-          await deleteBank(bank.id);
-          showSuccess("Bank deleted successfully!");
-          dispatch(removeBankAction(bank.id));
-          navigation.popToTop();
-        }} 
-      /> 
+      headerRight: () => (
+        <DeleteButton
+          onDelete={async () => {
+            await deleteBank(bank.id);
+            showSuccess("Bank deleted successfully!");
+            dispatch(removeBankAction(bank.id));
+            navigation.popToTop();
+          }}
+        />
+      ),
     });
-  }, [bank, navigation])
-
+  }, [bank, navigation]);
 
   const screenMode: EditBankScreenMode = useMemo(() => {
     if (bank?.id) return "Edit";
@@ -53,17 +51,16 @@ export function EditBankScreen({ route }: EditBankProps) {
 
   const isEditable = screenMode !== "View";
   const isCreateMode = screenMode === "Create";
-  
+
   const loadData = async () => {
     try {
       const cats = await getCategories();
       setCategories(cats);
- 
+
       if (route.params?.bankId) {
         const bankData = await getBankById(route.params.bankId);
         setBank(bankData);
       }
-
     } catch (error) {
       console.log("Data load error:", error);
     }
@@ -74,33 +71,36 @@ export function EditBankScreen({ route }: EditBankProps) {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      
-      <ImageSelect
-        bankId={bank?.id}
-        imageUrl={bank?.imageUrl}
-        shape="rectangle"
-        aspect={[4, 6]}
-        disabled={!isEditable || isCreateMode}
-      />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+      >
+        <ImageSelect
+          bankId={bank?.id}
+          imageUrl={bank?.imageUrl}
+          shape="rectangle"
+          aspect={[4, 3]}
+          disabled={!isEditable || isCreateMode}
+        />
 
-     <EditBankForm 
-        creatorId={user!.id} 
-        categories={categories} 
-        bank={bank} 
-        setBank={setBank}
-        screenMode={screenMode} 
-      />
-      
-    </ScrollView>
+        <EditBankForm
+          creatorId={user!.id}
+          categories={categories}
+          bank={bank}
+          setBank={setBank}
+          screenMode={screenMode}
+        />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 30,
-    flex: 1,
-    justifyContent: "space-between"
-  }
+  },
 });

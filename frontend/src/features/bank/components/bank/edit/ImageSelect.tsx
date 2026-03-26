@@ -1,10 +1,13 @@
 import { Edit3, ImageIcon } from "lucide-react-native";
 import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
+import { useState, useEffect } from "react";
 import { getImage } from "../../../../../api/services/image.service";
 import { showInfo } from "../../../../../shared/utils/toast.service";
-import { useState, useEffect } from "react";
 import { uploadBankImage } from "../../../services/bank.service";
+import { useDispatch } from "react-redux";
+import { updateBankImageAction } from "../../../../../redux/bankSlice";
 
 interface ImageSelectProps {
   shape?: ImagePicker.CropShape;
@@ -22,6 +25,7 @@ export function ImageSelect({
   bankId,
 }: ImageSelectProps) {
   const [image, setImage] = useState<string | null>(imageUrl ?? null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setImage(imageUrl ?? null);
@@ -37,7 +41,6 @@ export function ImageSelect({
       return;
     }
 
-
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
@@ -46,20 +49,26 @@ export function ImageSelect({
       shape: shape || "rectangle",
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && bankId) {
       try {
         const asset = result.assets[0];
 
-        const response = await uploadBankImage(
-          bankId || 2,
+        const manipulated = await ImageManipulator.manipulateAsync(
           asset.uri,
-          asset.mimeType,
+          [{ resize: { width: 800 } }],
+          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+        );
+
+        const response = await uploadBankImage(
+          bankId,
+          manipulated.uri,
+          'image/jpeg',
           asset.fileName
         );
 
         if (!response.imageUrl) return;
-
         setImage(response.imageUrl);
+        dispatch(updateBankImageAction({id: bankId, imageUrl: response.imageUrl}));
       } catch (error) {
         console.log(
           "Image upload failed:",
@@ -91,13 +100,8 @@ export function ImageSelect({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginVertical: 30,
-  },
-  image: {
-    height: 200,
-    borderRadius: 6,
-  },
+  container: { marginVertical: 30 },
+  image: { height: 200, borderRadius: 6 },
   placeholder: {
     height: 200,
     borderRadius: 6,
