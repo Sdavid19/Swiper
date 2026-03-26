@@ -9,18 +9,18 @@ import { UserDto } from '../user/dto';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  @ApiOkResponse({type: UserDto})
+  @ApiOkResponse({ type: UserDto })
   signUp(@Body() dto: SignupDto) {
     return this.authService.signup(dto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  @ApiOkResponse({type: SigninResponseDto})
+  @ApiOkResponse({ type: SigninResponseDto })
   singIn(@Body() dto: SigninDto) {
     return this.authService.signin(dto);
   }
