@@ -8,46 +8,46 @@ type CardProps = {
   bank: BankDto,
 }
 
-export function BankCard({bank}: CardProps){
+export function BankCard({ bank }: CardProps) {
 
   const shortenString = (word: string, letterNumberToShow: number) => {
-    if(word.length > letterNumberToShow){
+    if (word.length > letterNumberToShow) {
       return word.slice(0, letterNumberToShow) + "...";
     } else {
       return word;
     }
   }
 
-    return (
-      <View key={bank.id} style={styles.container}>
-        <View style={styles.imageWrapper}>
-          <Image 
-            source={{ uri: bank.imageUrl ? getImage(bank.imageUrl) : 'https://placecats.com/200/100' }}
-            style={styles.image} 
-          />
-        </View>
-        
-        <View style={styles.cardBody}>
-            <View>
-              <View style={styles.infoCotainer}>
-                  <Text style={styles.bankTitle}>{shortenString(bank.title, 12)}</Text>
-                  <Badge color={bank.category.color} text={bank.category.name} />
-              </View>
+  return (
+    <View key={bank.id} style={styles.container}>
+      <View style={styles.imageWrapper}>
+        <Image
+          source={{ uri: bank.imageUrl ? getImage(bank.imageUrl) : 'https://placecats.com/200/100' }}
+          style={styles.image}
+        />
+      </View>
 
-              <View style={styles.descContainer}>
-                <Text style={styles.desc} numberOfLines={1} ellipsizeMode="tail">
-                  {shortenString(bank.description, 25)}
-                </Text>
-              </View>
-            </View>
-            
+      <View style={styles.cardBody}>
+        <View>
+          <View style={styles.infoCotainer}>
+            <Text style={styles.bankTitle}>{shortenString(bank.title, 12)}</Text>
+            <Badge color={bank.category.color} text={bank.category.name} />
+          </View>
 
-          <View style={styles.buttonContainer}>
-            <PrimaryButton style={{width: 60}} title="Start" />
+          <View style={styles.descContainer}>
+            <Text style={styles.desc} numberOfLines={1} ellipsizeMode="tail">
+              {shortenString(bank.description, 25)}
+            </Text>
           </View>
         </View>
+
+
+        <View style={styles.buttonContainer}>
+          <PrimaryButton style={{ width: 60 }} title="Start" />
+        </View>
       </View>
-    );
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 10,
     overflow: "hidden"
   },
-  image: { 
-    width: '100%', 
+  image: {
+    width: '100%',
     height: '100%',
   },
   cardBody: {
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     marginVertical: 5
   },
   descContainer: {
-      marginVertical: 5
+    marginVertical: 5
   },
   desc: {
     fontSize: 12

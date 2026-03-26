@@ -7,18 +7,18 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type ShowBankProps = NativeStackScreenProps<EditBankStackParamList, "ShowBanks">;
 
-export function BankScreen({route}: ShowBankProps) {
+export function BankScreen({ route }: ShowBankProps) {
   const navigation = useNavigation<EditBankNavigation>()
 
   return (
     <View style={styles.container}>
-  
+
       <BankFilterList />
-      
-      <PrimaryButton 
-        title="Add new" 
-        style={styles.addButton} 
-        onPress={() => navigation.navigate('EditBank', {bankId: undefined})} 
+
+      <PrimaryButton
+        title="Add new"
+        style={styles.addButton}
+        onPress={() => navigation.navigate('EditBank', { bankId: undefined })}
       />
     </View>
   );

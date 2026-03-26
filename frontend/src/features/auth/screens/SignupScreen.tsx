@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 import { signup } from "../services/auth.service";
-import { SignupDto } from "../../../shared/types/generated"; 
-import { NavigateLink } from "../components/NavigateLink"; 
+import { SignupDto } from "../../../shared/types/generated";
+import { NavigateLink } from "../components/NavigateLink";
 import { AxiosError } from "axios";
 import { InputField, PrimaryButton } from "../../../shared/components";
 import { ValidationErrorMessage, ErrorResponse } from "../../../shared/types";
@@ -18,9 +18,9 @@ export function SignupScreen() {
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<ValidationErrorMessage<SignupDto> | null>(null);
 
-    const navigation = useNavigation<AuthNavigation>()
+  const navigation = useNavigation<AuthNavigation>()
 
-   const isButtonDisabled = () => {
+  const isButtonDisabled = () => {
     return !email || !password || !name;
   }
 
@@ -47,7 +47,7 @@ export function SignupScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      
+
       <View style={styles.formContainer}>
         <InputField
           label="Name"
@@ -78,12 +78,12 @@ export function SignupScreen() {
           Icon={KeyRound}
         />
 
-         <PrimaryButton 
-            title="Login" 
-            onPress={handleLogin} 
-            disabled={isButtonDisabled()} 
-            style={styles.loginButton}
-          />
+        <PrimaryButton
+          title="Login"
+          onPress={handleLogin}
+          disabled={isButtonDisabled()}
+          style={styles.loginButton}
+        />
 
         <NavigateLink text="Already have an account?" component="Login" />
       </View>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center', 
+    alignItems: 'center',
     padding: 16,
     backgroundColor: '#fff',
   },
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     height: 300,
     justifyContent: 'flex-start',
   },
-   loginButton:{
+  loginButton: {
     marginTop: 10
   }
 });

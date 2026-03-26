@@ -18,83 +18,83 @@ type EditQuestionProps = NativeStackScreenProps<EditBankStackParamList, "EditQue
 
 export type EditQuestionScreenMode = "View" | "Edit" | "Create";
 
-export function EditQuestionScreen({route}: EditQuestionProps){
+export function EditQuestionScreen({ route }: EditQuestionProps) {
 
-    const questionId = route.params.questionId;
-    const user = useSelector((state: RootState) => state.auth.user);
-    const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
-    const dispatch = useDispatch();
+  const questionId = route.params.questionId;
+  const user = useSelector((state: RootState) => state.auth.user);
+  const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
+  const dispatch = useDispatch();
 
-    const [question, setQuestion] = useState<QuestionDto>();
+  const [question, setQuestion] = useState<QuestionDto>();
 
-    useLayoutEffect(() => {
-      if (!question) return;
-      navigation.setOptions({
-        headerRight: () =>
+  useLayoutEffect(() => {
+    if (!question) return;
+    navigation.setOptions({
+      headerRight: () =>
         <DeleteButton
           onDelete={async () => {
             await deleteQuestion(question.id);
             showSuccess("Question deleted successfully!");
             dispatch(removeQuestionAction(question.id));
             navigation.goBack();
-          }} 
-        /> 
-      });
-    }, [question, navigation])
-
-     const loadData = async () => {
-        try {
-          if(!questionId) return;
-          const question = await getQuestionById(questionId);
-          setQuestion(question);
-        } catch (error) {
-          console.log("Data load error:", error);
-        }
-      };
-
-    const screenMode: EditQuestionScreenMode = useMemo(() => {
-      if (question?.id) return "Edit";
-      if (!route.params?.questionId) return "Create";
-      if (!user) return "View";
-      return "View";
-    }, [route.params?.questionId, question, user]);
-
-    const isEditable = screenMode !== "View";
-    const isCreateMode = screenMode === "Create";
-
-    useEffect(() => {
-      loadData();
-    }, [])
-
-    return (
-      <KeyboardAwareScrollView
-        contentContainerStyle={[styles.container, { flexGrow: 1 }]}
-        enableOnAndroid={true}
-        keyboardOpeningTime={0}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <QuestionImageSelect
-          questionId={question?.id}
-          imageUrl={question?.imageUrl}
-          shape="rectangle"
-          aspect={[3, 4]}
-          disabled={!isEditable || isCreateMode}
+          }}
         />
+    });
+  }, [question, navigation])
 
-        <EditQuestionForm 
-          bankId={route.params.bankId}
-          screenMode={screenMode}
-          question={question}
-          setQuestion={setQuestion} 
-        />
-      </KeyboardAwareScrollView>
-    );
+  const loadData = async () => {
+    try {
+      if (!questionId) return;
+      const question = await getQuestionById(questionId);
+      setQuestion(question);
+    } catch (error) {
+      console.log("Data load error:", error);
+    }
+  };
+
+  const screenMode: EditQuestionScreenMode = useMemo(() => {
+    if (question?.id) return "Edit";
+    if (!route.params?.questionId) return "Create";
+    if (!user) return "View";
+    return "View";
+  }, [route.params?.questionId, question, user]);
+
+  const isEditable = screenMode !== "View";
+  const isCreateMode = screenMode === "Create";
+
+  useEffect(() => {
+    loadData();
+  }, [])
+
+  return (
+    <KeyboardAwareScrollView
+      contentContainerStyle={[styles.container, { flexGrow: 1 }]}
+      enableOnAndroid={true}
+      keyboardOpeningTime={0}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
+      <QuestionImageSelect
+        questionId={question?.id}
+        imageUrl={question?.imageUrl}
+        shape="rectangle"
+        aspect={[3, 4]}
+        disabled={!isEditable || isCreateMode}
+      />
+
+      <EditQuestionForm
+        bankId={route.params.bankId}
+        screenMode={screenMode}
+        question={question}
+        setQuestion={setQuestion}
+      />
+    </KeyboardAwareScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-     paddingHorizontal: 20,
-     justifyContent: 'space-between'
+    paddingHorizontal: 20,
+    justifyContent: 'space-between'
   }
 });

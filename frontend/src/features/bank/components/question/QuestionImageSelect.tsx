@@ -34,12 +34,12 @@ export function QuestionImageSelect({
   const pickImage = async () => {
     if (disabled) return;
 
-  const permissionResult =
-    await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (!permissionResult.granted) {
-    showInfo("Permission to access the media library is required.");
-    return;
-  }
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      showInfo("Permission to access the media library is required.");
+      return;
+    }
 
 
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -54,7 +54,7 @@ export function QuestionImageSelect({
       try {
         const asset = result.assets[0];
 
-       const manipulated = await ImageManipulator.manipulateAsync(
+        const manipulated = await ImageManipulator.manipulateAsync(
           asset.uri,
           [{ resize: { width: 800 } }],
           { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
@@ -66,10 +66,10 @@ export function QuestionImageSelect({
           'image/jpeg',
           asset.fileName
         );
-       
+
         if (!response.imageUrl) return;
         setImage(response.imageUrl);
-        dispatch(updateQuestionImageAction({id: questionId, imageUrl: response.imageUrl}));
+        dispatch(updateQuestionImageAction({ id: questionId, imageUrl: response.imageUrl }));
 
       } catch (error) {
         console.log(
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     marginVertical: 20
   },
   image: {
-    aspectRatio: 3/4,
+    aspectRatio: 3 / 4,
     borderRadius: 6,
   },
   placeholder: {
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
-    aspectRatio: 3/4
+    aspectRatio: 3 / 4
   },
   editIcon: {
     position: "absolute",

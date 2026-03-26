@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator<AppStackParamList>()
 export function AppStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true, headerBackButtonDisplayMode: 'minimal' }}>
-      <Stack.Screen name="Tabs" component={AppTabs} options={{headerShown: false}} />
+      <Stack.Screen name="Tabs" component={AppTabs} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }

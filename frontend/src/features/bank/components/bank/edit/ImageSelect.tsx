@@ -68,7 +68,7 @@ export function ImageSelect({
 
         if (!response.imageUrl) return;
         setImage(response.imageUrl);
-        dispatch(updateBankImageAction({id: bankId, imageUrl: response.imageUrl}));
+        dispatch(updateBankImageAction({ id: bankId, imageUrl: response.imageUrl }));
       } catch (error) {
         console.log(
           "Image upload failed:",

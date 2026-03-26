@@ -24,8 +24,8 @@ export function LoginScreen() {
     return !email || !password;
   }
 
-  const handleLogin = async () => { 
-    const credentials: SigninDto = {email, password};
+  const handleLogin = async () => {
+    const credentials: SigninDto = { email, password };
 
     try {
       await login(credentials);
@@ -46,7 +46,7 @@ export function LoginScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      
+
       <View style={styles.formContainer}>
         <InputField
           label="Email"
@@ -68,14 +68,14 @@ export function LoginScreen() {
           Icon={KeyRound}
         />
 
-        <PrimaryButton 
-          title="Login" 
-          onPress={handleLogin} 
-          disabled={isButtonDisabled()} 
+        <PrimaryButton
+          title="Login"
+          onPress={handleLogin}
+          disabled={isButtonDisabled()}
           style={styles.loginButton}
         />
-  
-      <NavigateLink text="Not a member yet?" component="Signup" />
+
+        <NavigateLink text="Not a member yet?" component="Signup" />
       </View>
     </KeyboardAvoidingView>
   );
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center', 
+    alignItems: 'center',
     padding: 16,
     backgroundColor: '#fff',
   },
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     height: 300,
     justifyContent: 'flex-start',
   },
-  loginButton:{
+  loginButton: {
     marginTop: 10
   }
 });

@@ -11,25 +11,25 @@ export class BankDto {
 
     @ApiProperty()
     description: string;
-    
+
     @ApiProperty()
     public: boolean;
-    
+
     @ApiProperty()
     usageCount: number;
-    
+
     @ApiProperty()
     createdAt: Date;
-    
+
     @ApiProperty()
     updatedAt: Date;
-    
-    @ApiProperty({ type: () => UserDto }) 
+
+    @ApiProperty({ type: () => UserDto })
     creator: UserDto;
 
     @ApiProperty({ type: () => CategoryDto })
     category: CategoryDto;
-    
+
     @ApiProperty({ nullable: true, type: String })
     imageUrl: string | null
 }

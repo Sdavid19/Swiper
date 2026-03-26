@@ -7,36 +7,36 @@ import { EditBankStackParamList } from "../../../../navigation";
 import { getImage } from "../../../../api/services/image.service";
 
 interface QuestionCardProps {
-    question: QuestionDto
+  question: QuestionDto
 }
 
-export function QuestionCard({question}: QuestionCardProps){
+export function QuestionCard({ question }: QuestionCardProps) {
 
-    const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
 
-    return (
-    <TouchableOpacity style={styles.cardContainer} onPress={() => navigation.navigate("EditQuestion", {bankId: question.bankId, questionId: question.id})}>
-        <View style={styles.cardContent}>
-            <Image
-                style={styles.cardImage}
-                source={{ uri: question.imageUrl ? getImage(question.imageUrl) : 'https://placecats.com/200/100' }}
-            />
-            <Text style={styles.cardText}>{question.text}</Text>
-        </View>
-      <ChevronRight style={{marginRight: 6}} size={20}/>
+  return (
+    <TouchableOpacity style={styles.cardContainer} onPress={() => navigation.navigate("EditQuestion", { bankId: question.bankId, questionId: question.id })}>
+      <View style={styles.cardContent}>
+        <Image
+          style={styles.cardImage}
+          source={{ uri: question.imageUrl ? getImage(question.imageUrl) : 'https://placecats.com/200/100' }}
+        />
+        <Text style={styles.cardText}>{question.text}</Text>
+      </View>
+      <ChevronRight style={{ marginRight: 6 }} size={20} />
     </TouchableOpacity>
-    );
+  );
 }
 
 const styles = StyleSheet.create({
-      cardContainer: {
+  cardContainer: {
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     borderRadius: 6,
     marginVertical: 6,
-    
+
     backgroundColor: "white",
     shadowColor: "#000",
     shadowOffset: { width: 1, height: 1 },

@@ -35,10 +35,10 @@ const questionsSlice = createSlice({
 });
 
 export default questionsSlice.reducer;
-export const { 
-  setQuestions, 
-  addQuestionAction, 
-  removeQuestionAction, 
+export const {
+  setQuestions,
+  addQuestionAction,
+  removeQuestionAction,
   updateQuestionAction,
   updateQuestionImageAction
 } = questionsSlice.actions;

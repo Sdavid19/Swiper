@@ -20,11 +20,11 @@ export function QuestionsScreen({ route }: EditBankProps) {
 
   const questions = useSelector((state: RootState) => state.question);
 
-    useEffect(() => {
-      getQuestionsByBank(bankId)
+  useEffect(() => {
+    getQuestionsByBank(bankId)
       .then(res => dispatch(setQuestions(res)))
       .catch(err => console.log(err));
-    }, []);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -42,9 +42,9 @@ export function QuestionsScreen({ route }: EditBankProps) {
       )}
 
       <PrimaryButton
-        title="Add new" 
-        style={styles.addButton} 
-        onPress={() => navigation.navigate("EditQuestion", {bankId ,questionId: undefined})} 
+        title="Add new"
+        style={styles.addButton}
+        onPress={() => navigation.navigate("EditQuestion", { bankId, questionId: undefined })}
       />
     </View>
   );

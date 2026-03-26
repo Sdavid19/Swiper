@@ -17,7 +17,7 @@ export class QuestionController {
 
     @Get(':id')
     @HttpCode(HttpStatus.OK)
-    @ApiOkResponse({type: QuestionDto})
+    @ApiOkResponse({ type: QuestionDto })
     @UseGuards(AuthGuard)
     getQuestion(@Param('id') id: string) {
         return this.questionService.findById(+id);
@@ -25,7 +25,7 @@ export class QuestionController {
 
     @Put(':id')
     @HttpCode(HttpStatus.OK)
-    @ApiOkResponse({type: QuestionDto})
+    @ApiOkResponse({ type: QuestionDto })
     @UseGuards(AuthGuard)
     updateQuestion(@Param('id') id: string, @Body() dto: updateQuestionDto) {
         return this.questionService.updateQuestion(+id, dto);
@@ -39,29 +39,29 @@ export class QuestionController {
     }
 
     @Post('upload/:id')
-    @ApiOkResponse({type: QuestionImageDto})
+    @ApiOkResponse({ type: QuestionImageDto })
     @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        callback(null, uniqueSuffix + extname(file.originalname));
+        storage: diskStorage({
+            destination: './uploads',
+            filename: (req, file, callback) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                callback(null, uniqueSuffix + extname(file.originalname));
+            }
+        }),
+        limits: {
+            fileSize: 1024 * 1024
+        },
+        fileFilter: (req, file, callback) => {
+            if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+                return callback(new Error('Only image files allowed'), false);
+            }
+            callback(null, true)
         }
-    }),
-    limits: {
-        fileSize: 1024 * 1024
-    },
-    fileFilter: (req, file, callback) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
-        return callback(new Error('Only image files allowed'), false);
-        }
-        callback(null, true)
-    }
     }))
     @UseGuards(AuthGuard)
     uploadFile(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
         return this.questionService.updateQuestionImage(+id, file.filename);
     }
 
-    
+
 }

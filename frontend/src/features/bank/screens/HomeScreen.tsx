@@ -9,16 +9,16 @@ import { useFocusEffect } from "@react-navigation/native";
 export function HomeScreen() {
   const [banks, setBanks] = useState<BankDto[]>([]);
 
-    useFocusEffect(
+  useFocusEffect(
     useCallback(() => {
       let isActive = true;
-  
+
       getAllBanks()
         .then(res => {
           if (isActive) setBanks(res);
         })
         .catch(err => console.log("Bank fetch error:", err));
-  
+
       return () => {
         isActive = false;
       };
@@ -26,7 +26,7 @@ export function HomeScreen() {
   );
 
   return (
-    <ScrollView  style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.sectionContainer}>
 
         <View style={styles.sectionHeader}>
@@ -40,16 +40,16 @@ export function HomeScreen() {
               <BankCard key={bank.id} bank={bank} />
             ))}
           </ScrollView>
-          ) : (
-            <View style={styles.emptycontainer}>
-              <Text>There are no banks!</Text>
-            </View>
-          )}
+        ) : (
+          <View style={styles.emptycontainer}>
+            <Text>There are no banks!</Text>
+          </View>
+        )}
 
       </View>
 
       <View style={styles.sectionContainer}>
-         <View style={styles.sectionHeader}>
+        <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>My banks</Text>
           <NavigateLink text="see all" />
         </View>
@@ -64,7 +64,7 @@ export function HomeScreen() {
             <Text>There are no banks!</Text>
           </View>
         )}
-        
+
       </View>
     </ScrollView>
   );
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  sectionContainer:{
+  sectionContainer: {
     marginVertical: 10
   },
   sectionTitle: {

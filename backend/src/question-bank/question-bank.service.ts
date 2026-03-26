@@ -11,13 +11,14 @@ import { QuestionDto } from "../question/dto/question.dto";
 import sharp from "sharp";
 
 @Injectable()
-export class QuestionBankService { 
+export class QuestionBankService {
     constructor(private readonly prisma: PrismaService) { }
 
     async findById(id: number) {
-        return this.prisma.questionBank.findUnique({where: {id: id},
+        return this.prisma.questionBank.findUnique({
+            where: { id: id },
             include: {
-                category: true, 
+                category: true,
                 creator: {
                     select: {
                         id: true,
@@ -29,38 +30,38 @@ export class QuestionBankService {
             },
         })
     }
-    
+
     findAll(userId: number, categoryIds?: number[]): Promise<BankDto[]> {
-    return this.prisma.questionBank.findMany({
-        where: {
-        creatorId: userId,
-        ...(categoryIds && categoryIds.length > 0
-            ? { categoryId: { in: categoryIds } }
-            : {}),
-        },
-        include: {
-        category: true,
-        creator: {
-            select: {
-            id: true,
-            email: true,
-            name: true,
-            imageUrl: true,
+        return this.prisma.questionBank.findMany({
+            where: {
+                creatorId: userId,
+                ...(categoryIds && categoryIds.length > 0
+                    ? { categoryId: { in: categoryIds } }
+                    : {}),
             },
-        },
-        },
+            include: {
+                category: true,
+                creator: {
+                    select: {
+                        id: true,
+                        email: true,
+                        name: true,
+                        imageUrl: true,
+                    },
+                },
+            },
             orderBy: {
-            title: 'asc',
-        },
-    });
+                title: 'asc',
+            },
+        });
     }
 
-    update(id: number, dto: UpdateBankDto): Promise<BankDto>{
+    update(id: number, dto: UpdateBankDto): Promise<BankDto> {
         return this.prisma.questionBank.update({
-            where: {id},
-            data: {...dto},
+            where: { id },
+            data: { ...dto },
             include: {
-                category: true, 
+                category: true,
                 creator: {
                     select: {
                         id: true,
@@ -75,9 +76,9 @@ export class QuestionBankService {
 
     create(dto: CreateBankDto): Promise<BankDto> {
         const bank = this.prisma.questionBank.create({
-            data: {...dto},
-             include: {
-                category: true, 
+            data: { ...dto },
+            include: {
+                category: true,
                 creator: {
                     select: {
                         id: true,
@@ -88,7 +89,7 @@ export class QuestionBankService {
                 }
             },
         });
-        
+
         return bank;
     }
 
@@ -98,16 +99,16 @@ export class QuestionBankService {
         if (!bank) {
             throw new NotFoundException(`Questionbank with id ${id} not found`);
         }
-        
-        return this.prisma.questionBank.delete({ where: {id}, select: {id: true} });
+
+        return this.prisma.questionBank.delete({ where: { id }, select: { id: true } });
     }
 
 
     async updateBankImage(id: number, filename: string): Promise<BankImageDto | null> {
         const bank = await this.prisma.questionBank.findUnique({
-                    where: { id }
-                });
-        
+            where: { id }
+        });
+
         if (!bank) {
             throw new NotFoundException(`Question with id ${id} not found`);
         }
@@ -134,11 +135,11 @@ export class QuestionBankService {
         });
 
         return imageUrl;
-}
+    }
 
-    async findQuestionsByBank(id: number): Promise<QuestionDto[]>{
-      const questions = await this.prisma.question.findMany({
-            where: {bankId: id},
+    async findQuestionsByBank(id: number): Promise<QuestionDto[]> {
+        const questions = await this.prisma.question.findMany({
+            where: { bankId: id },
         });
 
         return questions;

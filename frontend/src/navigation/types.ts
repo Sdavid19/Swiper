@@ -44,5 +44,5 @@ export type AppNavigation =
 export type EditBankNavigation =
   NativeStackNavigationProp<EditBankStackParamList>
 
-export type ProfileNavigation = 
-   NativeStackNavigationProp<ProfileStackParamList>
+export type ProfileNavigation =
+  NativeStackNavigationProp<ProfileStackParamList>

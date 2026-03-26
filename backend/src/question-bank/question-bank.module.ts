@@ -10,4 +10,4 @@ import { CategoriesExist } from "./validators/categories-exists.validator";
   controllers: [QuestionBankController],
   providers: [QuestionBankService, CategoryExists, CategoriesExist],
 })
-export class QuestioBankModule {}
+export class QuestioBankModule { }

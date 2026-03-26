@@ -12,8 +12,8 @@ export function AppTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: true }}>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="BankStack" options={{headerShown: false}} component={EditBankStack} />
-      <Tab.Screen name="ProfileStack" options={{headerShown: false}} component={ProfileStack} />
+      <Tab.Screen name="BankStack" options={{ headerShown: false }} component={EditBankStack} />
+      <Tab.Screen name="ProfileStack" options={{ headerShown: false }} component={ProfileStack} />
     </Tab.Navigator>
   )
 }

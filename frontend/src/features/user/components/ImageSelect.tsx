@@ -14,8 +14,8 @@ interface ImageSelectProps {
     userImageUrl?: string | null
 }
 
-export function ImageSelect({shape, aspect, userImageUrl}: ImageSelectProps){
-    
+export function ImageSelect({ shape, aspect, userImageUrl }: ImageSelectProps) {
+
     const dispatch: AppDispatch = useDispatch();
     const user = useSelector((state: RootState) => state.auth.user);
     const [image, setImage] = useState(userImageUrl);
@@ -23,22 +23,22 @@ export function ImageSelect({shape, aspect, userImageUrl}: ImageSelectProps){
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permissionResult.granted) {
-          Alert.alert('Permission required', 'Permission to access the media library is required.');
-          return;
+            Alert.alert('Permission required', 'Permission to access the media library is required.');
+            return;
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ['images'],
-          allowsEditing: true,
-          aspect: aspect || [1,1],
-          quality: 1,
-          shape: shape || 'rectangle'
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: aspect || [1, 1],
+            quality: 1,
+            shape: shape || 'rectangle'
         });
 
         if (!result.canceled && user) {
-            try{
+            try {
                 const asset = result.assets[0];
-                
+
                 const manipulated = await ImageManipulator.manipulateAsync(
                     asset.uri,
                     [{ resize: { width: 800 } }],
@@ -46,16 +46,16 @@ export function ImageSelect({shape, aspect, userImageUrl}: ImageSelectProps){
                 );
 
                 const response = await uploadUserImage(
-                    user.id, 
-                    manipulated.uri, 
+                    user.id,
+                    manipulated.uri,
                     'image/jpeg',
                     asset.fileName
                 );
 
                 setImage(response.imageUrl);
-                dispatch(updateUserData({imageUrl: response.imageUrl}))
+                dispatch(updateUserData({ imageUrl: response.imageUrl }))
             }
-            catch(error){
+            catch (error) {
                 console.log('Image upload failed:', error instanceof Error ? error.message : error);
             }
         }
@@ -65,7 +65,7 @@ export function ImageSelect({shape, aspect, userImageUrl}: ImageSelectProps){
         <View style={styles.container}>
             <TouchableOpacity onPress={pickImage}>
                 {image ? (
-                    <Image source={{uri: getImage(image)}} style={styles.image} />
+                    <Image source={{ uri: getImage(image) }} style={styles.image} />
                 ) : (
                     <CircleUser size={200} color="#999" />
                 )}

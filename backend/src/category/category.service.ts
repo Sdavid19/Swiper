@@ -3,14 +3,14 @@ import { PrismaService } from "../prisma/prisma.service";
 import { CategoryDto, CreateCategoryDto } from "./dto";
 
 @Injectable()
-export class CategoryService { 
+export class CategoryService {
     constructor(private readonly prisma: PrismaService) { }
 
     async findById(id: number) {
-        return this.prisma.category.findUnique({where: {id: id}})
+        return this.prisma.category.findUnique({ where: { id: id } })
     }
 
-      create(dto: CreateCategoryDto): Promise<CategoryDto> { 
+    create(dto: CreateCategoryDto): Promise<CategoryDto> {
         const newCategory = this.prisma.category.create({
             data: {
                 name: dto.name,
@@ -22,7 +22,7 @@ export class CategoryService {
     }
 
     findAll(): Promise<CategoryDto[]> {
-        return this.prisma.category.findMany({orderBy: { name: 'asc' }});
+        return this.prisma.category.findMany({ orderBy: { name: 'asc' } });
     }
 
     async delete(id: number) {
@@ -34,7 +34,7 @@ export class CategoryService {
 
         return this.prisma.category.delete({
             where: { id },
-            select: {id: true}
-         });
+            select: { id: true }
+        });
     }
 }

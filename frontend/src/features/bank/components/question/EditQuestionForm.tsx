@@ -17,26 +17,26 @@ interface EditQuestionFormProps {
     setQuestion: React.Dispatch<React.SetStateAction<QuestionDto | undefined>>
 }
 
-export function EditQuestionForm({screenMode, bankId, question, setQuestion}: EditQuestionFormProps){
+export function EditQuestionForm({ screenMode, bankId, question, setQuestion }: EditQuestionFormProps) {
     const [text, setText] = useState("");
     const [errors, setErrors] = useState<ValidationErrorMessage<CreateQuestionDto> | null>(null);
 
     const dispatch = useDispatch();
 
     const setUpDataForUpdate = () => {
-        if(!question) return;
+        if (!question) return;
         setText(question.text);
     }
 
-        const saveQuestion = async () => {
+    const saveQuestion = async () => {
         try {
             if (screenMode === "Edit" && question) {
-                const response = await updateQuestion(question.id, {text});
+                const response = await updateQuestion(question.id, { text });
                 setQuestion(response);
                 dispatch(updateQuestionAction(response));
                 showSuccess('Question updated succesfully!');
             } else {
-                const response = await createQuestion(bankId, {text});
+                const response = await createQuestion(bankId, { text });
                 setQuestion(response);
                 dispatch(addQuestionAction(response));
                 showSuccess('Question created succesfully!');
@@ -44,9 +44,9 @@ export function EditQuestionForm({screenMode, bankId, question, setQuestion}: Ed
         } catch (err) {
             const error = err as AxiosError<ErrorResponse<CreateQuestionDto>>
             const message = error.response?.data.message
-      
+
             if (typeof message === "object") {
-              setErrors(message);
+                setErrors(message);
             }
         }
     }
@@ -56,7 +56,7 @@ export function EditQuestionForm({screenMode, bankId, question, setQuestion}: Ed
     }, [question]);
 
     return (
-          <View style={styles.formContainer}>
+        <View style={styles.formContainer}>
             <InputField
                 value={text}
                 onChangeText={setText}
@@ -66,7 +66,7 @@ export function EditQuestionForm({screenMode, bankId, question, setQuestion}: Ed
 
             <PrimaryButton
                 title="Edit question"
-                style={{ width: "100%"}}
+                style={{ width: "100%" }}
                 onPress={saveQuestion}
             />
         </View>

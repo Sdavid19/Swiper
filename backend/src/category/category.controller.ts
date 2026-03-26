@@ -7,18 +7,18 @@ import { AuthGuard } from "../auth/auth.guard";
 @ApiTags('category')
 @ApiBearerAuth()
 @Controller('category')
-export class CategoryController { 
+export class CategoryController {
     constructor(private readonly categoryService: CategoryService) { }
-    
+
     @Get()
-    @ApiOkResponse({type: CategoryDto, isArray: true})
+    @ApiOkResponse({ type: CategoryDto, isArray: true })
     @UseGuards(AuthGuard)
     getAllCategories() {
         return this.categoryService.findAll();
     }
 
     @Post()
-    @ApiOkResponse({type: CategoryDto})
+    @ApiOkResponse({ type: CategoryDto })
     @UseGuards(AuthGuard)
     createCategory(@Body() dto: CreateCategoryDto) {
         return this.categoryService.create(dto);
@@ -29,5 +29,5 @@ export class CategoryController {
     deleteCategory(@Param('id') id: string) {
         return this.categoryService.delete(+id);
     }
-   
+
 }

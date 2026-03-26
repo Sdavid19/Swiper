@@ -6,9 +6,9 @@ import { UserDto } from "./dto";
 import { UserImageDto } from "./dto/user-image";
 
 @Injectable()
-export class UserService { 
+export class UserService {
     constructor(private readonly prisma: PrismaService) { }
-    
+
     async findUserById(id: number) {
         const user = this.prisma.user.findUnique({
             where: { id },
@@ -20,7 +20,7 @@ export class UserService {
             },
         });
 
-        if(!user){
+        if (!user) {
             throw new NotFoundException(`User with id ${id} not found`);
         }
 
@@ -62,9 +62,9 @@ export class UserService {
         return user;
     }
 
-    async updateUserImage(id: number, filename: string): Promise<UserImageDto>{
+    async updateUserImage(id: number, filename: string): Promise<UserImageDto> {
         const imageUrl = this.prisma.user.update({
-            where: {id},
+            where: { id },
             data: {
                 imageUrl: filename
             },

@@ -7,23 +7,23 @@ import path from "path";
 import sharp from "sharp";
 
 @Injectable()
-export class QuestionService { 
-    constructor(private readonly prisma: PrismaService){}
+export class QuestionService {
+    constructor(private readonly prisma: PrismaService) { }
 
     async findById(id: number) {
-        return this.prisma.question.findUnique({where: {id: id},})
+        return this.prisma.question.findUnique({ where: { id: id }, })
     }
 
     async updateQuestion(id: number, dto: updateQuestionDto) {
         return this.prisma.question.update({
-            where: {id},
+            where: { id },
             data: dto
         });
     }
 
-    async deleteQuestion(id: number){
+    async deleteQuestion(id: number) {
         return this.prisma.question.delete({
-            where: {id}
+            where: { id }
         });
     }
 

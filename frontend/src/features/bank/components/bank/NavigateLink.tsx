@@ -10,12 +10,12 @@ export function NavigateLink(props: NavigateLinkProps) {
   const navigation = useNavigation<AppNavigation>()
 
   const navigate = () => {
-      navigation.navigate('Tabs', {
+    navigation.navigate('Tabs', {
       screen: 'BankStack',
       params: {
         screen: 'ShowBanks',
       }
-  })
+    })
   }
 
   return (

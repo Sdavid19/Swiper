@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { AuthStack } from './AuthStack'
 import { useSelector } from 'react-redux'
 import { RootStackParamList } from './types'
-import type { RootState } from '../redux/store' 
+import type { RootState } from '../redux/store'
 import { AppStack } from './AppStack'
 
 const Root = createNativeStackNavigator<RootStackParamList>()
