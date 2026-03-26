@@ -5,6 +5,7 @@ import { PrimaryButton } from "../../../../../shared/components";
 import { useNavigation } from "@react-navigation/native";
 import { EditBankNavigation } from "../../../../../navigation";
 import { getImage } from "../../../../../api/services/image.service";
+import { shortenString } from "../../../../../shared/utils/text.service";
 
 type CardProps = {
   bank: BankDto
@@ -30,12 +31,12 @@ export function BankCardLarge({ bank }: CardProps) {
       <View style={styles.cardBody}>
         <View>
           <View style={styles.infoCotainer}>
-            <Text style={styles.bankTitle}>{bank.title}</Text>
+            <Text style={styles.bankTitle}>{shortenString(bank.title, 20)}</Text>
             <Badge text={bank.category.name} color={bank.category.color} />
           </View>
 
           <View style={styles.descContainer}>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.desc}>{bank.description}</Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.desc}>{shortenString(bank.description, 35)}</Text>
           </View>
         </View>
         <View style={styles.buttonContainer}>

@@ -19,7 +19,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('login')
+  @Post('login') 
   @ApiOkResponse({ type: SigninResponseDto })
   singIn(@Body() dto: SigninDto) {
     return this.authService.signin(dto);

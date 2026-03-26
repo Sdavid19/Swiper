@@ -12,7 +12,6 @@ import { AuthGuard } from "../auth/auth.guard";
 import { JwtPayload } from "../auth/interfaces";
 import { BankFilterDto } from "./dto/bank/bank-filter.dto";
 import { CreateQuestionDto } from "../question/dto/create-question.dto";
-import { CreateQuestionsDto } from "../question/dto/create-questions.dto";
 import { QuestionDto } from "../question/dto/question.dto";
 
 @ApiTags('question-banks')

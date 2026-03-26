@@ -68,6 +68,7 @@ export function EditQuestionForm({ screenMode, bankId, question, setQuestion }: 
                 title="Edit question"
                 style={{ width: "100%" }}
                 onPress={saveQuestion}
+                disabled={!text}
             />
         </View>
     );
@@ -76,6 +77,7 @@ export function EditQuestionForm({ screenMode, bankId, question, setQuestion }: 
 const styles = StyleSheet.create({
     formContainer: {
         flex: 1,
-        justifyContent: "space-evenly"
+        justifyContent: "space-evenly",
+        paddingVertical: 10
     }
 });

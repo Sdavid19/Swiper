@@ -8,7 +8,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 type ShowBankProps = NativeStackScreenProps<EditBankStackParamList, "ShowBanks">;
 
 export function BankScreen({ route }: ShowBankProps) {
-  const navigation = useNavigation<EditBankNavigation>()
+  const navigation = useNavigation<EditBankNavigation>();
 
   return (
     <View style={styles.container}>

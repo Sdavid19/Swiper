@@ -3,6 +3,7 @@ import { Badge } from "../../../../../shared/components/Badge";
 import { BankDto } from "../../../../../shared/types/generated";
 import { PrimaryButton } from "../../../../../shared/components";
 import { getImage } from "../../../../../api/services/image.service";
+import { shortenString } from "../../../../../shared/utils/text.service";
 
 type CardProps = {
   bank: BankDto,
@@ -10,13 +11,7 @@ type CardProps = {
 
 export function BankCard({ bank }: CardProps) {
 
-  const shortenString = (word: string, letterNumberToShow: number) => {
-    if (word.length > letterNumberToShow) {
-      return word.slice(0, letterNumberToShow) + "...";
-    } else {
-      return word;
-    }
-  }
+ 
 
   return (
     <View key={bank.id} style={styles.container}>
