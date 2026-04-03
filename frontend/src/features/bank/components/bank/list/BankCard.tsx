@@ -4,6 +4,8 @@ import { BankDto } from "../../../../../shared/types/generated";
 import { PrimaryButton } from "../../../../../shared/components";
 import { getImage } from "../../../../../api/services/image.service";
 import { shortenString } from "../../../../../shared/utils/text.service";
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigation, VoteNavigation } from "../../../../../navigation";
 
 type CardProps = {
   bank: BankDto,
@@ -11,7 +13,11 @@ type CardProps = {
 
 export function BankCard({ bank }: CardProps) {
 
- 
+    const navigation = useNavigation<AppNavigation>()
+
+    const navigateToCreateLobby = () => {
+      navigation.navigate("CreateLobby", {bankId: bank.id})
+  }
 
   return (
     <View key={bank.id} style={styles.container}>
@@ -38,7 +44,7 @@ export function BankCard({ bank }: CardProps) {
 
 
         <View style={styles.buttonContainer}>
-          <PrimaryButton style={{ width: 60 }} title="Start" />
+          <PrimaryButton style={{ width: 60 }} onPress={navigateToCreateLobby} title="Start" />
         </View>
       </View>
     </View>

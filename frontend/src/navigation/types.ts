@@ -4,6 +4,7 @@ import { BankDto } from "../shared/types/generated"
 
 export type AppStackParamList = {
   Tabs: NavigatorScreenParams<AppTabParamList>
+  CreateLobby: { bankId: number }
 }
 
 export type AuthStackParamList = {
@@ -13,9 +14,14 @@ export type AuthStackParamList = {
 
 export type EditBankStackParamList = {
   ShowBanks: undefined
-  EditBank: { bankId?: number, refresh?: () => void }
+  EditBank: { bankId?: number }
   BankQuestions: { bankId: number }
   EditQuestion: { bankId: number, questionId?: number }
+}
+
+export type VoteStackParamList = {
+  JoinLobby: undefined,
+  Lobby: { roomId: number }
 }
 
 export type ProfileStackParamList = {
@@ -28,6 +34,7 @@ export type AppTabParamList = {
   Home: undefined
   ProfileStack: NavigatorScreenParams<ProfileNavigation>
   BankStack: NavigatorScreenParams<EditBankStackParamList>
+  VoteStack: NavigatorScreenParams<VoteStackParamList>
 }
 
 export type RootStackParamList = {
@@ -45,4 +52,7 @@ export type EditBankNavigation =
   NativeStackNavigationProp<EditBankStackParamList>
 
 export type ProfileNavigation = 
-   NativeStackNavigationProp<ProfileStackParamList>
+  NativeStackNavigationProp<ProfileStackParamList>
+
+export type VoteNavigation = 
+  NativeStackNavigationProp<VoteStackParamList>

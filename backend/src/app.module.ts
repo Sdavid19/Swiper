@@ -5,8 +5,9 @@ import { PrismaModule } from './prisma/prisma.module';
 import { CategoryModule } from './category';
 import { QuestioBankModule } from './question-bank/question-bank.module';
 import { QuestionModule } from './question/question.module';
+import { VoteModule } from './vote/vote.module';
 
 @Module({
-  imports: [AuthModule, UserModule, PrismaModule, CategoryModule, QuestioBankModule, QuestionModule],
+  imports: [AuthModule, UserModule, PrismaModule, CategoryModule, QuestioBankModule, QuestionModule, VoteModule],
 })
 export class AppModule {}

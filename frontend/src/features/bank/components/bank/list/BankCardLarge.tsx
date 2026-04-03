@@ -1,12 +1,11 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Badge } from "../../../../../shared/components/Badge";
 import { BankDto } from "../../../../../shared/types/generated";
 import { PrimaryButton } from "../../../../../shared/components";
 import { useNavigation } from "@react-navigation/native";
-import { EditBankNavigation } from "../../../../../navigation";
+import { AppNavigation, EditBankNavigation, VoteNavigation } from "../../../../../navigation";
 import { getImage } from "../../../../../api/services/image.service";
 import { shortenString } from "../../../../../shared/utils/text.service";
-
 type CardProps = {
   bank: BankDto
 }
@@ -14,13 +13,18 @@ type CardProps = {
 export function BankCardLarge({ bank }: CardProps) {
 
   const navigation = useNavigation<EditBankNavigation>()
+  const navigation2 = useNavigation<AppNavigation>()
+
+    const navigateToCreateLobby = () => {
+      navigation2.navigate("CreateLobby", {bankId: bank.id})
+  }
 
   const onButtonPress = (id: number) => {
     navigation.navigate('EditBank', { bankId: id });
   }
 
   return (
-    <View key={bank.id} style={styles.container}>
+    <TouchableOpacity key={bank.id} style={styles.container} onPress={() => onButtonPress(bank.id)} >
       <View style={styles.imageWrapper}>
         <Image
           source={{ uri: bank.imageUrl ? getImage(bank.imageUrl) : 'https://placecats.com/200/100' }}
@@ -40,16 +44,16 @@ export function BankCardLarge({ bank }: CardProps) {
           </View>
         </View>
         <View style={styles.buttonContainer}>
-          <PrimaryButton onPress={() => onButtonPress(bank.id)} style={{ width: 60 }} title="View" />
+          <PrimaryButton onPress={navigateToCreateLobby} style={{ width: 60 }} title="Start" />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: "95%",
+    width: "100%",
     marginVertical: 10,
 
     backgroundColor: "white",

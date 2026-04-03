@@ -28,18 +28,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    paddingBottom: 15,
+    paddingHorizontal: 15,
     backgroundColor: "#f5f5f5"
-  },
-  sectionHeader: {
-    marginBottom: 10
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginTop: 10
   },
   addButton: {
     width: "100%",
-    marginTop: 10
+    marginTop: 15
   }
 });

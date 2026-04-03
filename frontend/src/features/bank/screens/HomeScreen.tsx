@@ -30,7 +30,7 @@ export function HomeScreen() {
       <View style={styles.sectionContainer}>
 
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>My banks</Text>
+          <Text style={styles.sectionTitle}>Featured banks</Text>
           <NavigateLink text="manage" />
         </View>
 

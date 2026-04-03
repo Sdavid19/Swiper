@@ -16,7 +16,7 @@ export const getAllBanksWithFilter = async (
 export const getBankById = async (id: number): Promise<BankDto> => {
   const response = await api.get(`/question-banks/${id}`);
   return response.data;
-}
+}  
 
 export const createBank = async (dto: CreateBankDto): Promise<BankDto> => {
   const response = await api.post('/question-banks/create', dto);

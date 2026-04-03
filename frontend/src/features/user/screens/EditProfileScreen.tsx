@@ -63,11 +63,11 @@ export function EditProfileScreen() {
 
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-
+  <KeyboardAvoidingView
+    style={styles.container}
+    behavior={Platform.OS === "ios" ? "padding" : undefined}
+  >
+    <View style={styles.content}>
       <View style={styles.formContainer}>
         <ImageSelect shape="oval" userImageUrl={user?.imageUrl} />
 
@@ -97,30 +97,29 @@ export function EditProfileScreen() {
           secureTextEntry
           Icon={KeyRound}
         />
-
-        <PrimaryButton title="Save" onPress={handleUpdate} disabled={isButtonDisabled()} />
-
       </View>
-    </KeyboardAvoidingView>
-  );
+
+      <PrimaryButton 
+        title="Save" 
+        onPress={handleUpdate} 
+        disabled={isButtonDisabled()} 
+      />
+    </View>
+  </KeyboardAvoidingView>
+);
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    padding: 16,
     backgroundColor: '#fff',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 16,
   },
   formContainer: {
     width: '100%',
-    justifyContent: 'flex-start',
-  },
-  image: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    padding: 0,
-    margin: 0
   },
 });

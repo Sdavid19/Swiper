@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateBankDto } from "./dto/bank/create-bank.dto";
 import { BankDto } from "./dto/bank/bank.dto";
@@ -94,14 +94,29 @@ export class QuestionBankService {
     }
 
     async delete(id: number) {
-        const bank = await this.findById(id);
-
-        if (!bank) {
-            throw new NotFoundException(`Questionbank with id ${id} not found`);
+    const bank = await this.prisma.questionBank.findUnique({
+        where: { id },
+        select: {
+            id: true,
+            _count: {
+                select: { questions: true }
+            }
         }
+    });
 
-        return this.prisma.questionBank.delete({ where: { id }, select: { id: true } });
+    if (!bank) {
+        throw new NotFoundException(`Questionbank with id ${id} not found`);
     }
+
+    if (bank._count.questions > 0) {
+        throw new BadRequestException("Only empty banks can be deleted!");
+    }
+
+    return this.prisma.questionBank.delete({
+        where: { id },
+        select: { id: true }
+    });
+}
 
 
     async updateBankImage(id: number, filename: string): Promise<BankImageDto | null> {

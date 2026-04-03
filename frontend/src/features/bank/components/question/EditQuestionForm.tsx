@@ -65,7 +65,7 @@ export function EditQuestionForm({ screenMode, bankId, question, setQuestion }: 
             />
 
             <PrimaryButton
-                title="Edit question"
+                title={screenMode === "Edit" ? "Save Changes" : "Create Question "}
                 style={{ width: "100%" }}
                 onPress={saveQuestion}
                 disabled={!text}
