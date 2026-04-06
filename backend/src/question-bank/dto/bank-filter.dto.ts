@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsArray, IsNumber } from 'class-validator';
-import { CategoriesExistValidator } from '../../validators/categories-exists.validator';
+import { CategoriesExistValidator } from '../validators/categories-exists.validator';
 
 export class BankFilterDto {
   @ApiProperty({ required: false, type: [Number] })

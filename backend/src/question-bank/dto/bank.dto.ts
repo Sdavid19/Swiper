@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { CategoryDto } from "../../../category/dto";
-import { UserDto } from "../../../user/dto";
+import { CategoryDto } from "../../category/dto";
+import { UserDto } from "../../user/dto";
 
 export class BankDto {
     @ApiProperty()

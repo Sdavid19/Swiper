@@ -6,8 +6,9 @@ import { CategoryModule } from './category';
 import { QuestioBankModule } from './question-bank/question-bank.module';
 import { QuestionModule } from './question/question.module';
 import { VoteModule } from './vote/vote.module';
+import { MediaModule } from './media';
 
 @Module({
-  imports: [AuthModule, UserModule, PrismaModule, CategoryModule, QuestioBankModule, QuestionModule, VoteModule],
+  imports: [AuthModule, UserModule, PrismaModule, CategoryModule, QuestioBankModule, QuestionModule, VoteModule, MediaModule],
 })
 export class AppModule {}

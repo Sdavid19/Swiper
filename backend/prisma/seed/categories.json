@@ -1,0 +1,13 @@
+[
+  { "name": "Sport", "color": "#FF0000" },
+  { "name": "Tech", "color": "#00FF00" },
+  { "name": "Music", "color": "#0000FF" },
+  { "name": "Movies", "color": "#FFFF00" },
+  { "name": "Travel", "color": "#FF00FF" },
+  { "name": "Food", "color": "#00FFFF" },
+  { "name": "Health", "color": "#FFA500" },
+  { "name": "Education", "color": "#800080" },
+  { "name": "Finance", "color": "#008000" },
+  { "name": "Gaming", "color": "#000080" },
+  { "name": "Other", "color": "#FFFFFF"}
+]

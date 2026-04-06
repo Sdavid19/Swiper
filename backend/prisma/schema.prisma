@@ -97,21 +97,52 @@ model Category {
 }
 
 model Media {
-  id       Int           @id @default(autoincrement())
-  name     String
-  type     MediaType
-  platform MediaPlatform
+  id        Int      @id @default(autoincrement())
+  name      String
+  imdbId    String   @unique
+  imageUrl  String?
+  mediaType MediaType
+
+  genres    MediaGenre[] 
+  platforms MediaPlatform[]
 }
 
 enum MediaType {
-  SERIES
   MOVIE
+  SERIES
   SHORTFILM
 }
 
-enum MediaPlatform {
-  DISNEY
-  AMAZON
-  NETFLIX
-  HBO
+model Genre {
+  name   String @id
+  medias MediaGenre[]
+}
+
+model MediaGenre {
+  mediaId Int
+  media   Media @relation(fields: [mediaId], references: [id])
+
+  genreName String
+  genre     Genre @relation(fields: [genreName], references: [name])
+
+  @@id([mediaId, genreName])
+}
+
+model Platform {
+  name        String @id
+  imageUrl    String?
+
+  medias MediaPlatform[]
+}
+
+model MediaPlatform {
+  id Int @id @default(autoincrement())
+
+  mediaId Int
+  media         Media @relation(fields: [mediaId], references: [id])
+
+  platformName  String
+  platform      Platform @relation(fields: [platformName], references: [name])
+
+  @@unique([mediaId, platformName])
 }

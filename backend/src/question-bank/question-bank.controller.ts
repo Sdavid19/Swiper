@@ -1,18 +1,19 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { QuestionBankService } from "./question-bank.service";
-import { CreateBankDto } from "./dto/bank/create-bank.dto";
+import { CreateBankDto } from "./dto/create-bank.dto";
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
-import { BankDto } from "./dto/bank/bank.dto";
+import { BankDto } from "./dto/bank.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { extname } from "path";
-import { BankImageDto } from "./dto/bank/bank-image.dto";
-import { UpdateBankDto } from "./dto/bank/update-bank.dto";
+import { BankImageDto } from "./dto/bank-image.dto";
+import { UpdateBankDto } from "./dto/update-bank.dto";
 import { AuthGuard } from "../auth/auth.guard";
 import { JwtPayload } from "../auth/interfaces";
-import { BankFilterDto } from "./dto/bank/bank-filter.dto";
+import { BankFilterDto } from "./dto/bank-filter.dto";
 import { CreateQuestionDto } from "../question/dto/create-question.dto";
 import { QuestionDto } from "../question/dto/question.dto";
+import { CreateMediaBankDto } from "./dto/create-media-bank.dto";
 
 @ApiTags('question-banks')
 @ApiBearerAuth()
@@ -61,6 +62,14 @@ export class QuestionBankController {
     @UseGuards(AuthGuard)
     createBank(@Body() dto: CreateBankDto) {
         return this.bankService.create(dto);
+    }
+
+    @Post("create-media")
+    @HttpCode(HttpStatus.CREATED)
+    @ApiCreatedResponse({ type: BankDto })
+    @UseGuards(AuthGuard)
+    createMediaBank(@Body() dto: CreateMediaBankDto, @Request() req: { user: JwtPayload }) {
+        return this.bankService.createQuestionBankByMedia(dto.platforms, req.user.sub)
     }
 
     @Put("/:id")
