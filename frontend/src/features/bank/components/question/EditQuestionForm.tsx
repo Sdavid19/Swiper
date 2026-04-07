@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { InputField, PrimaryButton } from "../../../../shared/components";
 import { useEffect, useState } from "react";
 import { CreateQuestionDto, QuestionDto } from "../../../../shared/types/generated";
-import { EditQuestionScreenMode } from "../../screens/EditQuestionScreen";
+import { EditQuestionScreenMode } from "../../screens/question/EditQuestionScreen";
 import { ErrorResponse, ValidationErrorMessage } from "../../../../shared/types";
 import { showSuccess } from "../../../../shared/utils/toast.service";
 import { AxiosError } from "axios";

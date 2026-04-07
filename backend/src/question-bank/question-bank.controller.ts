@@ -69,7 +69,7 @@ export class QuestionBankController {
     @ApiCreatedResponse({ type: BankDto })
     @UseGuards(AuthGuard)
     createMediaBank(@Body() dto: CreateMediaBankDto, @Request() req: { user: JwtPayload }) {
-        return this.bankService.createQuestionBankByMedia(dto.platforms, req.user.sub)
+        return this.bankService.createQuestionBankByMedia(dto.platforms, dto.bankTemplateId, req.user.sub)
     }
 
     @Put("/:id")

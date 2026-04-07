@@ -1,13 +1,15 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { getAllBanks } from "../services/bank.service";
 import { useCallback, useEffect, useState } from "react";
-import { BankDto } from "../../../shared/types/generated";
+import { BankDto, QuestionBankTemplateDto } from "../../../shared/types/generated";
 import { BankCard } from "../components/bank/list/BankCard";
 import { NavigateLink } from "../components/bank/NavigateLink";
 import { useFocusEffect } from "@react-navigation/native";
+import { getAllTemplates } from "../services/template.service";
 
 export function HomeScreen() {
   const [banks, setBanks] = useState<BankDto[]>([]);
+  const [templates, setTemplates] = useState<QuestionBankTemplateDto[]>([]);
 
   useFocusEffect(
     useCallback(() => {
@@ -18,6 +20,13 @@ export function HomeScreen() {
           if (isActive) setBanks(res);
         })
         .catch(err => console.log("Bank fetch error:", err));
+
+        getAllTemplates()
+        .then(res => {
+          console.log(res.map(x => x.category))
+          if (isActive) setTemplates(res);
+        })
+        .catch(err => console.log("Template fetch error:", err));
 
       return () => {
         isActive = false;
@@ -34,10 +43,10 @@ export function HomeScreen() {
           <NavigateLink text="manage" />
         </View>
 
-        {banks.length > 0 ? (
+        {templates.length > 0 ? (
           <ScrollView horizontal>
-            {banks.map(bank => (
-              <BankCard key={bank.id} bank={bank} />
+            {templates.map(template => (
+              <BankCard key={template.id} bank={template} isTemplate={true} />
             ))}
           </ScrollView>
         ) : (
@@ -56,7 +65,7 @@ export function HomeScreen() {
         {banks.length > 0 ? (
           <ScrollView horizontal>
             {banks.map(bank => (
-              <BankCard key={bank.id} bank={bank} />
+              <BankCard key={bank.id} bank={bank} isTemplate={false} />
             ))}
           </ScrollView>
         ) : (

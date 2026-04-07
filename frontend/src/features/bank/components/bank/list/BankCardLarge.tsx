@@ -27,7 +27,12 @@ export function BankCardLarge({ bank }: CardProps) {
     <TouchableOpacity key={bank.id} style={styles.container} onPress={() => onButtonPress(bank.id)} >
       <View style={styles.imageWrapper}>
         <Image
-          source={{ uri: bank.imageUrl ? getImage(bank.imageUrl) : 'https://placecats.com/200/100' }}
+           source={{ uri: bank.imageUrl
+              ? bank.imageUrl.startsWith('http')
+                ? bank.imageUrl
+                : getImage(bank.imageUrl)
+              : 'https://placecats.com/200/100'
+            }}
           style={styles.image}
         />
       </View>

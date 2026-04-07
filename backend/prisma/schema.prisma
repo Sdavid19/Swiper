@@ -94,6 +94,19 @@ model Category {
   color String @default("#007AFF")
 
   banks QuestionBank[]
+  templates   QuestionBankTemplate[]
+}
+
+model QuestionBankTemplate {
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
+  description String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
 }
 
 model Media {
@@ -103,7 +116,6 @@ model Media {
   imageUrl  String?
   mediaType MediaType
 
-  genres    MediaGenre[] 
   platforms MediaPlatform[]
 }
 
@@ -111,21 +123,6 @@ enum MediaType {
   MOVIE
   SERIES
   SHORTFILM
-}
-
-model Genre {
-  name   String @id
-  medias MediaGenre[]
-}
-
-model MediaGenre {
-  mediaId Int
-  media   Media @relation(fields: [mediaId], references: [id])
-
-  genreName String
-  genre     Genre @relation(fields: [genreName], references: [name])
-
-  @@id([mediaId, genreName])
 }
 
 model Platform {

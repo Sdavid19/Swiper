@@ -1,18 +1,18 @@
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { StyleSheet } from "react-native";
-import { EditBankStackParamList } from "../../../navigation";
+import { EditBankStackParamList } from "../../../../navigation";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { QuestionDto } from "../../../shared/types/generated";
-import { deleteQuestion, getQuestionById } from "../services/question.service";
+import { QuestionDto } from "../../../../shared/types/generated";
+import { deleteQuestion, getQuestionById } from "../../services/question.service";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../redux";
-import { QuestionImageSelect } from "../components/question/QuestionImageSelect";
-import { EditQuestionForm } from "../components/question/EditQuestionForm";
+import { RootState } from "../../../../redux";
+import { QuestionImageSelect } from "../../components/question/QuestionImageSelect";
+import { EditQuestionForm } from "../../components/question/EditQuestionForm";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
-import { DeleteButton } from "../../../shared/components/DeleteButton";
-import { showSuccess } from "../../../shared/utils/toast.service";
-import { removeQuestionAction } from "../../../redux/questionSlice";
+import { DeleteButton } from "../../../../shared/components/DeleteButton";
+import { showSuccess } from "../../../../shared/utils/toast.service";
+import { removeQuestionAction } from "../../../../redux/questionSlice";
 
 type EditQuestionProps = NativeStackScreenProps<EditBankStackParamList, "EditQuestion">;
 

@@ -1,18 +1,18 @@
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
-import { EditBankStackParamList } from "../../../navigation";
+import { EditBankStackParamList } from "../../../../navigation";
 import { useEffect, useState, useMemo, useLayoutEffect } from "react";
-import { deleteBank, getBankById } from "../services/bank.service";
-import { BankDto, CategoryDto } from "../../../shared/types/generated";
-import { getCategories } from "../services/category.service";
-import { ImageSelect } from "../components/bank/edit/ImageSelect";
+import { deleteBank, getBankById } from "../../services/bank.service";
+import { BankDto, CategoryDto } from "../../../../shared/types/generated";
+import { getCategories } from "../../services/category.service";
+import { ImageSelect } from "../../components/bank/edit/ImageSelect";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../redux";
-import { EditBankForm } from "../components/bank/edit/EditBankForm";
+import { RootState } from "../../../../redux";
+import { EditBankForm } from "../../components/bank/edit/EditBankForm";
 import { useNavigation } from "@react-navigation/native";
-import { DeleteButton } from "../../../shared/components/DeleteButton";
-import { showSuccess } from "../../../shared/utils/toast.service";
-import { removeBankAction } from "../../../redux/bankSlice";
+import { DeleteButton } from "../../../../shared/components/DeleteButton";
+import { showSuccess } from "../../../../shared/utils/toast.service";
+import { removeBankAction } from "../../../../redux/bankSlice";
 
 type EditBankProps = NativeStackScreenProps<EditBankStackParamList, "EditBank">;
 export type EditBankScreenMode = "View" | "Edit" | "Create";

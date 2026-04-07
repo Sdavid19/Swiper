@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
-import { PrimaryButton } from "../../../shared/components";
+import { PrimaryButton } from "../../../../shared/components";
 import { useNavigation } from "@react-navigation/native";
-import { EditBankNavigation, EditBankStackParamList } from "../../../navigation";
-import { BankFilterList } from "../components/bank/list/BankFilterList";
+import { EditBankNavigation, EditBankStackParamList } from "../../../../navigation";
+import { BankFilterList } from "../../components/bank/list/BankFilterList";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type ShowBankProps = NativeStackScreenProps<EditBankStackParamList, "ShowBanks">;

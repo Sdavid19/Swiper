@@ -1,14 +1,14 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { EditBankNavigation, EditBankStackParamList } from "../../../navigation";
+import { EditBankNavigation, EditBankStackParamList } from "../../../../navigation";
 import { useEffect } from "react";
-import { getQuestionsByBank } from "../services/question.service";
-import { PrimaryButton } from "../../../shared/components";
-import { QuestionCard } from "../components/question/QuestionCard";
+import { getQuestionsByBank } from "../../services/question.service";
+import { PrimaryButton } from "../../../../shared/components";
+import { QuestionCard } from "../../components/question/QuestionCard";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { setQuestions } from "../../../redux/questionSlice";
-import { RootState } from "../../../redux";
+import { setQuestions } from "../../../../redux/questionSlice";
+import { RootState } from "../../../../redux";
 
 type EditBankProps = NativeStackScreenProps<EditBankStackParamList, "BankQuestions">;
 

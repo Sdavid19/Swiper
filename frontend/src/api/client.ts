@@ -5,7 +5,7 @@ import { logoutAction } from '../redux/authSlice'
 import { showError } from '../shared/utils/toast.service' 
 import { ErrorResponse } from "../shared/types";
 
-export const API_URL = 'http://192.168.0.145:3000';
+export const API_URL = 'http://192.168.1.14:3000';
 
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,

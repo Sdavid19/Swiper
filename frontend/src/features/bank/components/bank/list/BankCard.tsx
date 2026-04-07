@@ -1,29 +1,47 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Badge } from "../../../../../shared/components/Badge";
-import { BankDto } from "../../../../../shared/types/generated";
+import { BankDto, CategoryDto, QuestionBankTemplateDto } from "../../../../../shared/types/generated";
 import { PrimaryButton } from "../../../../../shared/components";
 import { getImage } from "../../../../../api/services/image.service";
 import { shortenString } from "../../../../../shared/utils/text.service";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigation, VoteNavigation } from "../../../../../navigation";
 
-type CardProps = {
-  bank: BankDto,
+type BankBase = {
+  id: number, 
+  title: string, 
+  description: string, 
+  category: CategoryDto, 
+  imageUrl? :string | null,
 }
 
-export function BankCard({ bank }: CardProps) {
+type CardProps = {
+  bank: BankBase,
+  isTemplate: boolean
+}
+
+export function BankCard({ bank, isTemplate }: CardProps) {
 
     const navigation = useNavigation<AppNavigation>()
-
     const navigateToCreateLobby = () => {
-      navigation.navigate("CreateLobby", {bankId: bank.id})
+      if(isTemplate){
+          navigation.navigate("CreateMediaBank", {templateId: bank.id})
+      } else {
+          navigation.navigate("CreateLobby", {bankId: bank.id})
+      }
   }
 
   return (
     <View key={bank.id} style={styles.container}>
       <View style={styles.imageWrapper}>
         <Image
-          source={{ uri: bank.imageUrl ? getImage(bank.imageUrl) : 'https://placecats.com/200/100' }}
+          source={{
+            uri: bank.imageUrl
+              ?  isTemplate
+                ? bank.imageUrl
+                : getImage(bank.imageUrl)
+              : 'https://placecats.com/200/100'
+            }}
           style={styles.image}
         />
       </View>

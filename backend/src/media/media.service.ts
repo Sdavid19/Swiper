@@ -27,6 +27,14 @@ export class MediaService implements OnModuleInit {
         });
     }
 
+    async findAllPlatforms(){
+        return this.prisma.platform.findMany({
+            orderBy: {
+                name: 'asc'
+            }
+        });
+    }
+
     async onModuleInit() {
        const mediaCount = await this.prisma.media.count();
        const platofrmCount = await this.prisma.platform.count();

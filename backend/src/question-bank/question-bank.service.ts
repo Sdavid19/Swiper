@@ -11,10 +11,14 @@ import { QuestionDto } from "../question/dto/question.dto";
 import sharp from "sharp";
 import { MediaService } from "../media";
 import { CreateMediaQuestionDto } from "../question/dto/create-media-question.dto";
+import { QuestionBankTemplateService } from "../question-bank-template/question-bank-template.service";
 
 @Injectable()
 export class QuestionBankService {
-    constructor(private readonly prisma: PrismaService, private readonly mediaService: MediaService) { }
+    constructor(private readonly prisma: PrismaService, 
+                private readonly mediaService: MediaService,
+                private readonly templateService: QuestionBankTemplateService
+            ) { }
 
     async findById(id: number) {
         return this.prisma.questionBank.findUnique({
@@ -184,20 +188,19 @@ export class QuestionBankService {
         });
     }
 
-    async createQuestionBankByMedia(platformNames: string[] | undefined, userId: number){
+    async createQuestionBankByMedia(platformNames: string[] | undefined, templateId: number, userId: number){
         const media = await this.mediaService.findMediaByPlatforms(platformNames);
 
-        const category = await this.prisma.category.findFirst({where: {name: {contains: 'movie'}}});
-
-        if(!category) throw new NotFoundException("Category 'Movie' not found!");
+       const bankToCreateData = await this.templateService.findById(templateId);
+       if(!bankToCreateData) throw new NotFoundException(`Template with id ${templateId} dosen't exist!`);
 
         //Bank létrehozása
         const bank = await this.prisma.questionBank.create({
             data: {
-                title: 'Movies of the week',
-                description: 'Find all the movies of the week at one place!',
-                categoryId: category.id,
-                imageUrl: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                title: bankToCreateData.title,
+                description: bankToCreateData.description,
+                categoryId:  bankToCreateData.category.id,
+                imageUrl: bankToCreateData.imageUrl,
                 creatorId: userId
             } 
         })
@@ -207,4 +210,5 @@ export class QuestionBankService {
 
         return bank;
     }
+
 }

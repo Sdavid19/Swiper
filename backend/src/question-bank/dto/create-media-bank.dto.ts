@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsArray, IsInt, IsNotEmpty, IsOptional, IsString } from "class-validator"
+import { IsArray, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator"
 
 export class CreateMediaBankDto {
      @ApiProperty({ required: false, type: [String] })
@@ -7,4 +7,8 @@ export class CreateMediaBankDto {
      @IsArray()
      @IsString({ each: true })
      platforms?: string[];
+
+     @ApiProperty({ required: true, type: Number })
+     @IsNumber()
+     bankTemplateId: number
 }

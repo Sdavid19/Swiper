@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { EditBankStackParamList } from "./types"
-import { BankScreen } from "../features/bank/screens/BanksScreen"
-import { EditBankScreen } from "../features/bank/screens/EditBankScreen"
-import { QuestionsScreen } from "../features/bank/screens/QuestionsScreen"
-import { EditQuestionScreen } from "../features/bank/screens/EditQuestionScreen"
+import { BankScreen } from "../features/bank/screens/bank/BanksScreen"
+import { EditBankScreen } from "../features/bank/screens/bank/EditBankScreen"
+import { QuestionsScreen } from "../features/bank/screens/question/QuestionsScreen"
+import { EditQuestionScreen } from "../features/bank/screens/question/EditQuestionScreen"
 
 const Stack = createNativeStackNavigator<EditBankStackParamList>()
 

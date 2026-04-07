@@ -19,7 +19,12 @@ export function QuestionCard({ question }: QuestionCardProps) {
       <View style={styles.cardContent}>
         <Image
           style={styles.cardImage}
-          source={{ uri: question.imageUrl ? getImage(question.imageUrl) : 'https://placecats.com/200/100' }}
+          source={{ uri: question.imageUrl
+              ? question.imageUrl.startsWith('http')
+                ? question.imageUrl
+                : getImage(question.imageUrl)
+              : 'https://placecats.com/200/100'
+            }}
         />
         <Text style={styles.cardText}>{question.text}</Text>
       </View>

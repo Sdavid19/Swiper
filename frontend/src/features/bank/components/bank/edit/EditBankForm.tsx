@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BankDto, CategoryDto, CreateBankDto, UpdateBankDto } from "../../../../../shared/types/generated";
-import { EditBankScreenMode } from "../../../screens/EditBankScreen";
+import { EditBankScreenMode } from "../../../screens/bank/EditBankScreen";
 import { StyleSheet, View } from "react-native";
 import { InputField, PrimaryButton } from "../../../../../shared/components";
 import { CheckboxField } from "../../../../../shared/components/CheckBoxField";

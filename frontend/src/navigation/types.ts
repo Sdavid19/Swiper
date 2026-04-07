@@ -5,6 +5,7 @@ import { BankDto } from "../shared/types/generated"
 export type AppStackParamList = {
   Tabs: NavigatorScreenParams<AppTabParamList>
   CreateLobby: { bankId: number }
+  CreateMediaBank: {templateId: number}
 }
 
 export type AuthStackParamList = {
@@ -28,7 +29,6 @@ export type ProfileStackParamList = {
   Profile: undefined,
   EditProfile: undefined
 }
-
 
 export type AppTabParamList = {
   Home: undefined

@@ -84,7 +84,15 @@ export function QuestionImageSelect({
     <View style={styles.container}>
       <TouchableOpacity onPress={pickImage} disabled={disabled}>
         {image ? (
-          <Image source={{ uri: getImage(image) }} style={styles.image} />
+          <Image 
+          source={{ uri: image
+          ? image.startsWith('http')
+            ? image
+            : getImage(image)
+          : 'https://placecats.com/200/100'
+        }} 
+        style={styles.image} 
+          />
         ) : (
           <View style={styles.placeholder}>
             <ImageIcon size={50} color="black" />
