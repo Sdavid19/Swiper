@@ -38,8 +38,8 @@ export function JoinLobbyScreen() {
   useEffect(() => {
     if (!socket.connected) socket.connect();
 
-    socket.on("joinedRoom", ({ roomId }) => {
-      navigation.navigate("Lobby", {roomId: roomId})
+    socket.on("joinedRoom", ({ roomId, bankId }) => {
+      navigation.navigate("Lobby", {roomId: roomId, bankId: bankId })
     });
 
     socket.on("joinError", (err) => {

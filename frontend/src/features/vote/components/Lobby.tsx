@@ -7,25 +7,13 @@ import { showInfo, showSuccess } from "../../../shared/utils/toast.service";
 import { LobbyUserDto } from "../../../shared/types/lobby-user.dto";
 
 interface LobbyProps {
-  users: LobbyUserDto[];
-  roomCode: number;
+  users: LobbyUserDto[]
 }
 
-export function Lobby({ users, roomCode }: LobbyProps) {
-
-    const copyRoomCodeToClipboard = async () => {
-        await Clipboard.setStringAsync(roomCode.toString());
-        showSuccess("Room code copied to clipboard!");
-    };
-
+export function Lobby({ users }: LobbyProps) {
 
   return (
     <View>
-        <TouchableOpacity onPress={copyRoomCodeToClipboard} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 10}}>
-             <Text style={styles.roomCode}>{roomCode}</Text>
-             <Copy size={25} style={{marginBottom: 5, marginLeft: 5}} />
-        </TouchableOpacity>
-     
       <Text style={styles.title}>Participants ({users.length})</Text>
 
       <View style={styles.grid}>

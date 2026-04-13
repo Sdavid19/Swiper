@@ -20,11 +20,12 @@ export class QuestionBankService {
                 private readonly templateService: QuestionBankTemplateService
             ) { }
 
-    async findById(id: number) {
+    async findById(id: number, withQuestions: boolean) {
         return this.prisma.questionBank.findUnique({
             where: { id: id },
             include: {
                 category: true,
+                questions: withQuestions,
                 creator: {
                     select: {
                         id: true,
@@ -100,29 +101,10 @@ export class QuestionBankService {
     }
 
     async delete(id: number) {
-    const bank = await this.prisma.questionBank.findUnique({
-        where: { id },
-        select: {
-            id: true,
-            _count: {
-                select: { questions: true }
-            }
-        }
-    });
-
-    if (!bank) {
-        throw new NotFoundException(`Questionbank with id ${id} not found`);
+        return this.prisma.questionBank.delete({
+            where: { id },
+        });
     }
-
-    if (bank._count.questions > 0) {
-        throw new BadRequestException("Only empty banks can be deleted!");
-    }
-
-    return this.prisma.questionBank.delete({
-        where: { id },
-        select: { id: true }
-    });
-}
 
 
     async updateBankImage(id: number, filename: string): Promise<BankImageDto | null> {
@@ -202,7 +184,7 @@ export class QuestionBankService {
                 categoryId:  bankToCreateData.category.id,
                 imageUrl: bankToCreateData.imageUrl,
                 creatorId: userId
-            } 
+            }
         })
 
         //Kérdések hozzáadása a filmek alapján

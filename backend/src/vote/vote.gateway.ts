@@ -64,7 +64,7 @@ export class VoteGateway implements OnGatewayDisconnect {
     client.data.userId = userId;
 
     this.voteService.addUser(roomId, userId);
-    client.emit('joinedRoom', { roomId });
+    client.emit('joinedRoom', { roomId, bankId: room.bankId });
     await this.sendRoomUsers(roomId);
   }
 
@@ -92,28 +92,38 @@ async toggleReady(
   }
 }
 
- private startCountdown(roomId: number) {
-  const room = this.voteService.getRoom(roomId);
-  if (!room || room.isCountdownRunning) return;
+  private startCountdown(roomId: number) {
+    const room = this.voteService.getRoom(roomId);
+    if (!room || room.isCountdownRunning) return;
 
-  room.isCountdownRunning = true;
-  let countdownValue = 5;
-  this.server.to(roomId.toString()).emit('countdownStart', countdownValue);
+    room.isCountdownRunning = true;
+    let countdownValue = 5;
 
-  const interval = setInterval(() => {
-    countdownValue--;
-    if (countdownValue > 0) {
-      this.server.to(roomId.toString()).emit('countdownTick', countdownValue);
-    } else {
-      clearInterval(interval);
-      this.voteService.clearCountdown(roomId);
-      room.isCountdownRunning = false;
-      this.server.to(roomId.toString()).emit('gameStart', { roomId });
-    }
-  }, 1000);
+    this.server.to(roomId.toString()).emit('countdownStart', countdownValue);
 
-  this.voteService.setCountdown(roomId, interval);
-}
+    const interval = setInterval(() => {
+      const currentRoom = this.voteService.getRoom(roomId);
+
+      if (!currentRoom || !currentRoom.isCountdownRunning) {
+        clearInterval(interval);
+        return;
+      }
+
+      countdownValue--;
+
+      if (countdownValue > 0) {
+        this.server.to(roomId.toString()).emit('countdownTick', countdownValue);
+      } else {
+        clearInterval(interval);
+        this.voteService.clearCountdown(roomId);
+        currentRoom.isCountdownRunning = false;
+
+        this.server.to(roomId.toString()).emit('gameStart', { roomId });
+      }
+    }, 1000);
+
+    this.voteService.setCountdown(roomId, interval);
+  }
 
   @SubscribeMessage('leaveRoom')
   async leaveRoom(
@@ -165,5 +175,18 @@ checkRoom(
 ) {
   const room = this.voteService.getRoom(Number(roomId));
   return { ok: !!room, roomId: Number(roomId) };
+}
+
+@SubscribeMessage('stopCountdown')
+stopCountdown(
+  @MessageBody() { roomId }: { roomId: number }
+) {
+  const room = this.voteService.getRoom(roomId);
+  if (!room) return;
+
+  this.voteService.clearCountdown(roomId);
+  room.isCountdownRunning = false;
+
+  this.server.to(roomId.toString()).emit('countdownCanceled');
 }
 }

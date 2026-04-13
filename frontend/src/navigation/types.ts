@@ -6,6 +6,7 @@ export type AppStackParamList = {
   Tabs: NavigatorScreenParams<AppTabParamList>
   CreateLobby: { bankId: number }
   CreateMediaBank: {templateId: number}
+  Vote: {roomId: number, bankId: number}
 }
 
 export type AuthStackParamList = {
@@ -22,7 +23,7 @@ export type EditBankStackParamList = {
 
 export type VoteStackParamList = {
   JoinLobby: undefined,
-  Lobby: { roomId: number }
+  Lobby: { roomId: number, bankId: number }
 }
 
 export type ProfileStackParamList = {

@@ -16,9 +16,7 @@ export function LoginScreen() {
 
   const [email, setEmail] = useState<string>('sulyokdavid03@gmail.com');
   const [password, setPassword] = useState<string>('password');
-
   const [errors, setErrors] = useState<ValidationErrorMessage<SigninDto> | null>(null);
-
 
   const isButtonDisabled = () => {
     return !email || !password;

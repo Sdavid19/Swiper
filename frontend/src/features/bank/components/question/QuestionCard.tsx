@@ -7,15 +7,22 @@ import { EditBankStackParamList } from "../../../../navigation";
 import { getImage } from "../../../../api/services/image.service";
 
 interface QuestionCardProps {
-  question: QuestionDto
+  question: QuestionDto,
+  viewMode: boolean
 }
 
-export function QuestionCard({ question }: QuestionCardProps) {
+export function QuestionCard({ question, viewMode }: QuestionCardProps) {
 
   const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
 
+  const handleOnCardPress = () => {
+    if(!viewMode){
+      navigation.navigate("EditQuestion", { bankId: question.bankId, questionId: question.id })
+    }
+  }
+
   return (
-    <TouchableOpacity style={styles.cardContainer} onPress={() => navigation.navigate("EditQuestion", { bankId: question.bankId, questionId: question.id })}>
+    <TouchableOpacity style={styles.cardContainer} onPress={handleOnCardPress}>
       <View style={styles.cardContent}>
         <Image
           style={styles.cardImage}
@@ -28,7 +35,7 @@ export function QuestionCard({ question }: QuestionCardProps) {
         />
         <Text style={styles.cardText}>{question.text}</Text>
       </View>
-      <ChevronRight style={{ marginRight: 6 }} size={20} />
+      {!viewMode && (<ChevronRight style={{ marginRight: 6 }} size={ 20 } />)}
     </TouchableOpacity>
   );
 }

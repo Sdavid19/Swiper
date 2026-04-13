@@ -10,22 +10,23 @@ export class MediaService implements OnModuleInit {
     constructor(private readonly prisma: PrismaService) {}
 
     async findMediaByPlatforms(platformNames?: string[]) {
-        return this.prisma.media.findMany({
+        const media = await this.prisma.media.findMany({
             where: {
                 ...(platformNames && platformNames.length > 0 ? {
-                        platforms: {
-                            some: {
-                                platform: {
-                                    name: { in: platformNames }
-                                }
-                            }
+                    platforms: {
+                        some: {
+                            platform: { name: { in: platformNames } }
                         }
                     }
-                    : {}),
+                } : {})
             },
-            take: 20
+            take: 200
         });
-    }
+
+        const shuffled = media.sort(() => Math.random() - 0.5);
+
+        return shuffled.slice(0, 20);
+}
 
     async findAllPlatforms(){
         return this.prisma.platform.findMany({

@@ -1,114 +1,125 @@
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { PlatformDto, QuestionBankTemplateDto } from "../../../../shared/types/generated";
 import { getAllPlatforms } from "../../services/media.service";
-import { SvgFromUri, SvgUri } from "react-native-svg";
-import { SvgFromUrl } from "../../components/SvgFromUrl";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppStackParamList } from "../../../../navigation";
-import { getBankById } from "../../services/bank.service";
+import { AppNavigation, AppStackParamList } from "../../../../navigation";
 import { getTemplateById } from "../../services/template.service";
-
+import { PrimaryButton } from "../../../../shared/components";
+import { PlatformToggleButton } from "../../components/media/PlatformToggleButton";
+import { createBankByMedia } from "../../services/bank.service";
+import { useNavigation } from "@react-navigation/native";
 
 type CreateMediaBankScreenProps = NativeStackScreenProps<AppStackParamList, "CreateMediaBank">;
 
-export function CreateMediaBankScreen({route}: CreateMediaBankScreenProps) {
+export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
   const [platforms, setPlatforms] = useState<PlatformDto[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [template, setTemplate] = useState<QuestionBankTemplateDto>();
 
+  const navigation = useNavigation<AppNavigation>();
   const templateId = route.params.templateId;
 
+  const handleStartPress = async () => {
+    const bank = await createBankByMedia({ bankTemplateId: templateId, platforms: selected });
+    if(!bank) return;
+    navigation.navigate("CreateLobby", { bankId: bank.id});
+  };
+
   useEffect(() => {
-    getAllPlatforms()
-      .then((p) => setPlatforms(p))
-      .catch((err) => console.log(err));
+    getAllPlatforms().then(setPlatforms).catch(console.error);
   }, []);
 
   useEffect(() => {
-    getTemplateById(templateId)
-    .then((p) => setTemplate(p))
-    .catch((err) => console.log(err));
-  }, [templateId])
+    getTemplateById(templateId).then(setTemplate).catch(console.error);
+  }, [templateId]);
 
   const numColumns = 3;
 
-  const toggleItem = (name: string) => {
-    setSelected(prev =>
-      prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]
-    );
-  };
-
- const renderItem = ({ item }: { item: PlatformDto }) => {
-  console.log("Rendering SVG:", item.name, item.imageUrl);
   return (
-    <TouchableOpacity
-      style={[styles.itemWrapper, selected.includes(item.name) && styles.itemSelected]}
-      onPress={() => toggleItem(item.name)}
-    >
-      <SvgFromUrl uri={item.imageUrl} />
-    </TouchableOpacity>
-  );
-};
-  return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, padding: 20 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      { template && (
-        <View style={{marginBottom: 20}}>
-            <Text style={styles.title}>{template.title}</Text>
-            <Text>{template.description}</Text>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      {template && (
+        <View style={styles.header}>
+          <Text style={styles.title}>{template.title}</Text>
+          {template.description && <Text style={styles.description}>{template.description}</Text>}
         </View>
-        ) 
-      }
+      )}
 
-      <Text style={styles.title}>Platforms</Text>
+      <View style={styles.contentContainer}>
+        <Text style={styles.sectionTitle}>Platforms</Text>
 
-      <FlatList
-        data={platforms}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.name}
-        numColumns={numColumns}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
+        <FlatList
+          data={platforms}
+          renderItem={({ item }) => (
+            <PlatformToggleButton 
+              item={item} 
+              selected={selected} 
+              setSelected={setSelected} 
+            />
+          )}
+          keyExtractor={(item) => item.name}
+          numColumns={numColumns}
+          columnWrapperStyle={styles.row}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+        />
+      </View>
+
+      <View style={styles.footer}>
+        <PrimaryButton 
+          title="Create bank" 
+          style={styles.button}
+          onPress={handleStartPress}
+        />
+      </View>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 10,
-  },
-  row: {
-    justifyContent: "space-between",
-    marginBottom: 15,
-  },
-  itemWrapper: {
+  container: {
     flex: 1,
-    marginHorizontal: 5,
-    paddingVertical: 12,
-    backgroundColor: "#e6e4e4",
-    height: 60,
-    width: '80%',
-    borderRadius: 6,
-    alignItems: "center",
+    padding: 20
+  },
+
+  header: {
+    marginBottom: 30,
+  },
+
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+
+  description: {
+    fontSize: 15,
+    color: "#666",
+    lineHeight: 22,
+  },
+
+  contentContainer: {
+    flex: 1,
     justifyContent: "center",
   },
-  itemSelected: {
-    backgroundColor: "#53daba",
-  },
-  itemLabel: {
-    marginTop: 6,
-    fontSize: 14,
-    color: "#333",
-    textAlign: "center",
-  },
-  labelSelected: {
-    color: "#fff", // kijelölt szöveg
+
+  sectionTitle: {
+    fontSize: 18,
     fontWeight: "600",
+    marginBottom: 16,
+  },
+
+  row: {
+    justifyContent: "space-between",
+    marginBottom: 14,
+  },
+
+ footer: {
+    paddingTop: 20,
+  },
+
+  button: {
+    width: "100%",
+    marginBottom: Platform.OS === "ios" ? 30 : 20
   },
 });

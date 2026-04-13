@@ -180,13 +180,12 @@ export function EditBankForm({ creatorId, screenMode, bank, setBank, categories 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingBottom: 30
+    paddingBottom: 20
   },
 
   formContainer: {
     flex: 1,
     justifyContent: "space-between",
-    paddingBottom: 50
   },
   bottomRow: {
     flexDirection: "row",

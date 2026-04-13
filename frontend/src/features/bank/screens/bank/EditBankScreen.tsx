@@ -1,6 +1,5 @@
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
-import { EditBankStackParamList } from "../../../../navigation";
 import { useEffect, useState, useMemo, useLayoutEffect } from "react";
 import { deleteBank, getBankById } from "../../services/bank.service";
 import { BankDto, CategoryDto } from "../../../../shared/types/generated";
@@ -13,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { DeleteButton } from "../../../../shared/components/DeleteButton";
 import { showSuccess } from "../../../../shared/utils/toast.service";
 import { removeBankAction } from "../../../../redux/bankSlice";
+import { EditBankStackParamList } from "../../../../navigation";
 
 type EditBankProps = NativeStackScreenProps<EditBankStackParamList, "EditBank">;
 export type EditBankScreenMode = "View" | "Edit" | "Create";
@@ -72,35 +72,59 @@ export function EditBankScreen({ route }: EditBankProps) {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <ImageSelect
-          bankId={bank?.id}
-          imageUrl={bank?.imageUrl}
-          shape="rectangle"
-          aspect={[4, 3]}
-          disabled={!isEditable || isCreateMode}
-        />
+        {/* Kép rész */}
+        <View style={styles.imageContainer}>
+          <ImageSelect
+            bankId={bank?.id}
+            imageUrl={bank?.imageUrl}
+            shape="rectangle"
+            aspect={[4, 3]}
+            disabled={!isEditable || isCreateMode}
+          />
+        </View>
 
-        <EditBankForm
-          creatorId={user!.id}
-          categories={categories}
-          bank={bank}
-          setBank={setBank}
-          screenMode={screenMode}
-        />
+        {/* Űrlap rész - kihúzva */}
+        <View style={styles.formContainer}>
+          <EditBankForm
+            creatorId={user!.id}
+            categories={categories}
+            bank={bank}
+            setBank={setBank}
+            screenMode={screenMode}
+          />
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
   scrollContainer: {
+    flexGrow: 1,           // ← fontos a ScrollView-nál
     paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 30,
+  },
+
+  imageContainer: {
+    marginBottom: 24,
+  },
+
+  // Ez a rész húzza ki szépen az űrlapot
+  formContainer: {
+    flex: 1,               // Kitölti a maradék helyet
+    justifyContent: "flex-start", // vagy "center" ha teljesen középre akarod
   },
 });

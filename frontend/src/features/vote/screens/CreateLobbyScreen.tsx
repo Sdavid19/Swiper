@@ -1,16 +1,21 @@
-import { Text, View } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
 import { PrimaryButton } from "../../../shared/components";
-import { use, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "../../../socket/socket";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppNavigation, AppStackParamList, VoteNavigation, VoteStackParamList } from "../../../navigation";
+import { AppNavigation, AppStackParamList } from "../../../navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux";
 import { useNavigation } from "@react-navigation/native";
+import { getBankWithQuestionsById } from "../../bank/services/bank.service";
+import { BankDetailDto, BankDto } from "../../../shared/types/generated";
+import { QuestionList } from "../../bank/components/question/QuestionList";
 
 type CreateLobbyScreenProps = NativeStackScreenProps<AppStackParamList, "CreateLobby">;
 
 export function CreateLobbyScreen({route}: CreateLobbyScreenProps) {
+
+  const [bank, setBank] = useState<BankDetailDto>();
 
   const bankId = route.params.bankId;
     const user = useSelector((state: RootState) => state.auth.user);
@@ -26,6 +31,12 @@ export function CreateLobbyScreen({route}: CreateLobbyScreenProps) {
   };
 
   useEffect(() => {
+    getBankWithQuestionsById(bankId)
+    .then(response => setBank(response))
+    .catch(err => console.log(err));
+  }, []);
+
+  useEffect(() => {
     if (!socket.connected) socket.connect();
 
    socket.on("roomCreated", ({ roomId, bankId }) => {
@@ -35,7 +46,7 @@ export function CreateLobbyScreen({route}: CreateLobbyScreenProps) {
         screen: "VoteStack",
         params: {
           screen: "Lobby",
-          params: { roomId } 
+          params: { roomId, bankId } 
         }
       });
     });
@@ -48,12 +59,77 @@ export function CreateLobbyScreen({route}: CreateLobbyScreenProps) {
   }, []);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", padding: 20 }}>
-      <PrimaryButton
-        title="Create a lobby"
-        style={{marginBottom: 20}}
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+
+    {bank && (
+      <View style={styles.header}>
+        <Text style={styles.title}>{bank.title}</Text>
+        {bank.description && <Text style={styles.description}>{bank.description}</Text>}
+      </View>
+    )}
+
+    <View style={styles.contentContainer}>
+        <Text style={styles.sectionTitle}>Questions</Text>
+        <QuestionList questions={bank?.questions || []} viewMode={true} />
+    </View>
+
+    <View style={styles.footer}>
+      <PrimaryButton 
+        title="Start vote" 
+        style={styles.button}
         onPress={handleCreateLobby}
       />
     </View>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 15,
+  },
+
+  header: {
+    marginTop: 10,
+    marginBottom: 30,
+  },
+
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+
+  description: {
+    fontSize: 15,
+    color: "#666",
+    lineHeight: 22,
+  },
+
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center"
+  },
+
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 14,
+  },
+
+  row: {
+    justifyContent: "space-between",
+    marginBottom: 14,
+  },
+
+
+  footer: {
+    paddingTop: 20,
+  },
+
+  button: {
+    width: "100%",
+    marginBottom: Platform.OS === "ios" ? 30 : 20
+  },
+});

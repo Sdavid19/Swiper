@@ -48,7 +48,7 @@ model Question {
   imageUrl String?
 
   bankId Int
-  bank   QuestionBank @relation(fields: [bankId], references: [id])
+  bank   QuestionBank @relation(fields: [bankId], references: [id], onDelete: Cascade)
 
   answers Answer[]
 }

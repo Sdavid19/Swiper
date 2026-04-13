@@ -14,6 +14,7 @@ import { BankFilterDto } from "./dto/bank-filter.dto";
 import { CreateQuestionDto } from "../question/dto/create-question.dto";
 import { QuestionDto } from "../question/dto/question.dto";
 import { CreateMediaBankDto } from "./dto/create-media-bank.dto";
+import { BankDetailDto } from "./dto/bank.detail.dto";
 
 @ApiTags('question-banks')
 @ApiBearerAuth()
@@ -36,7 +37,15 @@ export class QuestionBankController {
     @ApiOkResponse({ type: BankDto })
     @UseGuards(AuthGuard)
     getBank(@Param('id') id: string) {
-        return this.bankService.findById(+id);
+        return this.bankService.findById(+id, false);
+    }
+
+    @Get(':id/details')
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({ type: BankDetailDto })
+    @UseGuards(AuthGuard)
+    getBankDetails(@Param('id') id: string) {
+        return this.bankService.findById(+id, true);
     }
 
     @Get(':id/questions')
