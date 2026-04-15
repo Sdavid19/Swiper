@@ -1,8 +1,8 @@
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState, useMemo, useLayoutEffect } from "react";
 import { deleteBank, getBankById } from "../../services/bank.service";
-import { BankDto, CategoryDto } from "../../../../shared/types/generated";
+import { BankDto, BankListItemDto, CategoryDto } from "../../../../shared/types/generated";
 import { getCategories } from "../../services/category.service";
 import { ImageSelect } from "../../components/bank/edit/ImageSelect";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,14 +19,28 @@ export type EditBankScreenMode = "View" | "Edit" | "Create";
 
 export function EditBankScreen({ route }: EditBankProps) {
   const dispatch = useDispatch();
+  
   const user = useSelector((state: RootState) => state.auth.user);
   const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
 
-  const [bank, setBank] = useState<BankDto>();
+  const [bank, setBank] = useState<BankListItemDto>();
   const [categories, setCategories] = useState<CategoryDto[]>([]);
 
+  const screenMode: EditBankScreenMode = useMemo(() => {
+    if (!bank) return "Create";
+
+    if (bank.voteCount > 0) return "View";
+
+    if (!route.params?.bankId) return "Create";
+    if (!user) return "View";
+
+    if (bank.creator.id === user.id) return "Edit";
+
+    return "View";
+  }, [route.params?.bankId, bank, user]);
+
   useLayoutEffect(() => {
-    if (!bank) return;
+    if (!bank || screenMode == "View") return;
     navigation.setOptions({
       headerRight: () => (
         <DeleteButton
@@ -41,13 +55,7 @@ export function EditBankScreen({ route }: EditBankProps) {
     });
   }, [bank, navigation]);
 
-  const screenMode: EditBankScreenMode = useMemo(() => {
-    if (bank?.id) return "Edit";
-    if (!route.params?.bankId) return "Create";
-    if (!user) return "View";
-    if (bank?.creator.id === user.id) return "Edit";
-    return "View";
-  }, [route.params?.bankId, bank, user]);
+
 
   const isEditable = screenMode !== "View";
   const isCreateMode = screenMode === "Create";
@@ -80,7 +88,6 @@ export function EditBankScreen({ route }: EditBankProps) {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Kép rész */}
         <View style={styles.imageContainer}>
           <ImageSelect
             bankId={bank?.id}
@@ -90,8 +97,6 @@ export function EditBankScreen({ route }: EditBankProps) {
             disabled={!isEditable || isCreateMode}
           />
         </View>
-
-        {/* Űrlap rész - kihúzva */}
         <View style={styles.formContainer}>
           <EditBankForm
             creatorId={user!.id}
@@ -110,21 +115,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   scrollContainer: {
-    flexGrow: 1,           // ← fontos a ScrollView-nál
+    flexGrow: 1,
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 30,
   },
-
   imageContainer: {
     marginBottom: 24,
   },
-
-  // Ez a rész húzza ki szépen az űrlapot
   formContainer: {
-    flex: 1,               // Kitölti a maradék helyet
-    justifyContent: "flex-start", // vagy "center" ha teljesen középre akarod
+    flex: 1,
+    justifyContent: "flex-start",
   },
 });

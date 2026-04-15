@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BankDto, CategoryDto, CreateBankDto, UpdateBankDto } from "../../../../../shared/types/generated";
+import { BankDto, BankListItemDto, CategoryDto, CreateBankDto, UpdateBankDto } from "../../../../../shared/types/generated";
 import { EditBankScreenMode } from "../../../screens/bank/EditBankScreen";
 import { StyleSheet, View } from "react-native";
 import { InputField, PrimaryButton } from "../../../../../shared/components";
@@ -17,8 +17,8 @@ import { EditBankNavigation } from "../../../../../navigation";
 export interface EditBankFormProps {
   screenMode: EditBankScreenMode,
   creatorId: number,
-  bank?: BankDto,
-  setBank: React.Dispatch<React.SetStateAction<BankDto | undefined>>,
+  bank?: BankListItemDto,
+  setBank: React.Dispatch<React.SetStateAction<BankListItemDto | undefined>>,
   categories: CategoryDto[]
 }
 
@@ -77,12 +77,12 @@ export function EditBankForm({ creatorId, screenMode, bank, setBank, categories 
     try {
       if (screenMode === "Edit" && bank) {
         const response = await updateBank(bank.id, form);
-        setBank(response);
+        setBank(response as BankListItemDto);
         dispatch(updateBankAction(response));
         showSuccess('Bank updated succesfully!');
       } else {
         const response = await createBank(form);
-        setBank(response);
+        setBank(response as BankListItemDto);
         dispatch(addBankAction(response));
         showSuccess('Bank created succesfully!');
       }
@@ -147,7 +147,6 @@ export function EditBankForm({ creatorId, screenMode, bank, setBank, categories 
         <PrimaryButton
           title="View questions"
           style={{ width: "40%" }}
-          disabled={!isEditable}
           onPress={navigateToQuestionBank}
         />
 

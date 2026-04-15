@@ -12,30 +12,60 @@ import sharp from "sharp";
 import { MediaService } from "../media";
 import { CreateMediaQuestionDto } from "../question/dto/create-media-question.dto";
 import { QuestionBankTemplateService } from "../question-bank-template/question-bank-template.service";
+import { BankListItemDto } from "./dto/bank-list-item.dto";
+import { BankDetailDto } from "./dto/bank.detail.dto";
 
 @Injectable()
 export class QuestionBankService {
-    constructor(private readonly prisma: PrismaService, 
-                private readonly mediaService: MediaService,
-                private readonly templateService: QuestionBankTemplateService
-            ) { }
+    constructor(private readonly prisma: PrismaService,
+        private readonly mediaService: MediaService,
+        private readonly templateService: QuestionBankTemplateService
+    ) { }
 
-    async findById(id: number, withQuestions: boolean) {
-        return this.prisma.questionBank.findUnique({
-            where: { id: id },
+    async findById(id: number): Promise<BankListItemDto | null> {
+        const bank = await this.prisma.questionBank.findUnique({
+            where: { id },
             include: {
                 category: true,
-                questions: withQuestions,
+                _count: {
+                    select: { votes: true },
+                },
                 creator: {
                     select: {
                         id: true,
                         email: true,
                         name: true,
-                        imageUrl: true
-                    }
-                }
+                        imageUrl: true,
+                    },
+                },
             },
-        })
+        });
+
+        if (!bank) return null;
+
+        return this.mapToBankListItemDto(bank);
+    }
+
+    async findByIdWithQuestions(id: number): Promise<BankDetailDto | null> {
+        const bank = await this.prisma.questionBank.findUnique({
+            where: { id },
+            include: {
+                category: true,
+                questions: true,
+                creator: {
+                    select: {
+                        id: true,
+                        email: true,
+                        name: true,
+                        imageUrl: true,
+                    },
+                },
+            },
+        });
+
+        if (!bank) return null;
+
+        return bank;
     }
 
     findAll(userId: number, categoryIds?: number[]): Promise<BankDto[]> {
@@ -170,28 +200,40 @@ export class QuestionBankService {
         });
     }
 
-    async createQuestionBankByMedia(platformNames: string[] | undefined, templateId: number, userId: number){
+    async createQuestionBankByMedia(platformNames: string[] | undefined, templateId: number, userId: number) {
         const media = await this.mediaService.findMediaByPlatforms(platformNames);
 
-       const bankToCreateData = await this.templateService.findById(templateId);
-       if(!bankToCreateData) throw new NotFoundException(`Template with id ${templateId} dosen't exist!`);
+        const bankToCreateData = await this.templateService.findById(templateId);
+        if (!bankToCreateData) throw new NotFoundException(`Template with id ${templateId} dosen't exist!`);
 
-        //Bank létrehozása
         const bank = await this.prisma.questionBank.create({
             data: {
                 title: bankToCreateData.title,
                 description: bankToCreateData.description,
-                categoryId:  bankToCreateData.category.id,
+                categoryId: bankToCreateData.category.id,
                 imageUrl: bankToCreateData.imageUrl,
                 creatorId: userId
             }
         })
 
-        //Kérdések hozzáadása a filmek alapján
-        await this.createQuestions(bank.id, media.map(m => ({text: m.name, imageUrl: m.imageUrl})));
+        await this.createQuestions(bank.id, media.map(m => ({ text: m.name, imageUrl: m.imageUrl })));
 
         return bank;
     }
 
-
+    private mapToBankListItemDto(bank: any): BankListItemDto {
+        return {
+            id: bank.id,
+            title: bank.title,
+            category: bank.category,
+            description: bank.description,
+            createdAt: bank.createdAt,
+            imageUrl: bank.imageUrl,
+            public: bank.public,
+            updatedAt: bank.updatedAt,
+            usageCount: bank.usageCount,
+            voteCount: bank._count?.votes ?? 0,
+            creator: bank.creator,
+        };
+    }
 }

@@ -128,7 +128,6 @@ enum MediaType {
 model Platform {
   name        String @id
   imageUrl    String?
-
   medias MediaPlatform[]
 }
 

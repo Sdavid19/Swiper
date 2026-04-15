@@ -1,5 +1,5 @@
 import api from "../../../api/client"
-import { BankDetailDto, BankDto, BankFilterDto, BankImageDto, CreateBankDto, CreateMediaBankDto, UpdateBankDto } from "../../../shared/types/generated"
+import { BankDetailDto, BankDto, BankFilterDto, BankImageDto, BankListItemDto, CreateBankDto, CreateMediaBankDto, UpdateBankDto } from "../../../shared/types/generated"
 
 export const getAllBanks = async (): Promise<BankDto[]> => {
   const response = await api.post("/question-banks");
@@ -13,7 +13,7 @@ export const getAllBanksWithFilter = async (
   return response.data;
 }
 
-export const getBankById = async (id: number): Promise<BankDto> => {
+export const getBankById = async (id: number): Promise<BankListItemDto> => {
   const response = await api.get(`/question-banks/${id}`);
   return response.data;
 }  

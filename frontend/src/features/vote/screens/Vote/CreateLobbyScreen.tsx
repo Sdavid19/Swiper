@@ -45,7 +45,7 @@ export function CreateLobbyScreen({route}: CreateLobbyScreenProps) {
       navigation.navigate("Tabs", {
         screen: "VoteStack",
         params: {
-          screen: "Lobby",
+          screen: "Lobby", 
           params: { roomId, bankId } 
         }
       });

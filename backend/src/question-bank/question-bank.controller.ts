@@ -15,6 +15,7 @@ import { CreateQuestionDto } from "../question/dto/create-question.dto";
 import { QuestionDto } from "../question/dto/question.dto";
 import { CreateMediaBankDto } from "./dto/create-media-bank.dto";
 import { BankDetailDto } from "./dto/bank.detail.dto";
+import { BankListItemDto } from "./dto/bank-list-item.dto";
 
 @ApiTags('question-banks')
 @ApiBearerAuth()
@@ -25,6 +26,7 @@ export class QuestionBankController {
     @Post()
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({ type: BankDto, isArray: true })
     getBanks(@Body() filter: BankFilterDto,
         @Request() req: { user: JwtPayload },
     ) {
@@ -37,7 +39,7 @@ export class QuestionBankController {
     @ApiOkResponse({ type: BankDto })
     @UseGuards(AuthGuard)
     getBank(@Param('id') id: string) {
-        return this.bankService.findById(+id, false);
+        return this.bankService.findById(+id);
     }
 
     @Get(':id/details')
@@ -45,7 +47,7 @@ export class QuestionBankController {
     @ApiOkResponse({ type: BankDetailDto })
     @UseGuards(AuthGuard)
     getBankDetails(@Param('id') id: string) {
-        return this.bankService.findById(+id, true);
+        return this.bankService.findByIdWithQuestions(+id);
     }
 
     @Get(':id/questions')
@@ -67,7 +69,7 @@ export class QuestionBankController {
 
     @Post("create")
     @HttpCode(HttpStatus.CREATED)
-    @ApiCreatedResponse({ type: BankDto })
+    @ApiCreatedResponse({ type: BankListItemDto })
     @UseGuards(AuthGuard)
     createBank(@Body() dto: CreateBankDto) {
         return this.bankService.create(dto);
