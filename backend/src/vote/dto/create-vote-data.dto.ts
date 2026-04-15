@@ -10,6 +10,12 @@ export class CreateVoteDataDto {
     @ApiProperty()
     bankId: number;
 
+    @ApiProperty()
+    startDate: Date
+
+    @ApiProperty()
+    endDate: Date
+
     @Type(() => Number)
     @IsInt()
     @ApiProperty()

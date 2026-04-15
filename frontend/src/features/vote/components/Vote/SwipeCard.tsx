@@ -6,8 +6,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   withTiming,
-  runOnJS,
-  interpolate,
+  runOnJS
 } from "react-native-reanimated";
 import { QuestionDto } from "../../../../shared/types/generated";
 

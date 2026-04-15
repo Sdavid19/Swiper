@@ -157,6 +157,6 @@ export class RoomService {
 
     });
 
-    return this.voteService.createVoteData({ answers: asnwers, bankId: room.bankId, creatorId: 1 });
+    return this.voteService.createVoteData({ answers: asnwers, bankId: room.bankId, creatorId: 1, startDate: room.startDate, endDate: new Date() });
   }
 }

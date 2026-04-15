@@ -1,6 +1,8 @@
 import { getImage } from "@/src/api/services/image.service";
 import { UserDto } from "@/src/shared/types/generated";
 import { Image, StyleSheet, Text, View } from "react-native";
+import { UserTable } from "./UserTable";
+import { use } from "react";
 
 type UserStatProps = {
     users: UserDto[],
@@ -15,24 +17,7 @@ export function UserStat({ users, selectedPieData }: UserStatProps) {
                     Users voted {selectedPieData}
                 </Text>
 
-                <View style={styles.grid}>
-                    {users.map((user) => (
-                        <View key={user.id} style={styles.userBox}>
-                            <Image
-                                source={{
-                                    uri: user.imageUrl
-                                        ? getImage(user.imageUrl)
-                                        : 'https://placecats.com/100/100'
-                                }}
-                                style={styles.userImage}
-                            />
-                            <Text style={styles.userName}>
-                                {user.name}
-                            </Text>
-                        </View>
-                    ))}
-                </View>
-
+                <UserTable users={users} />
             </View>
         </View>
     );

@@ -45,24 +45,24 @@ export function VoteStatScreen({ route }: VoteStatScreenProps) {
       .then((res) => {
         setStat(res.stats);
         setUserCount(res.userCount);
-        if(res.stats.length > 0){
+        if (res.stats.length > 0) {
           setSelected(res.stats[0].question.id);
         }
       })
       .catch((err) => console.log(err));
   }, [voteId]);
-  
+
 
   return (
     <ScrollView style={styles.container}>
 
-      <BarChartStat stat={stat} handleSelect={handleSelect} selectedQuestion={selectedQuestion} userCount={userCount}/>
+      <BarChartStat stat={stat} handleSelect={handleSelect} selectedQuestion={selectedQuestion} userCount={userCount} />
 
       {selectedQuestion && (
         <PieChartStat
           colors={colors}
           selectedColors={selectedColors}
-          selectedPieData={selectedPieData} 
+          selectedPieData={selectedPieData}
           selectedQuestion={selectedQuestion}
           setSelectedPieData={setSelectedPieData}
         />
