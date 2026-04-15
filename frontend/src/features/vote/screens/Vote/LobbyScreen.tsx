@@ -1,18 +1,18 @@
-import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Lobby } from "../components/Lobby";
-import { AppNavigation, AppStackParamList, VoteStackParamList } from "../../../navigation";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Lobby } from "../../components/Vote/Lobby";
+import { AppNavigation, AppStackParamList, VoteStackParamList } from "../../../../navigation";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { socket } from "../../../socket/socket";
+import { socket } from "../../../../socket/socket";
 import { useNavigation } from "@react-navigation/native";
 import { LogOut } from "lucide-react-native";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../redux";
-import { PrimaryButton } from "../../../shared/components";
-import { LobbyUserDto } from "../../../shared/types/lobby-user.dto";
-import { BankDto } from "../../../shared/types/generated";
-import { getBankById } from "../../bank/services/bank.service";
-import { RoomCode } from "../components/RoomCode";
+import { RootState } from "../../../../redux";
+import { PrimaryButton } from "../../../../shared/components";
+import { LobbyUserDto } from "../../../../shared/types/lobby-user.dto";
+import { BankDto } from "../../../../shared/types/generated";
+import { getBankById } from "../../../bank/services/bank.service";
+import { RoomCode } from "../../components/Vote/RoomCode";
 
 type LobbySreenProps = NativeStackScreenProps<VoteStackParamList, "Lobby">;
 
@@ -56,7 +56,7 @@ export function LobbyScreen({ route }: LobbySreenProps) {
           style: "destructive",
           onPress: () => {
             socket.emit("leaveRoom", { roomId, userId: user.id });
-            navigation.replace("Tabs", {screen: "VoteStack", params: {screen: "JoinLobby"}});
+            navigation.replace("Tabs", { screen: "VoteStack", params: { screen: "JoinLobby" } });
           }
         }
       ]
@@ -64,7 +64,6 @@ export function LobbyScreen({ route }: LobbySreenProps) {
   };
 
   useEffect(() => {
-    socket.emit("getRoomUsers", { roomId });
 
     const handleRoomUsers = (usersList: LobbyUserDto[]) => {
       setUsers(usersList);
@@ -89,12 +88,12 @@ export function LobbyScreen({ route }: LobbySreenProps) {
       }
     };
 
-  const handleGameStart = ({ roomId }: { roomId: number }) => {
-  navigation.navigate("Vote", {
-    roomId,
-    bankId: bankId
-  });
-};
+    const handleGameStart = ({ roomId }: { roomId: number }) => {
+      navigation.navigate("Vote", {
+        roomId,
+        bankId: bankId
+      });
+    };
 
     socket.on("roomUsers", handleRoomUsers);
     socket.on("countdownStart", handleCountdownStart);
@@ -102,7 +101,7 @@ export function LobbyScreen({ route }: LobbySreenProps) {
     socket.on("countdownCanceled", handleCountdownCanceled);
     socket.on("leftRoom", handleLeftRoom);
     socket.on("gameStart", handleGameStart);
- 
+
     getBankById(bankId)
       .then(b => setBank(b))
       .catch(err => console.log(err));

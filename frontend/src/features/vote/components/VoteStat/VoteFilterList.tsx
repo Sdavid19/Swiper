@@ -1,32 +1,35 @@
 import { useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { BankCardLarge } from "./BankCardLarge";;
-import { InputField } from "../../../../../shared/components";
 import { Search, SlidersHorizontal } from "lucide-react-native";
-import { FilterBankModal } from "../filter/FilterBankModal";
 import { BankDto, VoteDto } from "@/src/shared/types/generated";
+import { InputField } from "@/src/shared/components";
+import { BankCardLarge } from "../../../bank/components/bank/list/BankCardLarge";
+import { FilterBankModal } from "../../../bank/components/bank/filter/FilterBankModal";
+import { VoteCard } from "./VoteCard";
 
-type BankFilterListProps = {
-  banks: BankDto[]
+type VoteFilterListProps = {
+  votes: VoteDto[]
 }
 
-export function BankFilterList({banks}: BankFilterListProps) {
+export function VoteFilterList({votes}: VoteFilterListProps) {
 
   const [filter, setFilter] = useState<string>('');
   const [filterModalVisible, setFilterModalVisible] = useState<boolean>(false);
   const [selected, setSelected] = useState<number[]>([]);
 
-  const filteredBanks = banks.filter((bank) => {
-  const matchesText =
-    bank.title.toLowerCase().includes(filter) ||
-    bank.description.toLowerCase().includes(filter);
+    const f = filter.toLowerCase();
 
-  const matchesCategory =
-    selected.length === 0 ||
-    selected.includes(bank.category.id);
+   const filteredVotes = votes.filter((vote) => {
+    const matchesText =
+      vote.bank.title.toLowerCase().includes(f) ||
+      vote.bank.description.toLowerCase().includes(f);
 
-  return matchesText && matchesCategory;
-});
+    const matchesCategory =
+      selected.length === 0 ||
+      selected.includes(vote.bank.category.id);
+
+    return matchesText && matchesCategory;
+  });
 
   return (
     <View style={{ flex: 1 }}>
@@ -43,20 +46,20 @@ export function BankFilterList({banks}: BankFilterListProps) {
         </TouchableOpacity>
       </View>
 
-      {filteredBanks.length > 0 ? (
+      {filteredVotes.length > 0 ? (
         <FlatList
-          data={filteredBanks}
+          data={filteredVotes}
           style={styles.list}
           keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={({ item }) => (
             <View style={styles.itemWrapper}>
-              <BankCardLarge bank={item}/>
+              <VoteCard vote={item}/>
             </View>
           )}
         />
       ) : (
         <View style={styles.emptycontainer}>
-          <Text style={{ fontSize: 16 }}>There are no banks!</Text>
+          <Text style={{ fontSize: 16 }}>There are no votes!</Text>
         </View>
       )}
       <FilterBankModal

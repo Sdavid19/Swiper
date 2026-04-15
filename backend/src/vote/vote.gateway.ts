@@ -6,9 +6,9 @@ import {
   WebSocketGateway,
   WebSocketServer
 } from "@nestjs/websockets";
-import { VoteService } from "./vote.service";
 import { Socket, Server } from "socket.io";
 import { UserService } from "../user/user.service";
+import { RoomService } from "./services/room.service";
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class VoteGateway implements OnGatewayDisconnect {
@@ -17,9 +17,9 @@ export class VoteGateway implements OnGatewayDisconnect {
   server: Server;
 
   constructor(
-    private voteService: VoteService,
+    private roomService: RoomService,
     private userService: UserService
-  ) {}
+  ) { }
 
   async handleDisconnect(client: Socket) {
     const roomId: number = client.data.roomId;
@@ -27,7 +27,7 @@ export class VoteGateway implements OnGatewayDisconnect {
 
     if (!roomId || !userId) return;
 
-    this.voteService.removeUser(roomId, userId);
+    this.roomService.removeUser(roomId, userId);
     await this.sendRoomUsers(roomId);
   }
 
@@ -36,13 +36,13 @@ export class VoteGateway implements OnGatewayDisconnect {
     @MessageBody() { bankId, userId }: { bankId: number; userId: number },
     @ConnectedSocket() client: Socket
   ) {
-    const roomId = this.voteService.createRoom(bankId);
+    const roomId = await this.roomService.createRoom(bankId);
 
     client.join(roomId.toString());
     client.data.roomId = roomId;
     client.data.userId = userId;
 
-    this.voteService.addUser(roomId, userId);
+    this.roomService.addUser(roomId, userId);
 
     client.emit('roomCreated', { roomId, bankId });
     await this.sendRoomUsers(roomId);
@@ -53,7 +53,7 @@ export class VoteGateway implements OnGatewayDisconnect {
     @MessageBody() { roomId, userId }: { roomId: number; userId: number },
     @ConnectedSocket() client: Socket
   ) {
-    const room = this.voteService.getRoom(roomId);
+    const room = this.roomService.getRoom(roomId);
     if (!room) {
       client.emit('joinError', 'Room not found');
       return;
@@ -63,37 +63,36 @@ export class VoteGateway implements OnGatewayDisconnect {
     client.data.roomId = roomId;
     client.data.userId = userId;
 
-    this.voteService.addUser(roomId, userId);
+    this.roomService.addUser(roomId, userId);
     client.emit('joinedRoom', { roomId, bankId: room.bankId });
     await this.sendRoomUsers(roomId);
   }
 
-@SubscribeMessage('toggleReady')
-async toggleReady(
-  @MessageBody() { roomId, userId, ready }: { roomId: number; userId: number; ready: boolean },
-  @ConnectedSocket() client: Socket
-) {
-  const room = this.voteService.getRoom(roomId);
-  if (!room) return;
+  @SubscribeMessage('toggleReady')
+  async toggleReady(
+    @MessageBody() { roomId, userId, ready }: { roomId: number; userId: number; ready: boolean },
+    @ConnectedSocket() client: Socket
+  ) {
+    const room = this.roomService.getRoom(roomId);
+    if (!room) return;
 
-  this.voteService.setUserReady(roomId, userId, ready);
-  await this.sendRoomUsers(roomId);
+    this.roomService.setUserReady(roomId, userId, ready);
+    await this.sendRoomUsers(roomId);
 
-  if (this.voteService.isEveryoneReady(roomId)) {
+    if (this.roomService.isEveryoneReady(roomId)) {
 
-    if (!room.isCountdownRunning) {
-      this.startCountdown(roomId);
+      if (!room.isCountdownRunning) {
+        this.startCountdown(roomId);
+      }
+    } else {
+      this.roomService.clearCountdown(roomId);
+      room.isCountdownRunning = false;
+      this.server.to(roomId.toString()).emit('countdownCanceled');
     }
-  } else {
-    // ha valaki unready lett, töröljük a countdownot
-    this.voteService.clearCountdown(roomId);
-    room.isCountdownRunning = false;
-    this.server.to(roomId.toString()).emit('countdownCanceled');
   }
-}
 
   private startCountdown(roomId: number) {
-    const room = this.voteService.getRoom(roomId);
+    const room = this.roomService.getRoom(roomId);
     if (!room || room.isCountdownRunning) return;
 
     room.isCountdownRunning = true;
@@ -102,7 +101,7 @@ async toggleReady(
     this.server.to(roomId.toString()).emit('countdownStart', countdownValue);
 
     const interval = setInterval(() => {
-      const currentRoom = this.voteService.getRoom(roomId);
+      const currentRoom = this.roomService.getRoom(roomId);
 
       if (!currentRoom || !currentRoom.isCountdownRunning) {
         clearInterval(interval);
@@ -115,14 +114,14 @@ async toggleReady(
         this.server.to(roomId.toString()).emit('countdownTick', countdownValue);
       } else {
         clearInterval(interval);
-        this.voteService.clearCountdown(roomId);
+        this.roomService.clearCountdown(roomId);
         currentRoom.isCountdownRunning = false;
 
         this.server.to(roomId.toString()).emit('gameStart', { roomId });
       }
     }, 1000);
 
-    this.voteService.setCountdown(roomId, interval);
+    this.roomService.setCountdown(roomId, interval);
   }
 
   @SubscribeMessage('leaveRoom')
@@ -130,63 +129,77 @@ async toggleReady(
     @MessageBody() { roomId, userId }: { roomId: number; userId: number },
     @ConnectedSocket() client: Socket
   ) {
-    const room = this.voteService.getRoom(roomId);
+    const room = this.roomService.getRoom(roomId);
     if (!room) return;
 
-    this.voteService.removeUser(roomId, userId);
+    this.roomService.removeUser(roomId, userId);
     client.leave(roomId.toString());
 
     await this.sendRoomUsers(roomId);
 
     client.emit('leftRoom', { roomId });
 
-    const remainingUsers = this.voteService.getUsers(roomId);
+    const remainingUsers = this.roomService.getUsers(roomId);
     if (remainingUsers.length === 0) {
-      this.voteService.deleteRoom(roomId);
+      this.roomService.deleteRoom(roomId);
       console.log(`Room ${roomId} closed because it's empty`);
     } else {
-      if (!this.voteService.isEveryoneReady(roomId)) {
-        this.voteService.clearCountdown(roomId);
+      if (!this.roomService.isEveryoneReady(roomId)) {
+        this.roomService.clearCountdown(roomId);
         this.server.to(roomId.toString()).emit('countdownCanceled');
       }
     }
   }
 
   private async sendRoomUsers(roomId: number) {
-  const roomUsers = this.voteService.getUsers(roomId);
-  
-  const fullUsers = await Promise.all(
-    roomUsers.map(async u => {
-      const userData = await this.userService.findUserById(u.id);
-      return {
-        ...userData,
-        ready: u.ready
-      };
-    })
-  );
+    const roomUsers = this.roomService.getUsers(roomId);
 
-  this.server.to(roomId.toString()).emit('roomUsers', fullUsers);
-}
+    const fullUsers = await Promise.all(
+      roomUsers.map(async u => {
+        const userData = await this.userService.findUserById(u.id);
+        return {
+          ...userData,
+          ready: u.ready
+        };
+      })
+    );
+
+    this.server.to(roomId.toString()).emit('roomUsers', fullUsers);
+  }
 
   @SubscribeMessage('checkRoom')
-checkRoom(
-  @MessageBody() { roomId }: { roomId: number },
-  @ConnectedSocket() client: Socket
-) {
-  const room = this.voteService.getRoom(Number(roomId));
-  return { ok: !!room, roomId: Number(roomId) };
-}
+  checkRoom(
+    @MessageBody() { roomId }: { roomId: number },
+    @ConnectedSocket() client: Socket
+  ) {
+    const room = this.roomService.getRoom(Number(roomId));
+    return { ok: !!room, roomId: Number(roomId) };
+  }
 
-@SubscribeMessage('stopCountdown')
-stopCountdown(
-  @MessageBody() { roomId }: { roomId: number }
-) {
-  const room = this.voteService.getRoom(roomId);
-  if (!room) return;
+  @SubscribeMessage('stopCountdown')
+  stopCountdown(
+    @MessageBody() { roomId }: { roomId: number }
+  ) {
+    const room = this.roomService.getRoom(roomId);
+    if (!room) return;
 
-  this.voteService.clearCountdown(roomId);
-  room.isCountdownRunning = false;
+    this.roomService.clearCountdown(roomId);
+    room.isCountdownRunning = false;
 
-  this.server.to(roomId.toString()).emit('countdownCanceled');
-}
+    this.server.to(roomId.toString()).emit('countdownCanceled');
+  }
+
+  @SubscribeMessage('vote')
+  async vote(
+    @MessageBody() {roomId, userId, questionId, answer }: {roomId: number, userId: number, questionId: number, answer: boolean }
+  ) {
+     const room = this.roomService.getRoom(roomId);
+     console.log(room)
+    const voteSaved = await this.roomService.vote(roomId, userId, questionId, answer);
+    if(voteSaved){
+      console.log("Vége ám")
+      this.server.to(roomId.toString()).emit('gameEnded', {voteId: voteSaved.id});
+    }
+  }
+
 }

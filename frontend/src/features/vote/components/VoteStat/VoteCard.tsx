@@ -1,37 +1,32 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Badge } from "../../../../../shared/components/Badge";
-import { BankDto } from "../../../../../shared/types/generated";
-import { PrimaryButton } from "../../../../../shared/components";
 import { useNavigation } from "@react-navigation/native";
-import { AppNavigation, EditBankNavigation, VoteNavigation } from "../../../../../navigation";
-import { getImage } from "../../../../../api/services/image.service";
-import { shortenString } from "../../../../../shared/utils/text.service";
+import { VoteDto } from "@/src/shared/types/generated";
+import { getImage } from "@/src/api/services/image.service";
+import { shortenString } from "@/src/shared/utils/text.service";
+import { Badge } from "@/src/shared/components/Badge";
+import { PrimaryButton } from "@/src/shared/components";
+import { VoteStatNavigation } from "@/src/navigation";
 
 type CardProps = {
-  bank: BankDto
+  vote: VoteDto
 }
 
-export function BankCardLarge({ bank }: CardProps) {
+export function VoteCard({ vote }: CardProps) {
 
-  const navigation = useNavigation<EditBankNavigation>()
-  const navigation2 = useNavigation<AppNavigation>()
+  const navigation = useNavigation<VoteStatNavigation>()
 
-    const navigateToCreateLobby = () => {
-      navigation2.navigate("CreateLobby", {bankId: bank.id})
-  }
-
-  const onButtonPress = (id: number) => {
-    navigation.navigate('EditBank', { bankId: id });
+    const handleButtonPressed = () => {
+      navigation.navigate("VoteStat", {voteId: vote.id})
   }
 
   return (
-    <TouchableOpacity key={bank.id} style={styles.container} onPress={() => onButtonPress(bank.id)} >
+    <View key={vote.id} style={styles.container} >
       <View style={styles.imageWrapper}>
         <Image
-           source={{ uri: bank.imageUrl
-              ? bank.imageUrl.startsWith('http')
-                ? bank.imageUrl
-                : getImage(bank.imageUrl)
+           source={{ uri: vote.bank.imageUrl
+              ? vote.bank.imageUrl.startsWith('http')
+                ? vote.bank.imageUrl
+                : getImage(vote.bank.imageUrl)
               : 'https://placecats.com/200/100'
             }}
           style={styles.image}
@@ -41,19 +36,19 @@ export function BankCardLarge({ bank }: CardProps) {
       <View style={styles.cardBody}>
         <View>
           <View style={styles.infoCotainer}>
-            <Text style={styles.bankTitle}>{shortenString(bank.title, 20)}</Text>
-            <Badge text={bank.category.name} color={bank.category.color} />
+            <Text style={styles.bankTitle}>{shortenString(vote.bank.title, 20)}</Text>
+            <Badge text={vote.bank.category.name} color={vote.bank.category.color} />
           </View>
 
           <View style={styles.descContainer}>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.desc}>{shortenString(bank.description, 35)}</Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.desc}>{shortenString(vote.bank.description, 35)}</Text>
           </View>
         </View>
         <View style={styles.buttonContainer}>
-          <PrimaryButton onPress={navigateToCreateLobby} style={{ width: 60 }} title="Start" />
+          <PrimaryButton onPress={handleButtonPressed} style={{ width: 60 }} title="Stats" />
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 

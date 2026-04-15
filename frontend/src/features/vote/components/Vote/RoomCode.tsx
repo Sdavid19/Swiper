@@ -1,7 +1,7 @@
 import { Copy } from "lucide-react-native";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import * as Clipboard from 'expo-clipboard';
-import { showSuccess } from "../../../shared/utils/toast.service";
+import { showSuccess } from "../../../../shared/utils/toast.service";
 
 type RoomCodeProps = {
     roomCode: number

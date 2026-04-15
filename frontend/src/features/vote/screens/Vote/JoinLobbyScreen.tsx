@@ -1,15 +1,15 @@
 import { View, Text, Platform } from "react-native";
-import { InputField, PrimaryButton } from "../../../shared/components";
+import { InputField, PrimaryButton } from "../../../../shared/components";
 import { KeySquare } from "lucide-react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useEffect, useState } from "react";
-import { socket } from "../../../socket/socket";
-import { ConnectRoomDto } from "../../../socket/types";
-import { showError } from "../../../shared/utils/toast.service";
+import { socket } from "../../../../socket/socket";
+import { ConnectRoomDto } from "../../../../socket/types";
+import { showError } from "../../../../shared/utils/toast.service";
 import { useNavigation } from "@react-navigation/native";
-import { VoteNavigation, VoteStackParamList } from "../../../navigation";
+import { VoteNavigation, VoteStackParamList } from "../../../../navigation";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../redux";
+import { RootState } from "../../../../redux";
 
 export function JoinLobbyScreen() {
   const [roomId, setRoomId] = useState('');

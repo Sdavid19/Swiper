@@ -11,5 +11,6 @@ import { QuestionBankTemplateService } from "../question-bank-template/question-
   imports: [CategoryModule],
   controllers: [QuestionBankController],
   providers: [QuestionBankService, CategoryExists, CategoriesExist, MediaService, QuestionBankTemplateService],
+  exports: [QuestionBankService],
 })
 export class QuestioBankModule { }

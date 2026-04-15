@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { PrismaService } from "../prisma";
 import client from "./streaming.client";
-import { SearchResult, Show } from "streaming-availability";
+import { Show } from "streaming-availability";
 import { MediaType } from "@prisma/client";
 
 @Injectable()
@@ -51,7 +51,7 @@ export class MediaService implements OnModuleInit {
     }
 
     async fetchPlatforms(){
-        const countryCode = process.env.API_COUNTRY || 'us';
+        const countryCode = process.env.API_COUNTRY || 'hu';
         const platforms = await client.countriesApi.getCountry({countryCode});
         return platforms.services;
     }
@@ -86,22 +86,18 @@ export class MediaService implements OnModuleInit {
 
         console.log(`Fetched ${media.length} movies. Saving...`);
 
-        // 1. Platform nevek
         const platformNames = [
             ...new Set(
             media.flatMap(m => m.streamingOptions['hu']?.map(opt => opt.service.id) || [])
             )
         ];
 
-        // 2. Platformok biztosítása (ha valahogy mégis hiányozna)
         if (platformNames.length > 0) {
             await this.prisma.platform.createMany({
             data: platformNames.map(name => ({ name })),
             skipDuplicates: true,
             });
         }
-
-        // 3. Media létrehozása
         const mediaData = media.map(m => ({
             name: m.title,
             imdbId: m.imdbId,
@@ -114,7 +110,6 @@ export class MediaService implements OnModuleInit {
             skipDuplicates: true,
         });
 
-        // 4. Media ID-k lekérése
         const createdMedias = await this.prisma.media.findMany({
             where: { imdbId: { in: media.map(m => m.imdbId).filter(Boolean) } },
             select: { id: true, imdbId: true },
@@ -122,7 +117,6 @@ export class MediaService implements OnModuleInit {
 
         const mediaMap = new Map(createdMedias.map(m => [m.imdbId, m.id]));
 
-        // 5. Kapcsolatok
         const connections: { mediaId: number; platformName: string }[] = [];
 
         for (const m of media) {
@@ -139,7 +133,6 @@ export class MediaService implements OnModuleInit {
             }
         }
 
-        // 6. Kapcsolatok mentése
         if (connections.length > 0) {
             await this.prisma.mediaPlatform.createMany({
             data: connections,

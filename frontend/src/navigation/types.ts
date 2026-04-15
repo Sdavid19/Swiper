@@ -26,6 +26,11 @@ export type VoteStackParamList = {
   Lobby: { roomId: number, bankId: number }
 }
 
+export type VoteStatStackParamList = {
+  ShowVotes: undefined,
+  VoteStat: { voteId: number }
+}
+
 export type ProfileStackParamList = {
   Profile: undefined,
   EditProfile: undefined
@@ -36,12 +41,16 @@ export type AppTabParamList = {
   ProfileStack: NavigatorScreenParams<ProfileNavigation>
   BankStack: NavigatorScreenParams<EditBankStackParamList>
   VoteStack: NavigatorScreenParams<VoteStackParamList>
+  VoteStatStack: NavigatorScreenParams<VoteStatStackParamList>
 }
 
 export type RootStackParamList = {
   AuthStack: undefined
   AppStack: undefined
 }
+
+export type AppTabNavigation = 
+  NativeStackNavigationProp<AppTabParamList>
 
 export type AuthNavigation =
   NativeStackNavigationProp<AuthStackParamList>
@@ -54,6 +63,9 @@ export type EditBankNavigation =
 
 export type ProfileNavigation = 
   NativeStackNavigationProp<ProfileStackParamList>
+
+  export type VoteStatNavigation = 
+  NativeStackNavigationProp<VoteStatStackParamList>
 
 export type VoteNavigation = 
   NativeStackNavigationProp<VoteStackParamList>

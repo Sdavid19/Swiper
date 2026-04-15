@@ -1,11 +1,11 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Badge } from "../../../../../shared/components/Badge";
-import { BankDto, CategoryDto, QuestionBankTemplateDto } from "../../../../../shared/types/generated";
+import { CategoryDto } from "../../../../../shared/types/generated";
 import { PrimaryButton } from "../../../../../shared/components";
 import { getImage } from "../../../../../api/services/image.service";
 import { shortenString } from "../../../../../shared/utils/text.service";
 import { useNavigation } from "@react-navigation/native";
-import { AppNavigation, VoteNavigation } from "../../../../../navigation";
+import { AppNavigation } from "../../../../../navigation";
 
 type BankBase = {
   id: number, 

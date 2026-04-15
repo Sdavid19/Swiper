@@ -81,7 +81,7 @@ model Answer {
   voteId Int
   vote   Vote @relation(fields: [voteId], references: [id])
 
-  questionId Int
+  questionId Int 
   question   Question @relation(fields: [questionId], references: [id])
 
   @@unique([userId, voteId, questionId])

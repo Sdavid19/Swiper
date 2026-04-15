@@ -1,0 +1,142 @@
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Image } from "react-native";
+import { QuestionDto } from "../../../../shared/types/generated";
+import { getQuestionsByBank } from "../../../bank/services/question.service";
+import { SwipeCard } from "../../components/Vote/SwipeCard";
+import { PrimaryButton } from "../../../../shared/components";
+import { socket } from "@/src/socket/socket";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux";
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigation, AppStackParamList } from "@/src/navigation";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
+type VoteScreenProps = NativeStackScreenProps<AppStackParamList, "Vote">;
+
+export function VoteScreen({ route }: VoteScreenProps) {
+
+  const [questions, setQuestions] = useState<QuestionDto[]>([]);
+  const [index, setIndex] = useState(0);
+  const [trigger, setTrigger] = useState<"left" | "right" | null>(null);
+  const [over, setOver] = useState(false);
+  const [isSwiping, setIsSwiping] = useState(false);
+
+  const bankId = route.params.bankId;
+  const roomId = route.params.roomId;
+
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const navigation = useNavigation<AppNavigation>();
+
+  useEffect(() => {
+    const handleGameEnded = ({voteId}: {voteId: number}) => {
+        navigation.replace("Tabs", {screen: "VoteStatStack", 
+        params: {
+          screen: 'VoteStat',
+          params: {voteId}
+        }
+     })
+    }
+
+    getQuestionsByBank(bankId).then((q) => {
+      q.forEach((item) => {
+        if (item.imageUrl) {
+          Image.prefetch(item.imageUrl);
+        }
+      });
+
+      setQuestions(q);
+    });
+
+    socket.on("gameEnded", handleGameEnded);
+
+     return () => {
+      socket.off("gameEnded", handleGameEnded);
+    };
+  }, []);
+
+  const handleSwipe = (dir: "left" | "right") => {
+    if(!user) return;
+
+    socket.emit("vote", {
+      roomId: roomId,
+      userId: user.id,
+      questionId: questions[index].id,
+      answer: dir == "right"
+    });
+
+    if (index === questions.length - 1) {
+      setOver(true);
+    }
+
+    if (index < questions.length - 1) {
+      setIndex((p) => p + 1);
+    }
+
+    setIsSwiping(false);
+  };
+
+  useEffect(() => {
+    if (!trigger) return;
+    const t = setTimeout(() => setTrigger(null), 200);
+    return () => clearTimeout(t);
+  }, [trigger]);
+
+  if (!questions.length) return null;
+
+  return (
+    <View style={styles.container}>
+      {questions.map((item, i) => {
+        const isActive = i === index;
+
+        return (
+          <SwipeCard
+            key={item.id}
+            item={item}
+            index={i}
+            activeIndex={index}
+            onSwipe={handleSwipe}
+            triggerSwipe={isActive ? trigger : null}
+          />
+        );
+      })}
+
+      <View style={styles.buttons}>
+        <PrimaryButton
+          title="Balra"
+          onPress={() => {
+            if (over || isSwiping) return;
+            setIsSwiping(true);
+            setTrigger("left");
+          }}
+        />
+
+        <PrimaryButton
+          title="Jobbra"
+          onPress={() => {
+            if (over || isSwiping) return;
+            setIsSwiping(true);
+            setTrigger("right");
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  buttons: {
+    position: "absolute",
+    bottom: 80,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+});

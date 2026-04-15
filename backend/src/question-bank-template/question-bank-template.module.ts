@@ -5,5 +5,6 @@ import { QuestionBankTemplateController } from "./quetion-bank-template.controll
 @Module({
   controllers: [QuestionBankTemplateController],
   providers: [QuestionBankTemplateService],
+  exports: [QuestionBankTemplateService]
 })
 export class QuestioBankTemplateModule { }

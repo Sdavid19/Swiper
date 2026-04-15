@@ -10,9 +10,6 @@ import { X } from "lucide-react-native";
 import { FilterBankForm } from "./FilterBankForm";
 import { CategoryDto } from "../../../../../shared/types/generated";
 import { getCategories } from "../../../services/category.service";
-import { useDispatch } from "react-redux";
-import { getAllBanksWithFilter } from "../../../services/bank.service";
-import { setBanks } from "../../../../../redux/bankSlice";
 
 interface FilterBankModalProps {
   visible: boolean;
@@ -21,12 +18,27 @@ interface FilterBankModalProps {
   setSelected: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export function FilterBankModal({ visible, setVisible, selected, setSelected }: FilterBankModalProps) {
+export function FilterBankModal({
+  visible,
+  setVisible,
+  selected,
+  setSelected,
+}: FilterBankModalProps) {
   const slideAnim = useRef(new Animated.Value(300)).current;
   const [categories, setCategories] = useState<CategoryDto[]>([]);
-  const [tempSelected, setTempSelected] = useState<number[]>(selected); 
+  const [tempSelected, setTempSelected] = useState<number[]>([]);
 
-  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (visible) {
+      setTempSelected(selected);
+    }
+  }, [visible, selected]);
+
+  const applyFilter = () => { 
+    setSelected(tempSelected);
+    setVisible(false);
+  };
 
   useEffect(() => {
     if (visible) {
@@ -39,30 +51,16 @@ export function FilterBankModal({ visible, setVisible, selected, setSelected }: 
       slideAnim.setValue(300);
     }
   }, [visible]);
-    
-   useEffect(() => {
-    getCategories()
-      .then(cats => setCategories(cats))
-      .catch(err => console.log(err));
-  }, []);
 
   useEffect(() => {
-    if(visible) setTempSelected(selected);
-  }, [visible]);
-
-  const applyFilter = () => {
-    setSelected(tempSelected);
-    setVisible(false);
-    getAllBanksWithFilter({categoryIds: tempSelected})
-    .then(res => dispatch(setBanks(res)))
-    .catch(err => console.log(err));
-  }
-
+    getCategories()
+      .then(setCategories)
+      .catch(console.log);
+  }, []);
 
   return (
     <Modal visible={visible} transparent animationType="none">
       <View style={styles.container}>
-
         <TouchableOpacity
           style={styles.overlay}
           activeOpacity={1}
@@ -72,7 +70,7 @@ export function FilterBankModal({ visible, setVisible, selected, setSelected }: 
         <Animated.View
           style={[
             styles.modalContent,
-            { transform: [{ translateY: slideAnim }] }
+            { transform: [{ translateY: slideAnim }] },
           ]}
         >
           <TouchableOpacity
@@ -82,7 +80,12 @@ export function FilterBankModal({ visible, setVisible, selected, setSelected }: 
             <X size={25} />
           </TouchableOpacity>
 
-         <FilterBankForm categories={categories} selected={tempSelected} setSelected={setTempSelected} setVisible={applyFilter} />
+          <FilterBankForm
+            categories={categories}
+            selected={tempSelected}
+            setSelected={setTempSelected}
+            onApply={applyFilter}
+          />
         </Animated.View>
       </View>
     </Modal>

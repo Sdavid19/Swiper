@@ -1,15 +1,15 @@
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
-import { PrimaryButton } from "../../../shared/components";
+import { PrimaryButton } from "../../../../shared/components";
 import { useEffect, useState } from "react";
-import { socket } from "../../../socket/socket";
+import { socket } from "../../../../socket/socket";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppNavigation, AppStackParamList } from "../../../navigation";
+import { AppNavigation, AppStackParamList } from "../../../../navigation";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../redux";
+import { RootState } from "../../../../redux";
 import { useNavigation } from "@react-navigation/native";
-import { getBankWithQuestionsById } from "../../bank/services/bank.service";
-import { BankDetailDto, BankDto } from "../../../shared/types/generated";
-import { QuestionList } from "../../bank/components/question/QuestionList";
+import { getBankWithQuestionsById } from "../../../bank/services/bank.service";
+import { BankDetailDto, BankDto } from "../../../../shared/types/generated";
+import { QuestionList } from "../../../bank/components/question/QuestionList";
 
 type CreateLobbyScreenProps = NativeStackScreenProps<AppStackParamList, "CreateLobby">;
 
