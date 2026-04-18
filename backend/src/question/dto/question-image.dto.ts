@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class QuestionImageDto {
-    @ApiProperty({ nullable: true, type: String })
-    imageUrl: string | null;
+  @ApiProperty({ nullable: true, type: String })
+  imageUrl: string | null;
 }

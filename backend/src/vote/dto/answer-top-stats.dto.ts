@@ -1,7 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { AnswerStatDto } from "./answer-stat.dto";
-import { IsArray } from "class-validator";
-import { Type } from "class-transformer";
+import { ApiProperty } from '@nestjs/swagger';
+import { AnswerStatDto } from './answer-stat.dto';
+import { IsArray } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class AnswerTopStatsDto {
   @ApiProperty({ type: [AnswerStatDto] })
@@ -10,5 +10,5 @@ export class AnswerTopStatsDto {
   stats: AnswerStatDto[];
 
   @ApiProperty()
-  userCount: number
+  userCount: number;
 }

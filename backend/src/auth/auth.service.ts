@@ -1,73 +1,101 @@
-import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-import * as argon from 'argon2'
-import { UserService } from "../user";
-import { JwtService } from "@nestjs/jwt";
-import { SigninDto } from "./dto/signin.dto";
-import { SignupDto } from "./dto";
-import { SigninResponseDto } from "./dto/signin.response.dto";
-import { UserDto } from "../user/dto";
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import * as argon from 'argon2';
+import { UserService } from '../user';
+import { JwtService } from '@nestjs/jwt';
+import { SigninDto } from './dto/signin.dto';
+import { SignupDto } from './dto';
+import { SigninResponseDto } from './dto/signin.response.dto';
+import { UserDto } from '../user/dto';
 
 @Injectable()
 export class AuthService {
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
-    constructor(
-        private prisma: PrismaService,
-        private userService: UserService,
-        private jwtService: JwtService) { }
+  async signup(dto: SignupDto): Promise<UserDto> {
+    const hash = await argon.hash(dto.password);
 
-    async signup(dto: SignupDto): Promise<UserDto> {
-        const hash = await argon.hash(dto.password);
+    const existing =
+      await this.userService.findUserByEmail(
+        dto.email,
+      );
 
-        const existing = await this.userService.findUserByEmail(dto.email);
-
-        if (existing) {
-            throw new BadRequestException({
-                statusCode: 400,
-                error: "Field error",
-                message: {
-                    email: ["Email already exists"]
-                }
-            });
-        }
-
-        const user = await this.prisma.user.create({
-            data: {
-                email: dto.email,
-                name: dto.name,
-                passwordHash: hash,
-                isAdmin: false,
-            },
-            select: { id: true, email: true, name: true, imageUrl: true },
-        });
-
-        return user;
+    if (existing) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Field error',
+        message: {
+          email: ['Email already exists'],
+        },
+      });
     }
 
+    const user = await this.prisma.user.create({
+      data: {
+        email: dto.email,
+        name: dto.name,
+        passwordHash: hash,
+        isAdmin: false,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        imageUrl: true,
+      },
+    });
 
-    async signin(dto: SigninDto): Promise<SigninResponseDto> {
-        const user = await this.userService.findUserByEmail(dto.email);
+    return user;
+  }
 
-        if (!user) {
-            throw new UnauthorizedException('Invalid credentials!');
-        }
+  async signin(
+    dto: SigninDto,
+  ): Promise<SigninResponseDto> {
+    const user =
+      await this.userService.findUserByEmail(
+        dto.email,
+      );
 
-        const validPassword = await argon.verify(user.passwordHash, dto.password)
-
-        if (!validPassword) {
-            throw new UnauthorizedException('Invalid credentials!');
-        }
-
-        const payload = { sub: user.id, username: user.name, email: user.email };
-
-        return {
-            access_token: await this.jwtService.signAsync(payload),
-            user: {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                imageUrl: user.imageUrl
-            }
-        } as SigninResponseDto;
+    if (!user) {
+      throw new UnauthorizedException(
+        'Invalid credentials!',
+      );
     }
+
+    const validPassword = await argon.verify(
+      user.passwordHash,
+      dto.password,
+    );
+
+    if (!validPassword) {
+      throw new UnauthorizedException(
+        'Invalid credentials!',
+      );
+    }
+
+    const payload = {
+      sub: user.id,
+      username: user.name,
+      email: user.email,
+    };
+
+    return {
+      access_token:
+        await this.jwtService.signAsync(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        imageUrl: user.imageUrl,
+      },
+    } as SigninResponseDto;
+  }
 }

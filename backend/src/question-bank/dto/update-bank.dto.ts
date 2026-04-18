@@ -1,5 +1,3 @@
-import { CreateBankDto } from "./create-bank.dto";
+import { CreateBankDto } from './create-bank.dto';
 
-export class UpdateBankDto extends CreateBankDto {
-
-}
+export class UpdateBankDto extends CreateBankDto {}

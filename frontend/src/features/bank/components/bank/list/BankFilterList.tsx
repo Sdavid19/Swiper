@@ -46,7 +46,7 @@ export function BankFilterList({banks}: BankFilterListProps) {
       {filteredBanks.length > 0 ? (
         <FlatList
           data={filteredBanks}
-          style={styles.list}
+          style={{paddingHorizontal: 5}}
           keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={({ item }) => (
             <View style={styles.itemWrapper}>

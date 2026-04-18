@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Text } from "react-native";
 import { QuestionDto } from "../../../../shared/types/generated";
 import { getQuestionsByBank } from "../../../bank/services/question.service";
 import { SwipeCard } from "../../components/Vote/SwipeCard";
@@ -7,14 +7,13 @@ import { PrimaryButton } from "../../../../shared/components";
 import { socket } from "@/src/socket/socket";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/redux";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { AppNavigation, AppStackParamList } from "@/src/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type VoteScreenProps = NativeStackScreenProps<AppStackParamList, "Vote">;
 
 export function VoteScreen({ route }: VoteScreenProps) {
-
   const [questions, setQuestions] = useState<QuestionDto[]>([]);
   const [index, setIndex] = useState(0);
   const [trigger, setTrigger] = useState<"left" | "right" | null>(null);
@@ -29,14 +28,38 @@ export function VoteScreen({ route }: VoteScreenProps) {
   const navigation = useNavigation<AppNavigation>();
 
   useEffect(() => {
-    const handleGameEnded = ({voteId}: {voteId: number}) => {
-        navigation.replace("Tabs", {screen: "VoteStatStack", 
-        params: {
-          screen: 'VoteStat',
-          params: {voteId}
-        }
-     })
-    }
+    const handleGameEnded = ({ voteId }: { voteId: number }) => {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            {
+              name: "Tabs",
+              state: {
+                routes: [
+                  {
+                    name: "VoteStatStack",
+                    state: {
+                      routes: [
+                        {
+                          name: "ShowVotes",
+                        },
+                        {
+                          name: "VoteStat",
+                          params: { voteId },
+                        },
+                      ],
+                      index: 1,
+                    },
+                  },
+                ],
+                index: 0,
+              },
+            },
+          ],
+        }),
+      );
+    };
 
     getQuestionsByBank(bankId).then((q) => {
       q.forEach((item) => {
@@ -50,19 +73,19 @@ export function VoteScreen({ route }: VoteScreenProps) {
 
     socket.on("gameEnded", handleGameEnded);
 
-     return () => {
+    return () => {
       socket.off("gameEnded", handleGameEnded);
     };
   }, []);
 
   const handleSwipe = (dir: "left" | "right") => {
-    if(!user) return;
+    if (!user) return;
 
     socket.emit("vote", {
       roomId: roomId,
       userId: user.id,
       questionId: questions[index].id,
-      answer: dir == "right"
+      answer: dir == "right",
     });
 
     if (index === questions.length - 1) {
@@ -86,23 +109,31 @@ export function VoteScreen({ route }: VoteScreenProps) {
 
   return (
     <View style={styles.container}>
-      {questions.map((item, i) => {
-        const isActive = i === index;
+      {!over &&
+        questions.map((item, i) => {
+          const isActive = i === index;
 
-        return (
-          <SwipeCard
-            key={item.id}
-            item={item}
-            index={i}
-            activeIndex={index}
-            onSwipe={handleSwipe}
-            triggerSwipe={isActive ? trigger : null}
-          />
-        );
-      })}
+          return (
+            <SwipeCard
+              key={item.id}
+              item={item}
+              index={i}
+              activeIndex={index}
+              onSwipe={handleSwipe}
+              triggerSwipe={isActive ? trigger : null}
+            />
+          );
+        })}
+
+      {over && (
+        <Text style={{ paddingBottom: 100, fontSize: 18 }}>
+          Waiting for other users.
+        </Text>
+      )}
 
       <View style={styles.buttons}>
         <PrimaryButton
+          disabled={over}
           title="Balra"
           onPress={() => {
             if (over || isSwiping) return;
@@ -113,6 +144,7 @@ export function VoteScreen({ route }: VoteScreenProps) {
 
         <PrimaryButton
           title="Jobbra"
+          disabled={over}
           onPress={() => {
             if (over || isSwiping) return;
             setIsSwiping(true);
@@ -124,10 +156,10 @@ export function VoteScreen({ route }: VoteScreenProps) {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     padding: 20,

@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { Room } from "../types";
-import { CreateAnswerDto } from "../dto/create-answer.dto";
-import { VoteService } from "./vote.service";
-import { QuestionBankService } from "../../question-bank/question-bank.service";
+import { Injectable } from '@nestjs/common';
+import { Room } from '../types';
+import { CreateAnswerDto } from '../dto/create-answer.dto';
+import { VoteService } from './vote.service';
+import { QuestionBankService } from '../../question-bank/question-bank.service';
 
 @Injectable()
 export class RoomService {
@@ -10,16 +10,24 @@ export class RoomService {
 
   constructor(
     private readonly bankService: QuestionBankService,
-    private readonly voteService: VoteService) { }
+    private readonly voteService: VoteService,
+  ) {}
 
-  async createRoom(bankId: number): Promise<number> {
+  async createRoom(
+    bankId: number,
+  ): Promise<number> {
     let roomId: number;
 
     do {
-      roomId = Math.floor(100000 + Math.random() * 900000);
+      roomId = Math.floor(
+        100000 + Math.random() * 900000,
+      );
     } while (this.rooms.has(roomId));
 
-    const questions = await this.bankService.findQuestionsByBank(bankId);
+    const questions =
+      await this.bankService.findQuestionsByBank(
+        bankId,
+      );
 
     this.rooms.set(roomId, {
       roomId,
@@ -55,8 +63,13 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    if (!room.users.find((u) => u.id === userId)) {
-      room.users.push({ id: userId, ready: false });
+    if (
+      !room.users.find((u) => u.id === userId)
+    ) {
+      room.users.push({
+        id: userId,
+        ready: false,
+      });
     }
   }
 
@@ -64,10 +77,13 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    room.users = room.users.filter((u) => u.id !== userId);
+    room.users = room.users.filter(
+      (u) => u.id !== userId,
+    );
 
     if (room.users.length === 0) {
-      if (room.countdown) clearTimeout(room.countdown);
+      if (room.countdown)
+        clearTimeout(room.countdown);
       this.rooms.delete(roomId);
     }
   }
@@ -77,11 +93,17 @@ export class RoomService {
     return room ? room.users : [];
   }
 
-  setUserReady(roomId: number, userId: number, ready: boolean) {
+  setUserReady(
+    roomId: number,
+    userId: number,
+    ready: boolean,
+  ) {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    const user = room.users.find((u) => u.id === userId);
+    const user = room.users.find(
+      (u) => u.id === userId,
+    );
     if (user) user.ready = ready;
   }
 
@@ -89,10 +111,16 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return false;
 
-    return room.users.length > 0 && room.users.every((u) => u.ready);
+    return (
+      room.users.length > 0 &&
+      room.users.every((u) => u.ready)
+    );
   }
 
-  setCountdown(roomId: number, countdown: NodeJS.Timeout) {
+  setCountdown(
+    roomId: number,
+    countdown: NodeJS.Timeout,
+  ) {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
@@ -113,7 +141,7 @@ export class RoomService {
     roomId: number,
     userId: number,
     questionId: number,
-    answer: boolean
+    answer: boolean,
   ) {
     const room = this.rooms.get(roomId);
     if (!room) return;
@@ -126,7 +154,7 @@ export class RoomService {
 
     if (this.isEveryoneVoted(roomId)) {
       const room = this.rooms.get(roomId);
-      if(!room) return;
+      if (!room) return;
       room.endDate = new Date();
       return this.saveVotes(roomId);
     }
@@ -134,29 +162,42 @@ export class RoomService {
   }
 
   isEveryoneVoted(roomId: number): boolean {
-  const room = this.rooms.get(roomId);
-  if (!room) return false;
+    const room = this.rooms.get(roomId);
+    if (!room) return false;
 
-  return room.users.every((user) => {
-    const userVotes = room.votes[user.id];
-    return userVotes && Object.keys(userVotes).length === room.questionCount;
-  });
-}
+    return room.users.every((user) => {
+      const userVotes = room.votes[user.id];
+      return (
+        userVotes &&
+        Object.keys(userVotes).length ===
+          room.questionCount
+      );
+    });
+  }
 
   async saveVotes(roomId: number) {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    const asnwers = Object.entries(room.votes).flatMap(([userId, questions]) => {
-
-      return Object.entries(questions).map(([questionId, answer]) => ({
-        userId: Number(userId),
-        questionId: Number(questionId),
-        answer
-      }) as CreateAnswerDto);
-
+    const asnwers = Object.entries(
+      room.votes,
+    ).flatMap(([userId, questions]) => {
+      return Object.entries(questions).map(
+        ([questionId, answer]) =>
+          ({
+            userId: Number(userId),
+            questionId: Number(questionId),
+            answer,
+          }) as CreateAnswerDto,
+      );
     });
 
-    return this.voteService.createVoteData({ answers: asnwers, bankId: room.bankId, creatorId: 1, startDate: room.startDate, endDate: new Date() });
+    return this.voteService.createVoteData({
+      answers: asnwers,
+      bankId: room.bankId,
+      creatorId: 1,
+      startDate: room.startDate,
+      endDate: new Date(),
+    });
   }
 }

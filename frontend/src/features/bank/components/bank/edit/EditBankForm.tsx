@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { BankDto, BankListItemDto, CategoryDto, CreateBankDto, UpdateBankDto } from "../../../../../shared/types/generated";
+import {
+  BankDto,
+  BankListItemDto,
+  CategoryDto,
+  CreateBankDto,
+  UpdateBankDto,
+} from "../../../../../shared/types/generated";
 import { EditBankScreenMode } from "../../../screens/bank/EditBankScreen";
 import { StyleSheet, View } from "react-native";
 import { InputField, PrimaryButton } from "../../../../../shared/components";
@@ -8,48 +14,63 @@ import { PickerSelect } from "../../../../../shared/components/PickerSelect";
 import { createBank, updateBank } from "../../../services/bank.service";
 import { showSuccess } from "../../../../../shared/utils/toast.service";
 import { AxiosError } from "axios";
-import { ErrorResponse, ValidationErrorMessage } from "../../../../../shared/types";
+import {
+  ErrorResponse,
+  ValidationErrorMessage,
+} from "../../../../../shared/types";
 import { useDispatch } from "react-redux";
-import { addBankAction, updateBankAction } from "../../../../../redux/bankSlice";
+import {
+  addBankAction,
+  updateBankAction,
+} from "../../../../../redux/bankSlice";
 import { useNavigation } from "@react-navigation/native";
 import { EditBankNavigation } from "../../../../../navigation";
 
 export interface EditBankFormProps {
-  screenMode: EditBankScreenMode,
-  creatorId: number,
-  bank?: BankListItemDto,
-  setBank: React.Dispatch<React.SetStateAction<BankListItemDto | undefined>>,
-  categories: CategoryDto[]
+  screenMode: EditBankScreenMode;
+  creatorId: number;
+  bank?: BankListItemDto;
+  setBank: React.Dispatch<React.SetStateAction<BankListItemDto | undefined>>;
+  categories: CategoryDto[];
 }
 
-export function EditBankForm({ creatorId, screenMode, bank, setBank, categories }: EditBankFormProps) {
-
+export function EditBankForm({
+  creatorId,
+  screenMode,
+  bank,
+  setBank,
+  categories,
+}: EditBankFormProps) {
   const dispatch = useDispatch();
 
-  const navigation = useNavigation<EditBankNavigation>()
+  const navigation = useNavigation<EditBankNavigation>();
 
   const [form, setForm] = useState<CreateBankDto>({
     title: "",
     description: "",
     categoryId: 0,
     public: false,
-    creatorId: creatorId
+    creatorId: creatorId,
   });
 
-  const [errors, setErrors] = useState<ValidationErrorMessage<CreateBankDto> | null>(null);
+  const [errors, setErrors] =
+    useState<ValidationErrorMessage<CreateBankDto> | null>(null);
 
   const buttonDisabled = () => {
     return !form.title || !form.categoryId;
-  }
+  };
 
   const navigateToQuestionBank = () => {
     if (!bank) return;
-    navigation.navigate("BankQuestions", { bankId: bank.id })
-  }
+    navigation.navigate("BankQuestions", {
+      bankId: bank.id,
+      viewMode: screenMode == "View",
+    });
+  };
 
-  const categoryOptions = categories.map(c => ({
+  const categoryOptions = categories.map((c) => ({
     label: c.name,
-    value: c.id
+    value: c.id,
   }));
 
   const setUpDataForUpdate = () => {
@@ -62,12 +83,15 @@ export function EditBankForm({ creatorId, screenMode, bank, setBank, categories 
         public: bank.public,
       });
     }
-  }
+  };
 
-  const setField = <K extends keyof CreateBankDto>(key: K, value: CreateBankDto[K]) => {
-    setForm(prev => ({
+  const setField = <K extends keyof CreateBankDto>(
+    key: K,
+    value: CreateBankDto[K],
+  ) => {
+    setForm((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
@@ -79,22 +103,22 @@ export function EditBankForm({ creatorId, screenMode, bank, setBank, categories 
         const response = await updateBank(bank.id, form);
         setBank(response as BankListItemDto);
         dispatch(updateBankAction(response));
-        showSuccess('Bank updated succesfully!');
+        showSuccess("Bank updated succesfully!");
       } else {
         const response = await createBank(form);
         setBank(response as BankListItemDto);
         dispatch(addBankAction(response));
-        showSuccess('Bank created succesfully!');
+        showSuccess("Bank created succesfully!");
       }
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse<UpdateBankDto>>
-      const message = error.response?.data.message
+      const error = err as AxiosError<ErrorResponse<UpdateBankDto>>;
+      const message = error.response?.data.message;
 
       if (typeof message === "object") {
         setErrors(message);
       }
     }
-  }
+  };
 
   useEffect(() => {
     setUpDataForUpdate();
@@ -102,7 +126,6 @@ export function EditBankForm({ creatorId, screenMode, bank, setBank, categories 
 
   return (
     <View style={styles.formContainer}>
-
       <InputField
         label="Title"
         value={form.title}
@@ -135,15 +158,14 @@ export function EditBankForm({ creatorId, screenMode, bank, setBank, categories 
         style={{
           inputIOSContainer: {
             zIndex: 100,
-            padding: 20
-          }
+            padding: 20,
+          },
         }}
         disabled={!isEditable}
         errorMessages={errors?.categoryId}
       />
 
       <View style={styles.bottomRow}>
-
         <PrimaryButton
           title="View questions"
           style={{ width: "40%" }}
@@ -155,13 +177,10 @@ export function EditBankForm({ creatorId, screenMode, bank, setBank, categories 
           containerStyle={{ width: "70%" }}
           value={form.public}
           onValueChange={
-            isEditable
-              ? (value) => setField("public", value)
-              : undefined
+            isEditable ? (value) => setField("public", value) : undefined
           }
           disabled={!isEditable}
         />
-
       </View>
 
       {isEditable && (
@@ -179,7 +198,7 @@ export function EditBankForm({ creatorId, screenMode, bank, setBank, categories 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingBottom: 20
+    paddingBottom: 20,
   },
 
   formContainer: {
@@ -190,13 +209,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
-
   },
   descriptionField: {
     flex: 1,
     fontSize: 16,
     paddingVertical: 10,
-    textAlignVertical: 'top',
-    height: 80
-  }
+    textAlignVertical: "top",
+    height: 80,
+  },
 });

@@ -9,7 +9,15 @@ import { MediaService } from '../media';
 import { QuestionBankTemplateService } from '../question-bank-template/question-bank-template.service';
 
 @Module({
-  providers: [VoteGateway, VoteService, RoomService, UserService, QuestionBankService, QuestionBankTemplateService, MediaService],
-  controllers: [VoteController]
+  providers: [
+    VoteGateway,
+    VoteService,
+    RoomService,
+    UserService,
+    QuestionBankService,
+    QuestionBankTemplateService,
+    MediaService,
+  ],
+  controllers: [VoteController],
 })
 export class VoteModule {}

@@ -1,6 +1,6 @@
-interface UpdateUserResponse{
-    id: number,
-    name: string,
-    email: string,
-    imageUrl?: string
-} 
+interface UpdateUserResponse {
+  id: number;
+  name: string;
+  email: string;
+  imageUrl?: string;
+}

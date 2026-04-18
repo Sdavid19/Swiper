@@ -1,3 +1,3 @@
-import { CreateQuestionDto } from "./create-question.dto";
+import { CreateQuestionDto } from './create-question.dto';
 
-export class updateQuestionDto extends CreateQuestionDto { }
+export class updateQuestionDto extends CreateQuestionDto {}

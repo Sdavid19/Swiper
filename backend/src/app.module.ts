@@ -10,6 +10,16 @@ import { MediaModule } from './media';
 import { QuestioBankTemplateModule } from './question-bank-template/question-bank-template.module';
 
 @Module({
-  imports: [AuthModule, UserModule, PrismaModule, CategoryModule, QuestioBankModule, QuestionModule, VoteModule, MediaModule, QuestioBankTemplateModule],
+  imports: [
+    AuthModule,
+    UserModule,
+    PrismaModule,
+    CategoryModule,
+    QuestioBankModule,
+    QuestionModule,
+    VoteModule,
+    MediaModule,
+    QuestioBankTemplateModule,
+  ],
 })
 export class AppModule {}

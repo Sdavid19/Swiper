@@ -14,6 +14,7 @@ export function QuestionList({ questions, viewMode }: QuestionListPorps){
             data={questions}
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styles.listContent}
+                    style={{paddingHorizontal: 5}}
             renderItem={({ item }) => <QuestionCard question={item} viewMode={ viewMode } />}
             />
             ) : (

@@ -16,22 +16,17 @@ export function DeleteButton({
   iconSize = 25,
   iconColor = "red",
 }: DeleteButtonProps) {
-
   const handlePress = () => {
-    Alert.alert(
-      confirmTitle,
-      confirmMessage,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            await onDelete();
-          },
+    Alert.alert(confirmTitle, confirmMessage, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          await onDelete();
         },
-      ]
-    );
+      },
+    ]);
   };
 
   return (

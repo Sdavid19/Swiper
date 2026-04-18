@@ -1,15 +1,15 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class QuestionDto {
-    @ApiProperty()
-    id: number;
+  @ApiProperty()
+  id: number;
 
-    @ApiProperty()
-    text: string;
+  @ApiProperty()
+  text: string;
 
-    @ApiProperty({ nullable: true, type: String })
-    imageUrl: string | null
+  @ApiProperty({ nullable: true, type: String })
+  imageUrl: string | null;
 
-    @ApiProperty()
-    bankId: number;
+  @ApiProperty()
+  bankId: number;
 }

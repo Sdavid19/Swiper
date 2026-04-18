@@ -49,7 +49,7 @@ export function VoteFilterList({votes}: VoteFilterListProps) {
       {filteredVotes.length > 0 ? (
         <FlatList
           data={filteredVotes}
-          style={styles.list}
+          style={{paddingHorizontal: 5}}
           keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={({ item }) => (
             <View style={styles.itemWrapper}>
@@ -62,6 +62,7 @@ export function VoteFilterList({votes}: VoteFilterListProps) {
           <Text style={{ fontSize: 16 }}>There are no votes!</Text>
         </View>
       )}
+
       <FilterBankModal
         selected={selected}
         setSelected={setSelected}
@@ -76,10 +77,6 @@ const styles = StyleSheet.create({
   itemWrapper: {
     width: "100%",
     alignItems: "center"
-  },
-  list: {
-    flex: 1,
-    marginBottom: 10
   },
   emptycontainer: {
     flex: 1,

@@ -1,16 +1,16 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { QuestionDto } from "../../question/dto/question.dto";
+import { ApiProperty } from '@nestjs/swagger';
+import { QuestionDto } from '../../question/dto/question.dto';
 
 export class AnswerDto {
-    @ApiProperty()
-    id: number;
+  @ApiProperty()
+  id: number;
 
-    @ApiProperty()
-    answer: boolean;
+  @ApiProperty()
+  answer: boolean;
 
-    @ApiProperty()
-    question: QuestionDto;
+  @ApiProperty()
+  question: QuestionDto;
 
-    @ApiProperty()
-    userId: number;
+  @ApiProperty()
+  userId: number;
 }

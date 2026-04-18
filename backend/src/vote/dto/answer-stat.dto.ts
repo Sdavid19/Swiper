@@ -1,19 +1,16 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { QuestionDto } from "../../question/dto/question.dto";
-import { UserDto } from "../../user/dto";
-
+import { ApiProperty } from '@nestjs/swagger';
+import { QuestionDto } from '../../question/dto/question.dto';
+import { UserDto } from '../../user/dto';
 
 export class UserAnswerDto {
-    
   @ApiProperty({ type: [UserDto] })
-  user: UserDto
+  user: UserDto;
 
   @ApiProperty()
   answer: boolean;
 }
 
 export class AnswerStatDto {
-
   @ApiProperty()
   yes: number;
 
@@ -26,4 +23,3 @@ export class AnswerStatDto {
   @ApiProperty({ type: [UserAnswerDto] })
   answers: UserAnswerDto[];
 }
-

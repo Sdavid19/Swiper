@@ -23,7 +23,6 @@ export function HomeScreen() {
 
         getAllTemplates()
         .then(res => {
-          console.log(res.map(x => x.category))
           if (isActive) setTemplates(res);
         })
         .catch(err => console.log("Template fetch error:", err));
