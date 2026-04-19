@@ -16,6 +16,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import { QuestionDto } from "../../../../shared/types/generated";
+import { getImage } from "@/src/api/services/image.service";
 
 const { width } = Dimensions.get("window");
 
@@ -127,7 +128,7 @@ export function SwipeCard({
         <ImageBackground
           source={
             item.imageUrl
-              ? { uri: item.imageUrl }
+              ? { uri: getImage(item.imageUrl) }
               : { uri: "https://placecats.com/250/400" }
           }
           style={styles.image}

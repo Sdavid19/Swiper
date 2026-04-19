@@ -149,7 +149,7 @@ export function LobbyScreen({ route }: LobbySreenProps) {
           ready ? (allReady ? `Ready - ${countDown}` : "Ready") : "Not ready"
         }
         style={{
-          backgroundColor: ready ? "#00cc00" : "#b8b8b8",
+          backgroundColor: ready ? "#22c55e" : "#b8b8b8",
           marginTop: 20,
         }}
       />

@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import { getBankWithQuestionsById } from "../../../bank/services/bank.service";
 import { BankDetailDto, BankDto } from "../../../../shared/types/generated";
 import { QuestionList } from "../../../bank/components/question/QuestionList";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type CreateLobbyScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -24,6 +25,7 @@ type CreateLobbyScreenProps = NativeStackScreenProps<
 
 export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
   const [bank, setBank] = useState<BankDetailDto>();
+  const insets = useSafeAreaInsets();
 
   const bankId = route.params.bankId;
   const user = useSelector((state: RootState) => state.auth.user);
@@ -95,10 +97,13 @@ export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
         <QuestionList questions={bank?.questions || []} viewMode={true} />
       </View>
 
-      <View style={styles.footer}>
+      <View
+        style={[styles.footer, { paddingBottom: insets.bottom + 10 || 16 }]}
+      >
         <PrimaryButton
           title="Start vote"
           style={styles.button}
+          disabled={bank?.questions.length === 0}
           onPress={handleCreateLobby}
         />
       </View>
@@ -151,6 +156,5 @@ const styles = StyleSheet.create({
 
   button: {
     width: "100%",
-    marginBottom: Platform.OS === "ios" ? 30 : 20,
   },
 });

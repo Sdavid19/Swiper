@@ -10,7 +10,7 @@ import {
 } from '@nestjs/swagger';
 import { PlatformDto } from './dto/platform.dto';
 import { AuthGuard } from '../auth/auth.guard';
-import { MediaService } from './media.service';
+import { MediaService } from './services/media.service';
 
 @ApiTags('media')
 @ApiBearerAuth()

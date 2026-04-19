@@ -36,6 +36,9 @@ import { CreateMediaBankDto } from './dto/create-media-bank.dto';
 import { BankDetailDto } from './dto/bank.detail.dto';
 import { BankListItemDto } from './dto/bank-list-item.dto';
 import { QuestionBankCopyService } from './services/question-bank-copy.service';
+import { QuestionService } from '../question/services/question.service';
+import { QuestionBankImageService } from './services/question-bank-image.service';
+import { imageUploadConfig } from '../shared/image/image-upload.config';
 
 @ApiTags('question-banks')
 @ApiBearerAuth()
@@ -43,6 +46,8 @@ import { QuestionBankCopyService } from './services/question-bank-copy.service';
 export class QuestionBankController {
   constructor(
     private readonly bankService: QuestionBankService,
+    private readonly bankImageService: QuestionBankImageService,
+    private readonly questionService: QuestionService,
     private readonly copyService: QuestionBankCopyService,
   ) {}
 
@@ -65,7 +70,7 @@ export class QuestionBankController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: BankDto })
   @UseGuards(AuthGuard)
-  getBank(@Param('id') id: string) {
+  getBankById(@Param('id') id: string) {
     return this.bankService.findById(+id);
   }
 
@@ -73,7 +78,7 @@ export class QuestionBankController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: BankDetailDto })
   @UseGuards(AuthGuard)
-  getBankDetails(@Param('id') id: string) {
+  getBankDetailsById(@Param('id') id: string) {
     return this.bankService.findByIdWithQuestions(
       +id,
     );
@@ -86,8 +91,8 @@ export class QuestionBankController {
     isArray: true,
   })
   @UseGuards(AuthGuard)
-  getQuestionsByBank(@Param('id') id: string) {
-    return this.bankService.findQuestionsByBank(
+  getQuestionsByBankId(@Param('id') id: string) {
+    return this.questionService.findQuestionsByBank(
       +id,
     );
   }
@@ -108,7 +113,7 @@ export class QuestionBankController {
     @Param('id') id: string,
     @Body() dto: CreateQuestionDto,
   ) {
-    return this.bankService.createQuestion(
+    return this.questionService.createQuestion(
       +id,
       dto,
     );
@@ -158,45 +163,14 @@ export class QuestionBankController {
   @Post('upload/:id')
   @ApiOkResponse({ type: BankImageDto })
   @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() +
-            '-' +
-            Math.round(Math.random() * 1e9);
-          callback(
-            null,
-            uniqueSuffix +
-              extname(file.originalname),
-          );
-        },
-      }),
-      fileFilter: (req, file, callback) => {
-        if (
-          !file.mimetype.match(
-            /\/(jpg|jpeg|png|webp)$/,
-          )
-        ) {
-          return callback(
-            new Error('Only image files allowed'),
-            false,
-          );
-        }
-        callback(null, true);
-      },
-      limits: {
-        fileSize: 1024 * 1024,
-      },
-    }),
+    FileInterceptor('file', imageUploadConfig),
   )
   @UseGuards(AuthGuard)
   uploadFile(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.bankService.updateBankImage(
+    return this.bankImageService.updateBankImage(
       +id,
       file.filename,
     );

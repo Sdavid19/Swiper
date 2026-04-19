@@ -32,7 +32,8 @@ export const login = async (data: SigninDto): Promise<void> => {
 export const logout = async (): Promise<void> => {
   await AsyncStorage.removeItem("auth");
   store.dispatch(logoutAction());
-   socket.disconnect();
+  socket.auth = {};
+  socket.disconnect();
 };
 
 export const signup = async (data: SignupDto): Promise<void> => {

@@ -3,13 +3,14 @@ import { Room } from '../types';
 import { CreateAnswerDto } from '../dto/create-answer.dto';
 import { VoteService } from './vote.service';
 import { QuestionBankService } from '../../question-bank/services/question-bank.service';
+import { QuestionService } from '../../question/services/question.service';
 
 @Injectable()
 export class RoomService {
   private rooms: Map<number, Room> = new Map();
 
   constructor(
-    private readonly bankService: QuestionBankService,
+    private readonly questionService: QuestionService,
     private readonly voteService: VoteService,
   ) {}
 
@@ -26,7 +27,7 @@ export class RoomService {
     } while (this.rooms.has(roomId));
 
     const questions =
-      await this.bankService.findQuestionsByBank(
+      await this.questionService.findQuestionsByBank(
         bankId,
       );
 

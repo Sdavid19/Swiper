@@ -1,6 +1,16 @@
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useEffect, useState } from "react";
-import { PlatformDto, QuestionBankTemplateDto } from "../../../../shared/types/generated";
+import {
+  PlatformDto,
+  QuestionBankTemplateDto,
+} from "../../../../shared/types/generated";
 import { getAllPlatforms } from "../../services/media.service";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppNavigation, AppStackParamList } from "../../../../navigation";
@@ -9,8 +19,12 @@ import { PrimaryButton } from "../../../../shared/components";
 import { PlatformToggleButton } from "../../components/media/PlatformToggleButton";
 import { createBankByMedia } from "../../services/bank.service";
 import { useNavigation } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type CreateMediaBankScreenProps = NativeStackScreenProps<AppStackParamList, "CreateMediaBank">;
+type CreateMediaBankScreenProps = NativeStackScreenProps<
+  AppStackParamList,
+  "CreateMediaBank"
+>;
 
 export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
   const [platforms, setPlatforms] = useState<PlatformDto[]>([]);
@@ -19,11 +33,15 @@ export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
 
   const navigation = useNavigation<AppNavigation>();
   const templateId = route.params.templateId;
+  const insets = useSafeAreaInsets();
 
   const handleStartPress = async () => {
-    const bank = await createBankByMedia({ bankTemplateId: templateId, platforms: selected });
-    if(!bank) return;
-    navigation.navigate("CreateLobby", { bankId: bank.id});
+    const bank = await createBankByMedia({
+      bankTemplateId: templateId,
+      platforms: selected,
+    });
+    if (!bank) return;
+    navigation.navigate("CreateLobby", { bankId: bank.id });
   };
 
   useEffect(() => {
@@ -37,11 +55,16 @@ export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
   const numColumns = 3;
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
       {template && (
         <View style={styles.header}>
           <Text style={styles.title}>{template.title}</Text>
-          {template.description && <Text style={styles.description}>{template.description}</Text>}
+          {template.description && (
+            <Text style={styles.description}>{template.description}</Text>
+          )}
         </View>
       )}
 
@@ -51,10 +74,10 @@ export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
         <FlatList
           data={platforms}
           renderItem={({ item }) => (
-            <PlatformToggleButton 
-              item={item} 
-              selected={selected} 
-              setSelected={setSelected} 
+            <PlatformToggleButton
+              item={item}
+              selected={selected}
+              setSelected={setSelected}
             />
           )}
           keyExtractor={(item) => item.name}
@@ -65,9 +88,11 @@ export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
         />
       </View>
 
-      <View style={styles.footer}>
-        <PrimaryButton 
-          title="Create bank" 
+      <View
+        style={[styles.footer, { paddingBottom: insets.bottom + 10 || 16 }]}
+      >
+        <PrimaryButton
+          title="Create bank"
           style={styles.button}
           onPress={handleStartPress}
         />
@@ -79,7 +104,7 @@ export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20
+    padding: 20,
   },
 
   header: {
@@ -114,12 +139,11 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
 
- footer: {
+  footer: {
     paddingTop: 20,
   },
 
   button: {
     width: "100%",
-    marginBottom: Platform.OS === "ios" ? 30 : 20
   },
 });

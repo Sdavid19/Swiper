@@ -9,7 +9,7 @@ export function StatusBadge({ ready }: StatusBadgeProps) {
   return (
     <>
       {ready ? (
-        <View style={[styles.statusBadge, { backgroundColor: "#00cc00" }]}>
+        <View style={[styles.statusBadge, { backgroundColor: "#22c55e" }]}>
           <Check size={14} color="white" />
         </View>
       ) : (

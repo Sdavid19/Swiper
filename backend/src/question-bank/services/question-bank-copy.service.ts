@@ -4,7 +4,7 @@ import {
 } from '@nestjs/common';
 import { BankDto } from '../dto/bank.dto';
 import { QuestionBankService } from './question-bank.service';
-import { QuestionService } from '../../question/question.service';
+import { QuestionService } from '../../question/services/question.service';
 
 @Injectable()
 export class QuestionBankCopyService {

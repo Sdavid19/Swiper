@@ -5,10 +5,11 @@ import { VoteController } from './vote.controller';
 import { VoteService } from './services/vote.service';
 import { RoomService } from './services/room.service';
 import { QuestionBankService } from '../question-bank/services/question-bank.service';
-import { MediaService } from '../media';
 import { QuestionBankTemplateService } from '../question-bank-template/question-bank-template.service';
 import { AuthService } from '../auth/auth.service';
 import { ImageService } from '../shared/image/image.service';
+import { QuestionService } from '../question/services/question.service';
+import { MediaService } from '../media/services/media.service';
 
 @Module({
   providers: [
@@ -16,6 +17,7 @@ import { ImageService } from '../shared/image/image.service';
     VoteService,
     RoomService,
     UserService,
+    QuestionService,
     QuestionBankService,
     QuestionBankTemplateService,
     MediaService,

@@ -15,7 +15,6 @@ export function SvgFromUrl({ uri }: SvgFromUriProps) {
       .then(svg => {
         let cleaned = svg;
 
-        // Hibás viewBox javítása (ha csak 3 szám van)
         cleaned = cleaned.replace(/viewBox="([^"]+)"/, (match, content) => {
           const nums = content.split(" ");
           if (nums.length === 3) {
@@ -24,7 +23,6 @@ export function SvgFromUrl({ uri }: SvgFromUriProps) {
           return match;
         });
 
-        // Sima szöveg eltávolítása (ami nem <text> tag)
         cleaned = cleaned.replace(/>([^<]+)</g, (match, text) => {
           if (text.trim().length > 0) {
             return `><`;

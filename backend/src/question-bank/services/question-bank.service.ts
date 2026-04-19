@@ -5,36 +5,37 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBankDto } from '../dto/create-bank.dto';
 import { BankDto } from '../dto/bank.dto';
-import { BankImageDto } from '../dto/bank-image.dto';
 import { UpdateBankDto } from '../dto/update-bank.dto';
 import { CreateQuestionDto } from '../../question/dto/create-question.dto';
-import { QuestionDto } from '../../question/dto/question.dto';
-import { MediaService } from '../../media';
-import { CreateMediaQuestionDto } from '../../question/dto/create-media-question.dto';
 import { QuestionBankTemplateService } from '../../question-bank-template/question-bank-template.service';
 import { BankListItemDto } from '../dto/bank-list-item.dto';
 import { BankDetailDto } from '../dto/bank.detail.dto';
 import { ImageService } from '../../shared/image/image.service';
+import { QuestionService } from '../../question/services/question.service';
+import { MediaService } from '../../media/services/media.service';
 
 @Injectable()
 export class QuestionBankService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly mediaService: MediaService,
-    private readonly imageService: ImageService,
     private readonly templateService: QuestionBankTemplateService,
+    private readonly questionService: QuestionService,
   ) {}
 
   async findById(
     id: number,
-  ): Promise<BankListItemDto | null> {
+  ): Promise<BankListItemDto> {
     const bank =
       await this.prisma.questionBank.findUnique({
         where: { id },
         include: {
           category: true,
           _count: {
-            select: { votes: true },
+            select: {
+              votes: true,
+              questions: true,
+            },
           },
           creator: {
             select: {
@@ -47,7 +48,7 @@ export class QuestionBankService {
         },
       });
 
-    if (!bank) return null;
+    if (!bank) throw new NotFoundException();
 
     return this.mapToBankListItemDto(bank);
   }
@@ -151,43 +152,15 @@ export class QuestionBankService {
     });
   }
 
-  async updateBankImage(
+  async updateImage(
     id: number,
-    filename: string,
-  ): Promise<BankImageDto> {
-    const bank = await this.findById(id);
-
-    if (!bank) {
-      throw new NotFoundException(
-        `Bank with id ${id} not found`,
-      );
-    }
-
-    const newFilename =
-      await this.imageService.optimizeImage(
-        filename,
-      );
-
-    await this.imageService.deleteIfExists(
-      bank.imageUrl,
-    );
-
+    newFilename: string,
+  ) {
     return this.prisma.questionBank.update({
       where: { id },
       data: { imageUrl: newFilename },
       select: { id: true, imageUrl: true },
     });
-  }
-
-  async findQuestionsByBank(
-    id: number,
-  ): Promise<QuestionDto[]> {
-    const questions =
-      await this.prisma.question.findMany({
-        where: { bankId: id },
-      });
-
-    return questions;
   }
 
   async createQuestion(
@@ -205,20 +178,6 @@ export class QuestionBankService {
     return result;
   }
 
-  async createQuestions(
-    bankId: number,
-    dtos: CreateMediaQuestionDto[],
-  ) {
-    await this.prisma.question.createMany({
-      data: dtos.map((dto) => ({
-        bankId,
-        text: dto.text,
-        imageUrl: dto.imageUrl,
-      })),
-      skipDuplicates: true,
-    });
-  }
-
   async createQuestionBankByMedia(
     platformNames: string[] | undefined,
     templateId: number,
@@ -233,30 +192,28 @@ export class QuestionBankService {
       await this.templateService.findById(
         templateId,
       );
+
     if (!bankToCreateData)
       throw new NotFoundException(
         `Template with id ${templateId} dosen't exist!`,
       );
 
-    const bank =
-      await this.prisma.questionBank.create({
-        data: {
-          title: bankToCreateData.title,
-          description:
-            bankToCreateData.description,
-          categoryId:
-            bankToCreateData.category.id,
-          imageUrl: bankToCreateData.imageUrl,
-          creatorId: userId,
-        },
-      });
+    const bank = await this.create({
+      title: bankToCreateData.title,
+      description: bankToCreateData.description,
+      categoryId: bankToCreateData.category.id,
+      imageUrl: bankToCreateData.imageUrl,
+      creatorId: userId,
+    });
 
-    await this.createQuestions(
+    await this.questionService.createMany(
       bank.id,
-      media.map((m) => ({
-        text: m.name,
-        imageUrl: m.imageUrl,
-      })),
+      {
+        questions: media.map((m) => ({
+          text: m.name,
+          imageUrl: m.imageUrl,
+        })),
+      },
     );
 
     return bank;
@@ -276,6 +233,7 @@ export class QuestionBankService {
       updatedAt: bank.updatedAt,
       usageCount: bank.usageCount,
       voteCount: bank._count?.votes ?? 0,
+      questionCount: bank._count?.votes ?? 0,
       creator: bank.creator,
     };
   }

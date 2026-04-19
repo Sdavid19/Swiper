@@ -7,6 +7,7 @@ import { Badge } from "@/src/shared/components/Badge";
 import { PrimaryButton } from "@/src/shared/components";
 import { VoteStatNavigation } from "@/src/navigation";
 import { useMemo } from "react";
+import { StatButton } from "./StatButton";
 
 type CardProps = {
   vote: VoteDto;
@@ -35,9 +36,7 @@ export function VoteCard({ vote }: CardProps) {
         <Image
           source={{
             uri: vote.bank.imageUrl
-              ? vote.bank.imageUrl.startsWith("http")
-                ? vote.bank.imageUrl
-                : getImage(vote.bank.imageUrl)
+              ? getImage(vote.bank.imageUrl)
               : "https://placecats.com/200/100",
           }}
           style={styles.image}
@@ -61,13 +60,7 @@ export function VoteCard({ vote }: CardProps) {
             </Text>
           </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton
-            onPress={handleButtonPressed}
-            style={{ width: 60 }}
-            title="Stats"
-          />
-        </View>
+        <StatButton onPressed={handleButtonPressed} />
       </View>
     </View>
   );
@@ -82,9 +75,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
 
     shadowColor: "#000",
-    shadowOffset: { width: 2, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
 
     elevation: 5,
   },

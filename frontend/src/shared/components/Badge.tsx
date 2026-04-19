@@ -1,10 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 
 type BadgeProps = {
-  text: string,
-  color: string
-}
-
+  text: string;
+  color: string;
+};
 
 export function Badge({ text, color }: BadgeProps) {
   return (
@@ -16,15 +15,16 @@ export function Badge({ text, color }: BadgeProps) {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 5,
+    alignSelf: "flex-start",
     paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 20,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
+    paddingVertical: 5,
+    marginHorizontal: 5,
+    borderRadius: 999,
+    flexDirection: "row",
+    alignItems: "center",
   },
   text: {
-    color: 'white'
-  }
+    color: "white",
+    fontSize: 12,
+  },
 });

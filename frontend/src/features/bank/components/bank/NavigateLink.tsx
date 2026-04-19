@@ -1,28 +1,36 @@
-import { useNavigation } from '@react-navigation/native'
-import { Pressable, Text } from 'react-native'
-import { AppNavigation, EditBankNavigation, EditBankStackParamList } from '../../../../navigation'
+import { useNavigation } from "@react-navigation/native";
+import { Pressable, Text } from "react-native";
+import { AppNavigation } from "../../../../navigation";
 
 type NavigateLinkProps = {
-  text: string
-}
+  text: string;
+};
 
 export function NavigateLink(props: NavigateLinkProps) {
-  const navigation = useNavigation<AppNavigation>()
+  const navigation = useNavigation<AppNavigation>();
 
   const navigate = () => {
-    navigation.navigate('Tabs', {
-      screen: 'BankStack',
+    navigation.navigate("Tabs", {
+      screen: "BankStack",
       params: {
-        screen: 'ShowBanks',
-      }
-    })
-  }
+        screen: "ShowBanks",
+      },
+    });
+  };
 
   return (
-    <Pressable onPress={(navigate)}>
-      <Text style={{ textAlign: 'center', marginTop: 20, textDecorationLine: 'underline' }}>
+    <Pressable onPress={navigate}>
+      <Text
+        style={{
+          textAlign: "center",
+          marginTop: 20,
+          marginHorizontal: 10,
+          textDecorationLine: "underline",
+          color: "#666",
+        }}
+      >
         {props.text}
       </Text>
     </Pressable>
-  )
+  );
 }

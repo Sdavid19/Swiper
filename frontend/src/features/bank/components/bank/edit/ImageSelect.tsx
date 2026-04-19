@@ -56,23 +56,25 @@ export function ImageSelect({
         const manipulated = await ImageManipulator.manipulateAsync(
           asset.uri,
           [{ resize: { width: 800 } }],
-          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG },
         );
 
         const response = await uploadBankImage(
           bankId,
           manipulated.uri,
-          'image/jpeg',
-          asset.fileName
+          "image/jpeg",
+          asset.fileName,
         );
 
         if (!response.imageUrl) return;
         setImage(response.imageUrl);
-        dispatch(updateBankImageAction({ id: bankId, imageUrl: response.imageUrl }));
+        dispatch(
+          updateBankImageAction({ id: bankId, imageUrl: response.imageUrl }),
+        );
       } catch (error) {
         console.log(
           "Image upload failed:",
-          error instanceof Error ? error.message : error
+          error instanceof Error ? error.message : error,
         );
       }
     }
@@ -82,13 +84,11 @@ export function ImageSelect({
     <View style={styles.container}>
       <TouchableOpacity onPress={pickImage} disabled={disabled}>
         {image ? (
-          <Image source={{ uri: image
-              ? image.startsWith('http')
-                ? image
-                : getImage(image)
-              : 'https://placecats.com/200/100'
-            }} 
-            style={styles.image} 
+          <Image
+            source={{
+              uri: image ? getImage(image) : "https://placecats.com/200/100",
+            }}
+            style={styles.image}
           />
         ) : (
           <View style={styles.placeholder}>

@@ -1,7 +1,7 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { UserDto } from "../../../../shared/types/generated";
 import { getImage } from "../../../../api/services/image.service";
-import { Check, Copy } from "lucide-react-native";
+import { Check, Copy, User } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import { showInfo, showSuccess } from "../../../../shared/utils/toast.service";
 import { LobbyUserDto } from "../../../../shared/types/lobby-user.dto";
@@ -20,14 +20,17 @@ export function Lobby({ users }: LobbyProps) {
         {users.map((user) => (
           <View key={user.id} style={styles.userBox}>
             <StatusBadge ready={user.ready} />
-            <Image
-              source={{
-                uri: user.imageUrl
-                  ? getImage(user.imageUrl)
-                  : "https://placecats.com/100/100",
-              }}
-              style={styles.userImage}
-            />
+            {user.imageUrl ? (
+              <Image
+                source={{
+                  uri: getImage(user.imageUrl),
+                }}
+                style={styles.userImage}
+              />
+            ) : (
+              <User size={80} style={styles.userImage} color="black"></User>
+            )}
+
             <Text style={styles.userName}>{user.name}</Text>
           </View>
         ))}

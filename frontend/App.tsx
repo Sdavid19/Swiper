@@ -12,19 +12,22 @@ import { socket } from "./src/socket/socket";
 
 export default function App() {
   useEffect(() => {
-    let state = AppState.currentState;
-
     const subscription = AppState.addEventListener("change", (next) => {
-      if (state === "active" && next !== "active") {
-        socket.disconnect();
-      }
+      if (next === "active") {
+        const token = store.getState().auth.token;
 
-      state = next;
+        if (token) {
+          if (socket.connected) {
+            socket.disconnect();
+          }
+
+          socket.auth = { token };
+          socket.connect();
+        }
+      }
     });
 
-    return () => {
-      subscription.remove();
-    };
+    return () => subscription.remove();
   }, []);
 
   return (

@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Badge } from "../../../../../shared/components/Badge";
 import { CategoryDto } from "../../../../../shared/types/generated";
 import { PrimaryButton } from "../../../../../shared/components";
@@ -6,6 +6,8 @@ import { getImage } from "../../../../../api/services/image.service";
 import { shortenString } from "../../../../../shared/utils/text.service";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigation } from "../../../../../navigation";
+import { Play } from "lucide-react-native";
+import { PlayButton } from "./PlayButton";
 
 type BankBase = {
   id: number;
@@ -36,38 +38,32 @@ export function BankCard({ bank, isTemplate }: CardProps) {
         <Image
           source={{
             uri: bank.imageUrl
-              ? bank.imageUrl.startsWith("http")
-                ? bank.imageUrl
-                : getImage(bank.imageUrl)
+              ? getImage(bank.imageUrl)
               : "https://placecats.com/200/100",
           }}
           style={styles.image}
         />
+      </View>
+      <View style={{ position: "absolute", top: 20, right: 10 }}>
+        <Badge color={bank.category.color} text={bank.category.name} />
       </View>
 
       <View style={styles.cardBody}>
         <View>
           <View style={styles.infoCotainer}>
             <Text style={styles.bankTitle}>
-              {shortenString(bank.title, 12)}
+              {shortenString(bank.title, 20)}
             </Text>
-            <Badge color={bank.category.color} text={bank.category.name} />
           </View>
 
           <View style={styles.descContainer}>
             <Text style={styles.desc} numberOfLines={1} ellipsizeMode="tail">
-              {shortenString(bank.description, 25)}
+              {shortenString(bank.description, 32)}
             </Text>
           </View>
         </View>
 
-        <View style={styles.buttonContainer}>
-          <PrimaryButton
-            style={{ width: 60 }}
-            onPress={navigateToCreateLobby}
-            title="Start"
-          />
-        </View>
+        <PlayButton onPressed={navigateToCreateLobby} />
       </View>
     </View>
   );
@@ -75,7 +71,7 @@ export function BankCard({ bank, isTemplate }: CardProps) {
 
 const styles = StyleSheet.create({
   container: {
-    width: 270,
+    width: 300,
     marginVertical: 10,
     marginHorizontal: 10,
 
@@ -83,15 +79,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
 
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 2,
+    shadowRadius: 4,
 
     elevation: 5,
   },
   imageWrapper: {
     width: "100%",
-    height: 175,
+    height: 155,
     borderTopStartRadius: 10,
     borderTopEndRadius: 10,
     overflow: "hidden",
@@ -99,9 +95,12 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
+    borderBottomWidth: 1,
+    borderColor: "#d4d4d4",
   },
   cardBody: {
     padding: 10,
+    paddingVertical: 15,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -117,6 +116,7 @@ const styles = StyleSheet.create({
   },
   desc: {
     fontSize: 12,
+    color: "#666",
   },
   bankTitle: {
     fontSize: 16,

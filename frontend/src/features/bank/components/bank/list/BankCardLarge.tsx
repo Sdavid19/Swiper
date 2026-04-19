@@ -1,39 +1,41 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Badge } from "../../../../../shared/components/Badge";
 import { BankDto } from "../../../../../shared/types/generated";
-import { PrimaryButton } from "../../../../../shared/components";
 import { useNavigation } from "@react-navigation/native";
-import { AppNavigation, EditBankNavigation, VoteNavigation } from "../../../../../navigation";
+import { AppNavigation, EditBankNavigation } from "../../../../../navigation";
 import { getImage } from "../../../../../api/services/image.service";
 import { shortenString } from "../../../../../shared/utils/text.service";
+import { PlayButton } from "./PlayButton";
 
 type CardProps = {
-  bank: BankDto
-}
+  bank: BankDto;
+};
 
 export function BankCardLarge({ bank }: CardProps) {
+  const navigation = useNavigation<EditBankNavigation>();
+  const navigation2 = useNavigation<AppNavigation>();
 
-  const navigation = useNavigation<EditBankNavigation>()
-  const navigation2 = useNavigation<AppNavigation>()
-
-    const navigateToCreateLobby = () => {
-      navigation2.navigate("CreateLobby", {bankId: bank.id})
-  }
+  const navigateToCreateLobby = () => {
+    navigation2.navigate("CreateLobby", { bankId: bank.id });
+  };
 
   const onButtonPress = (id: number) => {
-    navigation.navigate('EditBank', { bankId: id });
-  }
+    navigation.navigate("EditBank", { bankId: id });
+  };
 
   return (
-    <TouchableOpacity key={bank.id} style={styles.container} onPress={() => onButtonPress(bank.id)} >
+    <TouchableOpacity
+      key={bank.id}
+      style={styles.container}
+      onPress={() => onButtonPress(bank.id)}
+    >
       <View style={styles.imageWrapper}>
         <Image
-           source={{ uri: bank.imageUrl
-              ? bank.imageUrl.startsWith('http')
-                ? bank.imageUrl
-                : getImage(bank.imageUrl)
-              : 'https://placecats.com/200/100'
-            }}
+          source={{
+            uri: bank.imageUrl
+              ? getImage(bank.imageUrl)
+              : "https://placecats.com/200/100",
+          }}
           style={styles.image}
         />
       </View>
@@ -41,17 +43,19 @@ export function BankCardLarge({ bank }: CardProps) {
       <View style={styles.cardBody}>
         <View>
           <View style={styles.infoCotainer}>
-            <Text style={styles.bankTitle}>{shortenString(bank.title, 20)}</Text>
+            <Text style={styles.bankTitle}>
+              {shortenString(bank.title, 20)}
+            </Text>
             <Badge text={bank.category.name} color={bank.category.color} />
           </View>
 
           <View style={styles.descContainer}>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.desc}>{shortenString(bank.description, 35)}</Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.desc}>
+              {shortenString(bank.description, 35)}
+            </Text>
           </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton onPress={navigateToCreateLobby} style={{ width: 60 }} title="Start" />
-        </View>
+        <PlayButton onPressed={navigateToCreateLobby} />
       </View>
     </TouchableOpacity>
   );
@@ -66,48 +70,49 @@ const styles = StyleSheet.create({
     borderRadius: 10,
 
     shadowColor: "#000",
-    shadowOffset: { width: 2, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
 
     elevation: 5,
   },
   imageWrapper: {
-    width: '100%',
-    height: 175,
+    width: "100%",
+    height: 200,
     borderTopStartRadius: 10,
     borderTopEndRadius: 10,
-    overflow: "hidden"
+    overflow: "hidden",
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   cardBody: {
     padding: 10,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
   infoCotainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 5
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 5,
   },
   descContainer: {
-    marginVertical: 5
+    marginVertical: 5,
   },
   desc: {
-    fontSize: 12
+    fontSize: 12,
+    color: "#666",
   },
   bankTitle: {
     fontSize: 16,
-    fontWeight: '500'
+    fontWeight: "500",
   },
   buttonContainer: {
     flex: 1,
-    display: 'flex',
-    alignItems: 'flex-end'
-  }
+    display: "flex",
+    alignItems: "flex-end",
+  },
 });
