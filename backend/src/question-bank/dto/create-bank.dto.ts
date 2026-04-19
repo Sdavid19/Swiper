@@ -36,7 +36,7 @@ export class CreateBankDto {
   @IsString()
   @IsOptional()
   @ApiProperty({ required: false })
-  imageUrl?: string;
+  imageUrl?: string | null;
 
   @Type(() => Boolean)
   @IsBoolean()

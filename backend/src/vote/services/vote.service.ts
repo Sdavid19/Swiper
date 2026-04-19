@@ -66,6 +66,7 @@ export class VoteService {
           },
         },
       },
+      orderBy: { startsAt: 'desc' },
     });
   }
 

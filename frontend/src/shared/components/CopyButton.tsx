@@ -1,29 +1,29 @@
-import { Trash2 } from "lucide-react-native";
+import { Copy, Trash2 } from "lucide-react-native";
 import { Alert, TouchableOpacity } from "react-native";
 
-interface DeleteButtonProps {
-  onDelete: () => Promise<void> | void;
+interface CopyButtonProps {
+  onCopy: () => Promise<void> | void;
   confirmTitle?: string;
   confirmMessage?: string;
   iconSize?: number;
   iconColor?: string;
 }
 
-export function DeleteButton({
-  onDelete,
-  confirmTitle = "Confirm Delete",
-  confirmMessage = "Are you sure you want to delete this item?",
+export function CopyButton({
+  onCopy,
+  confirmTitle = "Confirm Copy",
+  confirmMessage = "Are you sure you want to copy this item?",
   iconSize = 24,
-  iconColor = "red",
-}: DeleteButtonProps) {
+  iconColor = "#007AFF",
+}: CopyButtonProps) {
   const handlePress = () => {
     Alert.alert(confirmTitle, confirmMessage, [
       { text: "Cancel", style: "cancel" },
       {
-        text: "Delete",
-        style: "destructive",
+        text: "Copy",
+        style: "default",
         onPress: async () => {
-          await onDelete();
+          await onCopy();
         },
       },
     ]);
@@ -41,7 +41,7 @@ export function DeleteButton({
       }}
       onPress={handlePress}
     >
-      <Trash2 size={iconSize} color={iconColor} />
+      <Copy size={iconSize} color={iconColor} />
     </TouchableOpacity>
   );
 }

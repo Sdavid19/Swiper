@@ -12,45 +12,45 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux";
 
 export function JoinLobbyScreen() {
-  const [roomId, setRoomId] = useState('');
+  const [roomId, setRoomId] = useState("");
   const navigation = useNavigation<VoteNavigation>();
   const user = useSelector((state: RootState) => state.auth.user);
 
   const buttonDisabled = () => {
     return roomId.length != 6;
-  }
+  };
 
   const handleJoinRoom = () => {
     if (!roomId || !user) return;
 
-    socket.emit("checkRoom", { roomId: Number(roomId) }, (data: ConnectRoomDto) => {
-      if (data.ok) {
-        socket.emit("joinRoom", {
-          roomId: data.roomId,
-          userId: user.id
-        });
-      } else {
-        showError(`Room with the given code doesn't exists`);
-      }
-    });
+    socket.emit(
+      "checkRoom",
+      { roomId: Number(roomId) },
+      (data: ConnectRoomDto) => {
+        if (data.ok) {
+          socket.emit("joinRoom", {
+            roomId: data.roomId,
+          });
+        } else {
+          showError(`Room with the given code doesn't exists`);
+        }
+      },
+    );
   };
 
   useEffect(() => {
-    if (!socket.connected) socket.connect();
-
     socket.on("joinedRoom", ({ roomId, bankId }) => {
-      navigation.navigate("Lobby", {roomId: roomId, bankId: bankId })
+      navigation.replace("Lobby", { roomId: roomId, bankId: bankId });
     });
 
     socket.on("joinError", (err) => {
-      showError("Error joining vote!");
+      showError(err);
     });
 
     return () => {
       socket.off("connect");
       socket.off("joinedRoom");
       socket.off("joinError");
-      socket.disconnect();
     };
   }, []);
 
@@ -59,26 +59,25 @@ export function JoinLobbyScreen() {
       contentContainerStyle={{
         flexGrow: 1,
         paddingHorizontal: 15,
-        paddingBottom: 15
+        paddingBottom: 15,
       }}
       enableOnAndroid={true}
       keyboardOpeningTime={0}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
-      
     >
       <Text
         style={{
-          textAlign: 'center',
+          textAlign: "center",
           fontSize: 20,
-          fontWeight: 'bold',
-          marginTop: 20
+          fontWeight: "bold",
+          marginTop: 20,
         }}
       >
         Write the code down below
       </Text>
 
-      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+      <View style={{ flex: 1, justifyContent: "flex-end" }}>
         <View>
           <InputField
             label="Room code"

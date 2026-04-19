@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Room } from '../types';
 import { CreateAnswerDto } from '../dto/create-answer.dto';
 import { VoteService } from './vote.service';
-import { QuestionBankService } from '../../question-bank/question-bank.service';
+import { QuestionBankService } from '../../question-bank/services/question-bank.service';
 
 @Injectable()
 export class RoomService {
@@ -15,6 +15,7 @@ export class RoomService {
 
   async createRoom(
     bankId: number,
+    creatorId: number,
   ): Promise<number> {
     let roomId: number;
 
@@ -32,6 +33,7 @@ export class RoomService {
     this.rooms.set(roomId, {
       roomId,
       bankId,
+      creatorId,
       startDate: new Date(),
       endDate: null,
       users: [],
@@ -80,6 +82,13 @@ export class RoomService {
     room.users = room.users.filter(
       (u) => u.id !== userId,
     );
+
+    delete room.votes[userId];
+
+    if (this.isEveryoneVoted(roomId)) {
+      room.endDate = new Date();
+      this.saveVotes(roomId);
+    }
 
     if (room.users.length === 0) {
       if (room.countdown)
@@ -195,7 +204,7 @@ export class RoomService {
     return this.voteService.createVoteData({
       answers: asnwers,
       bankId: room.bankId,
-      creatorId: 1,
+      creatorId: room.creatorId,
       startDate: room.startDate,
       endDate: new Date(),
     });

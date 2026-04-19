@@ -1,8 +1,20 @@
-import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from "@react-navigation/native-stack";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { useEffect, useState, useMemo, useLayoutEffect } from "react";
-import { deleteBank, getBankById } from "../../services/bank.service";
-import { BankDto, BankListItemDto, CategoryDto } from "../../../../shared/types/generated";
+import { copyBank, deleteBank, getBankById } from "../../services/bank.service";
+import {
+  BankListItemDto,
+  CategoryDto,
+} from "../../../../shared/types/generated";
 import { getCategories } from "../../services/category.service";
 import { ImageSelect } from "../../components/bank/edit/ImageSelect";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,51 +23,60 @@ import { EditBankForm } from "../../components/bank/edit/EditBankForm";
 import { useNavigation } from "@react-navigation/native";
 import { DeleteButton } from "../../../../shared/components/DeleteButton";
 import { showSuccess } from "../../../../shared/utils/toast.service";
-import { removeBankAction } from "../../../../redux/bankSlice";
+import { addBankAction, removeBankAction } from "../../../../redux/bankSlice";
 import { EditBankStackParamList } from "../../../../navigation";
+import { CopyButton } from "@/src/shared/components/CopyButton";
 
 type EditBankProps = NativeStackScreenProps<EditBankStackParamList, "EditBank">;
 export type EditBankScreenMode = "View" | "Edit" | "Create";
 
 export function EditBankScreen({ route }: EditBankProps) {
   const dispatch = useDispatch();
-  
+
   const user = useSelector((state: RootState) => state.auth.user);
-  const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
 
   const [bank, setBank] = useState<BankListItemDto>();
   const [categories, setCategories] = useState<CategoryDto[]>([]);
 
   const screenMode: EditBankScreenMode = useMemo(() => {
-    if (!bank) return "Create";
-
-    if (bank.voteCount > 0) return "View";
-
+    if (bank && bank.voteCount > 0) return "View";
+    if (bank?.id) return "Edit";
     if (!route.params?.bankId) return "Create";
     if (!user) return "View";
-
-    if (bank.creator.id === user.id) return "Edit";
-
     return "View";
   }, [route.params?.bankId, bank, user]);
 
+  const handleDelete = async (bankId: number) => {
+    await deleteBank(bankId);
+    dispatch(removeBankAction(bankId));
+    showSuccess("Bank deleted successfully!");
+    navigation.popToTop();
+  };
+
+  const handleCopy = async (bankId: number) => {
+    const bank = await copyBank(bankId);
+    dispatch(addBankAction(bank));
+    showSuccess("Bank copeid successfully!");
+    navigation.popToTop();
+  };
+
   useLayoutEffect(() => {
-    if (!bank || screenMode == "View") return;
+    if (!bank) return;
+
     navigation.setOptions({
       headerRight: () => (
-        <DeleteButton
-          onDelete={async () => {
-            await deleteBank(bank.id);
-            showSuccess("Bank deleted successfully!");
-            dispatch(removeBankAction(bank.id));
-            navigation.popToTop();
-          }}
-        />
+        <View>
+          {screenMode != "View" ? (
+            <DeleteButton onDelete={() => handleDelete(bank.id)} />
+          ) : (
+            <CopyButton onCopy={() => handleCopy(bank.id)} />
+          )}
+        </View>
       ),
     });
   }, [bank, navigation]);
-
-
 
   const isEditable = screenMode !== "View";
   const isCreateMode = screenMode === "Create";

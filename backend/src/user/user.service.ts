@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,6 +8,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as argon from 'argon2';
 import { UserDto } from './dto';
 import { UserImageDto } from './dto/user-image';
+import { SignupDto } from '../auth/dto';
 
 @Injectable()
 export class UserService {
@@ -30,6 +32,41 @@ export class UserService {
         `User with id ${id} not found`,
       );
     }
+
+    return user;
+  }
+
+  async createUser(
+    dto: SignupDto,
+  ): Promise<UserDto> {
+    const existingUser =
+      await this.prisma.user.findFirst({
+        where: { email: dto.email },
+      });
+
+    if (existingUser) {
+      throw new BadRequestException(
+        'Email already in use',
+      );
+    }
+
+    const hashedPassword = await argon.hash(
+      dto.password,
+    );
+
+    const user = await this.prisma.user.create({
+      data: {
+        email: dto.email,
+        name: dto.name,
+        passwordHash: hashedPassword,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        imageUrl: true,
+      },
+    });
 
     return user;
   }

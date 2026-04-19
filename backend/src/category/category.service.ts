@@ -14,24 +14,30 @@ export class CategoryService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async findById(id: number) {
-    return this.prisma.category.findUnique({
-      where: { id: id },
-    });
-  }
-
-  create(
-    dto: CreateCategoryDto,
-  ): Promise<CategoryDto> {
-    const newCategory =
-      this.prisma.category.create({
-        data: {
-          name: dto.name,
-          slug: dto.name.toLowerCase(),
-        },
+  async findByIdOrThrow(id: number) {
+    const category =
+      await this.prisma.category.findUnique({
+        where: { id },
       });
 
-    return newCategory;
+    if (!category) {
+      throw new NotFoundException(
+        `Category with id ${id} not found`,
+      );
+    }
+
+    return category;
+  }
+
+  async create(
+    dto: CreateCategoryDto,
+  ): Promise<CategoryDto> {
+    return this.prisma.category.create({
+      data: {
+        name: dto.name,
+        slug: this.generateSlug(dto.name),
+      },
+    });
   }
 
   findAll(): Promise<CategoryDto[]> {
@@ -41,17 +47,15 @@ export class CategoryService {
   }
 
   async delete(id: number) {
-    const category = await this.findById(id);
-
-    if (!category) {
-      throw new NotFoundException(
-        `Category with id ${id} not found`,
-      );
-    }
+    await this.findByIdOrThrow(id);
 
     return this.prisma.category.delete({
       where: { id },
       select: { id: true },
     });
+  }
+
+  private generateSlug(name: string): string {
+    return name.trim().toLowerCase();
   }
 }

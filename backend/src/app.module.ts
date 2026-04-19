@@ -8,6 +8,7 @@ import { QuestionModule } from './question/question.module';
 import { VoteModule } from './vote/vote.module';
 import { MediaModule } from './media';
 import { QuestioBankTemplateModule } from './question-bank-template/question-bank-template.module';
+import { QuestionBankCopyService } from './question-bank/services/question-bank-copy.service';
 
 @Module({
   imports: [

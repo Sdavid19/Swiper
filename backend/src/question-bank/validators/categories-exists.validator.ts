@@ -20,7 +20,7 @@ export class CategoriesExist implements ValidatorConstraintInterface {
 
     for (const id of categoryIds) {
       const exists =
-        await this.categoryService.findById(id);
+        await this.categoryService.findByIdOrThrow(id);
       if (!exists) return false;
     }
     return true;

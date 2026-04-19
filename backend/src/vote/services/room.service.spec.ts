@@ -4,7 +4,7 @@ import {
 } from '@nestjs/testing';
 import { RoomService } from './room.service';
 import { VoteService } from './vote.service';
-import { QuestionBankService } from '../../question-bank/question-bank.service';
+import { QuestionBankService } from '../../question-bank/services/question-bank.service';
 
 describe('RoomService', () => {
   let service: RoomService;
@@ -55,7 +55,6 @@ describe('RoomService', () => {
     expect(room?.bankId).toBe(1);
   });
 
-
   it('should add user to room', async () => {
     mockBankService.findQuestionsByBank.mockResolvedValue(
       [],
@@ -71,7 +70,6 @@ describe('RoomService', () => {
     expect(users[0].id).toBe(10);
   });
 
-
   it('should detect when everyone is ready', async () => {
     mockBankService.findQuestionsByBank.mockResolvedValue(
       [],
@@ -86,7 +84,6 @@ describe('RoomService', () => {
       true,
     );
   });
-
 
   it('should save votes when everyone voted', async () => {
     mockBankService.findQuestionsByBank.mockResolvedValue(
@@ -113,7 +110,6 @@ describe('RoomService', () => {
     ).toHaveBeenCalled();
     expect(result).toBeDefined();
   });
-
 
   it('should delete room when last user leaves', async () => {
     mockBankService.findQuestionsByBank.mockResolvedValue(

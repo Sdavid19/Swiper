@@ -1,54 +1,73 @@
-import api from "../../../api/client"
-import { BankDetailDto, BankDto, BankFilterDto, BankImageDto, BankListItemDto, CreateBankDto, CreateMediaBankDto, UpdateBankDto } from "../../../shared/types/generated"
+import api from "../../../api/client";
+import {
+  BankDetailDto,
+  BankDto,
+  BankFilterDto,
+  BankImageDto,
+  BankListItemDto,
+  CreateBankDto,
+  CreateMediaBankDto,
+} from "../../../shared/types/generated";
 
 export const getAllBanks = async (): Promise<BankDto[]> => {
   const response = await api.post("/question-banks");
   return response.data;
-}
+};
 
 export const getAllBanksWithFilter = async (
-  filter?: BankFilterDto
+  filter?: BankFilterDto,
 ): Promise<BankDto[]> => {
   const response = await api.post("/question-banks", filter);
   return response.data;
-}
+};
 
 export const getBankById = async (id: number): Promise<BankListItemDto> => {
   const response = await api.get(`/question-banks/${id}`);
   return response.data;
-}  
+};
 
-export const getBankWithQuestionsById = async (id: number): Promise<BankDetailDto> => {
+export const getBankWithQuestionsById = async (
+  id: number,
+): Promise<BankDetailDto> => {
   const response = await api.get(`/question-banks/${id}/details`);
   return response.data;
-}  
+};
 
 export const createBank = async (dto: CreateBankDto): Promise<BankDto> => {
-  const response = await api.post('/question-banks/create', dto);
+  const response = await api.post("/question-banks/create", dto);
   return response.data;
-}
+};
 
-export const createBankByMedia = async (dto: CreateMediaBankDto): Promise<BankDto> => {
-  const response = await api.post('/question-banks/create-media', dto);
+export const copyBank = async (id: number): Promise<BankDto> => {
+  const response = await api.post(`/question-banks/${id}/copy`);
   return response.data;
-}
+};
 
-export const updateBank = async (id: number, dto: CreateBankDto): Promise<BankDto> => {
+export const createBankByMedia = async (
+  dto: CreateMediaBankDto,
+): Promise<BankDto> => {
+  const response = await api.post("/question-banks/create-media", dto);
+  return response.data;
+};
+
+export const updateBank = async (
+  id: number,
+  dto: CreateBankDto,
+): Promise<BankDto> => {
   const response = await api.put(`/question-banks/${id}`, dto);
   return response.data;
-}
+};
 
 export const deleteBank = async (id: number): Promise<BankDto> => {
   const response = await api.delete(`/question-banks/${id}`);
   return response.data;
-}
-
+};
 
 export const uploadBankImage = async (
   bankId: number,
   uri: string,
   type?: string,
-  name?: string | null
+  name?: string | null,
 ): Promise<BankImageDto> => {
   const formData = new FormData();
   formData.append("file", {
@@ -64,7 +83,7 @@ export const uploadBankImage = async (
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    }
+    },
   );
 
   return response.data;

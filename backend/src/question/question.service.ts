@@ -3,25 +3,52 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma';
+import { ImageService } from '../shared/image/image.service';
 import { updateQuestionDto } from './dto/update-question.dto';
 import { QuestionImageDto } from './dto/question-image.dto';
-import * as fs from 'fs';
-import path from 'path';
-import sharp from 'sharp';
+import { CreateQuestionsDto } from './dto/create-questions.dto';
 
 @Injectable()
 export class QuestionService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly imageService: ImageService,
   ) {}
 
-  async findById(id: number) {
+  findById(id: number) {
     return this.prisma.question.findUnique({
-      where: { id: id },
+      where: { id },
     });
   }
 
-  async updateQuestion(
+  async createMany(
+    bankId: number,
+    dto: CreateQuestionsDto,
+  ) {
+    if (!dto.questions.length) {
+      return;
+    }
+
+    return this.prisma.question.createMany({
+      data: dto.questions.map((q) => ({
+        bankId,
+        text: q.text,
+        imageUrl: q.imageUrl,
+      })),
+      skipDuplicates: true,
+    });
+  }
+
+  async getAllQuestionsByBankId(id: number) {
+    const questions =
+      await this.prisma.question.findMany({
+        where: { bankId: id },
+      });
+
+    return questions;
+  }
+
+  updateQuestion(
     id: number,
     dto: updateQuestionDto,
   ) {
@@ -31,7 +58,7 @@ export class QuestionService {
     });
   }
 
-  async deleteQuestion(id: number) {
+  deleteQuestion(id: number) {
     return this.prisma.question.delete({
       where: { id },
     });
@@ -40,11 +67,8 @@ export class QuestionService {
   async updateQuestionImage(
     id: number,
     filename: string,
-  ): Promise<QuestionImageDto | null> {
-    const question =
-      await this.prisma.question.findUnique({
-        where: { id },
-      });
+  ): Promise<QuestionImageDto> {
+    const question = await this.findById(id);
 
     if (!question) {
       throw new NotFoundException(
@@ -52,43 +76,19 @@ export class QuestionService {
       );
     }
 
-    const uploadsDir = path.join(
-      process.cwd(),
-      'uploads',
-    );
-    const oldImagePath = question.imageUrl
-      ? path.join(uploadsDir, question.imageUrl)
-      : null;
-    const newImagePath = path.join(
-      uploadsDir,
-      `optimized-${filename}`,
+    const newFilename =
+      await this.imageService.optimizeImage(
+        filename,
+      );
+
+    await this.imageService.deleteIfExists(
+      question.imageUrl,
     );
 
-    await sharp(path.join(uploadsDir, filename))
-      .resize(800)
-      .jpeg({ quality: 70 })
-      .toFile(newImagePath);
-
-    fs.unlinkSync(
-      path.join(uploadsDir, filename),
-    );
-
-    if (
-      oldImagePath &&
-      fs.existsSync(oldImagePath)
-    ) {
-      fs.unlinkSync(oldImagePath);
-    }
-
-    const imageUrl =
-      await this.prisma.question.update({
-        where: { id },
-        data: {
-          imageUrl: `optimized-${filename}`,
-        },
-        select: { imageUrl: true },
-      });
-
-    return imageUrl;
+    return this.prisma.question.update({
+      where: { id },
+      data: { imageUrl: newFilename },
+      select: { id: true, imageUrl: true },
+    });
   }
 }

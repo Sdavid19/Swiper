@@ -1,4 +1,10 @@
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { PrimaryButton } from "../../../../shared/components";
 import { useEffect, useState } from "react";
 import { socket } from "../../../../socket/socket";
@@ -11,75 +17,91 @@ import { getBankWithQuestionsById } from "../../../bank/services/bank.service";
 import { BankDetailDto, BankDto } from "../../../../shared/types/generated";
 import { QuestionList } from "../../../bank/components/question/QuestionList";
 
-type CreateLobbyScreenProps = NativeStackScreenProps<AppStackParamList, "CreateLobby">;
+type CreateLobbyScreenProps = NativeStackScreenProps<
+  AppStackParamList,
+  "CreateLobby"
+>;
 
-export function CreateLobbyScreen({route}: CreateLobbyScreenProps) {
-
+export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
   const [bank, setBank] = useState<BankDetailDto>();
 
   const bankId = route.params.bankId;
-    const user = useSelector((state: RootState) => state.auth.user);
-    const navigation = useNavigation<AppNavigation>();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const navigation = useNavigation<AppNavigation>();
 
   const handleCreateLobby = () => {
-    if(!user || !bankId) return;
+    if (!user || !bankId) return;
     socket.emit("createRoom", {
       bankId: bankId,
-      userId: user.id
     });
-
   };
 
   useEffect(() => {
     getBankWithQuestionsById(bankId)
-    .then(response => setBank(response))
-    .catch(err => console.log(err));
+      .then((response) => setBank(response))
+      .catch((err) => console.log(err));
   }, []);
 
   useEffect(() => {
-    if (!socket.connected) socket.connect();
-
-   socket.on("roomCreated", ({ roomId, bankId }) => {
+    socket.on("roomCreated", ({ roomId, bankId }) => {
       console.log("Room létrehozva:", roomId, bankId);
 
-      navigation.navigate("Tabs", {
-        screen: "VoteStack",
-        params: {
-          screen: "Lobby", 
-          params: { roomId, bankId } 
-        }
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: "Tabs",
+            state: {
+              routes: [
+                {
+                  name: "VoteStack",
+                  state: {
+                    routes: [
+                      {
+                        name: "Lobby",
+                        params: { roomId, bankId },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
       });
     });
 
-
     return () => {
       socket.off("roomCreated");
-      socket.disconnect();
     };
   }, []);
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      {bank && (
+        <View style={styles.header}>
+          <Text style={styles.title}>{bank.title}</Text>
+          {bank.description && (
+            <Text style={styles.description}>{bank.description}</Text>
+          )}
+        </View>
+      )}
 
-    {bank && (
-      <View style={styles.header}>
-        <Text style={styles.title}>{bank.title}</Text>
-        {bank.description && <Text style={styles.description}>{bank.description}</Text>}
-      </View>
-    )}
-
-    <View style={styles.contentContainer}>
+      <View style={styles.contentContainer}>
         <Text style={styles.sectionTitle}>Questions</Text>
         <QuestionList questions={bank?.questions || []} viewMode={true} />
-    </View>
+      </View>
 
-    <View style={styles.footer}>
-      <PrimaryButton 
-        title="Start vote" 
-        style={styles.button}
-        onPress={handleCreateLobby}
-      />
-    </View>
+      <View style={styles.footer}>
+        <PrimaryButton
+          title="Start vote"
+          style={styles.button}
+          onPress={handleCreateLobby}
+        />
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -109,7 +131,7 @@ const styles = StyleSheet.create({
 
   contentContainer: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "center",
   },
 
   sectionTitle: {
@@ -123,13 +145,12 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
 
-
   footer: {
     paddingTop: 20,
   },
 
   button: {
     width: "100%",
-    marginBottom: Platform.OS === "ios" ? 30 : 20
+    marginBottom: Platform.OS === "ios" ? 30 : 20,
   },
 });

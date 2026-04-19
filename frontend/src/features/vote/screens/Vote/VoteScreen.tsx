@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image, Text } from "react-native";
+import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 import { QuestionDto } from "../../../../shared/types/generated";
 import { getQuestionsByBank } from "../../../bank/services/question.service";
 import { SwipeCard } from "../../components/Vote/SwipeCard";
@@ -10,6 +10,7 @@ import { RootState } from "@/src/redux";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { AppNavigation, AppStackParamList } from "@/src/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Check, X } from "lucide-react-native";
 
 type VoteScreenProps = NativeStackScreenProps<AppStackParamList, "Vote">;
 
@@ -83,7 +84,6 @@ export function VoteScreen({ route }: VoteScreenProps) {
 
     socket.emit("vote", {
       roomId: roomId,
-      userId: user.id,
       questionId: questions[index].id,
       answer: dir == "right",
     });
@@ -132,25 +132,29 @@ export function VoteScreen({ route }: VoteScreenProps) {
       )}
 
       <View style={styles.buttons}>
-        <PrimaryButton
+        <TouchableOpacity
           disabled={over}
-          title="Balra"
+          style={styles.button}
           onPress={() => {
             if (over || isSwiping) return;
             setIsSwiping(true);
             setTrigger("left");
           }}
-        />
+        >
+          <X size={35} color="red" />
+        </TouchableOpacity>
 
-        <PrimaryButton
-          title="Jobbra"
+        <TouchableOpacity
           disabled={over}
+          style={styles.button}
           onPress={() => {
             if (over || isSwiping) return;
             setIsSwiping(true);
             setTrigger("right");
           }}
-        />
+        >
+          <Check size={35} color="green" />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -159,16 +163,30 @@ export function VoteScreen({ route }: VoteScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
   },
   buttons: {
     position: "absolute",
-    bottom: 80,
+    bottom: 70,
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-evenly",
+  },
+  button: {
+    width: 80,
+    height: 80,
+    backgroundColor: "white",
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+
+    elevation: 5,
   },
 });

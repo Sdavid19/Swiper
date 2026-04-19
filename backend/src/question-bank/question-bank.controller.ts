@@ -13,7 +13,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { QuestionBankService } from './question-bank.service';
+import { QuestionBankService } from './services/question-bank.service';
 import { CreateBankDto } from './dto/create-bank.dto';
 import {
   ApiBearerAuth,
@@ -35,6 +35,7 @@ import { QuestionDto } from '../question/dto/question.dto';
 import { CreateMediaBankDto } from './dto/create-media-bank.dto';
 import { BankDetailDto } from './dto/bank.detail.dto';
 import { BankListItemDto } from './dto/bank-list-item.dto';
+import { QuestionBankCopyService } from './services/question-bank-copy.service';
 
 @ApiTags('question-banks')
 @ApiBearerAuth()
@@ -42,6 +43,7 @@ import { BankListItemDto } from './dto/bank-list-item.dto';
 export class QuestionBankController {
   constructor(
     private readonly bankService: QuestionBankService,
+    private readonly copyService: QuestionBankCopyService,
   ) {}
 
   @Post()
@@ -88,6 +90,14 @@ export class QuestionBankController {
     return this.bankService.findQuestionsByBank(
       +id,
     );
+  }
+
+  @Post(':id/copy')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOkResponse({ type: CreateQuestionDto })
+  @UseGuards(AuthGuard)
+  copyQuestionBank(@Param('id') id: string) {
+    return this.copyService.copy(+id);
   }
 
   @Post(':id/questions')

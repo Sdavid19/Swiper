@@ -14,7 +14,7 @@ export class CategoryExists implements ValidatorConstraintInterface {
 
   async validate(categoryId: number) {
     const category =
-      await this.categoryService.findById(
+      await this.categoryService.findByIdOrThrow(
         categoryId,
       );
     return !!category;
