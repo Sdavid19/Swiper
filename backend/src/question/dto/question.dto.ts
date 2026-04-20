@@ -8,6 +8,9 @@ export class QuestionDto {
   text: string;
 
   @ApiProperty({ nullable: true, type: String })
+  description: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
   imageUrl: string | null;
 
   @ApiProperty()

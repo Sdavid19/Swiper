@@ -3,7 +3,7 @@ import { Lobby } from "../../components/Vote/Lobby";
 import { AppNavigation, VoteStackParamList } from "../../../../navigation";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { socket } from "../../../../socket/socket";
+import { getSocket } from "../../../../socket/socket";
 import { useNavigation } from "@react-navigation/native";
 import { LogOut } from "lucide-react-native";
 import { useSelector } from "react-redux";
@@ -13,6 +13,7 @@ import { LobbyUserDto } from "../../../../shared/types/lobby-user.dto";
 import { BankDto } from "../../../../shared/types/generated";
 import { getBankById } from "../../../bank/services/bank.service";
 import { RoomCode } from "../../components/Vote/RoomCode";
+import { LeaveRoomButton } from "@/src/shared/components/LeaveRoomButton";
 
 type LobbySreenProps = NativeStackScreenProps<VoteStackParamList, "Lobby">;
 
@@ -36,7 +37,7 @@ export function LobbyScreen({ route }: LobbySreenProps) {
 
     setReady(newReady);
 
-    socket.emit("toggleReady", {
+    getSocket()?.emit("toggleReady", {
       roomId,
       ready: newReady,
     });
@@ -45,23 +46,20 @@ export function LobbyScreen({ route }: LobbySreenProps) {
   const handleLeaveRoom = () => {
     if (!user) return;
 
-    Alert.alert("Confirm Leave", "Are you sure you want to leave the room?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Leave",
-        style: "destructive",
-        onPress: () => {
-          socket.emit("leaveRoom", { roomId });
-          navigation.replace("Tabs", {
-            screen: "VoteStack",
-            params: { screen: "JoinLobby" },
-          });
-        },
-      },
-    ]);
+    getSocket()?.emit("leaveRoom", { roomId });
+    navigation.replace("Tabs", {
+      screen: "VoteStack",
+      params: { screen: "JoinLobby" },
+    });
   };
 
   useEffect(() => {
+
+    getBankById(bankId)
+      .then((b) => setBank(b))
+      .catch((err) => console.log(err));
+
+
     const handleRoomUsers = (usersList: LobbyUserDto[]) => {
       setUsers(usersList);
     };
@@ -95,34 +93,26 @@ export function LobbyScreen({ route }: LobbySreenProps) {
       });
     };
 
-    socket.on("roomUsers", handleRoomUsers);
-    socket.on("countdownStart", handleCountdownStart);
-    socket.on("countdownTick", handleCountdownTick);
-    socket.on("countdownCanceled", handleCountdownCanceled);
-    socket.on("leftRoom", handleLeftRoom);
-    socket.on("gameStart", handleGameStart);
-
-    getBankById(bankId)
-      .then((b) => setBank(b))
-      .catch((err) => console.log(err));
+    getSocket()?.on("roomUsers", handleRoomUsers);
+    getSocket()?.on("countdownStart", handleCountdownStart);
+    getSocket()?.on("countdownTick", handleCountdownTick);
+    getSocket()?.on("countdownCanceled", handleCountdownCanceled);
+    getSocket()?.on("leftRoom", handleLeftRoom);
+    getSocket()?.on("gameStart", handleGameStart);
 
     return () => {
-      socket.off("roomUsers", handleRoomUsers);
-      socket.off("countdownStart", handleCountdownStart);
-      socket.off("countdownTick", handleCountdownTick);
-      socket.off("countdownCanceled", handleCountdownCanceled);
-      socket.off("leftRoom", handleLeftRoom);
-      socket.off("gameStart", handleGameStart);
+      getSocket()?.off("roomUsers", handleRoomUsers);
+      getSocket()?.off("countdownStart", handleCountdownStart);
+      getSocket()?.off("countdownTick", handleCountdownTick);
+      getSocket()?.off("countdownCanceled", handleCountdownCanceled);
+      getSocket()?.off("leftRoom", handleLeftRoom);
+      getSocket()?.off("gameStart", handleGameStart);
     };
   }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity onPress={handleLeaveRoom}>
-          <LogOut size={30} color="red" />
-        </TouchableOpacity>
-      ),
+      headerRight: () => <LeaveRoomButton onPress={handleLeaveRoom} />,
     });
   }, [navigation]);
 

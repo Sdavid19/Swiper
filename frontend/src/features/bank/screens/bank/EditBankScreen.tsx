@@ -109,7 +109,7 @@ export function EditBankScreen({ route }: EditBankProps) {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.imageContainer}>
+        <View>
           <ImageSelect
             bankId={bank?.id}
             imageUrl={bank?.imageUrl}
@@ -138,12 +138,8 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 30,
-  },
-  imageContainer: {
-    marginBottom: 24,
+     paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   formContainer: {
     flex: 1,

@@ -5,7 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import { AppNavigation, EditBankNavigation } from "../../../../../navigation";
 import { getImage } from "../../../../../api/services/image.service";
 import { shortenString } from "../../../../../shared/utils/text.service";
-import { PlayButton } from "./PlayButton";
+import { CardyButton } from "../../../../../shared/components/CardButton";
+import { Play } from "lucide-react-native";
 
 type CardProps = {
   bank: BankDto;
@@ -39,23 +40,29 @@ export function BankCardLarge({ bank }: CardProps) {
           style={styles.image}
         />
       </View>
+      <View style={{ position: "absolute", top: 20, right: 10 }}>
+        <Badge color={bank.category.color} text={bank.category.name} />
+      </View>
 
       <View style={styles.cardBody}>
-        <View>
-          <View style={styles.infoCotainer}>
-            <Text style={styles.bankTitle}>
-              {shortenString(bank.title, 20)}
-            </Text>
-            <Badge text={bank.category.name} color={bank.category.color} />
-          </View>
+        <View style={styles.leftContent}>
+          <View>
+            <View style={styles.infoCotainer}>
+              <Text style={styles.bankTitle} numberOfLines={1}>
+                {bank.title}
+              </Text>
+            </View>
 
-          <View style={styles.descContainer}>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.desc}>
-              {shortenString(bank.description, 35)}
-            </Text>
+            <View style={styles.descContainer}>
+              <Text style={styles.desc} numberOfLines={2}>
+                {bank.description}
+              </Text>
+            </View>
           </View>
         </View>
-        <PlayButton onPressed={navigateToCreateLobby} />
+        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginHorizontal: 5 }}>
+          <CardyButton Icon={Play} backgroundColor={"#22c55e"} onPressed={navigateToCreateLobby} />
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -76,9 +83,12 @@ const styles = StyleSheet.create({
 
     elevation: 5,
   },
+  leftContent: {
+    width: "80%",
+  },
   imageWrapper: {
     width: "100%",
-    height: 200,
+    height: 160,
     borderTopStartRadius: 10,
     borderTopEndRadius: 10,
     overflow: "hidden",
@@ -88,10 +98,13 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   cardBody: {
-    padding: 10,
+    padding: 15,
+    paddingTop: 15,
+    paddingBottom: 15,
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "stretch",
+    justifyContent: 'space-between',
   },
   infoCotainer: {
     display: "flex",
@@ -100,15 +113,15 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   descContainer: {
-    marginVertical: 5,
+    marginTop: 5,
   },
   desc: {
-    fontSize: 12,
+    fontSize: 13,
     color: "#666",
   },
   bankTitle: {
-    fontSize: 16,
-    fontWeight: "500",
+    fontSize: 17,
+    fontWeight: "600",
   },
   buttonContainer: {
     flex: 1,

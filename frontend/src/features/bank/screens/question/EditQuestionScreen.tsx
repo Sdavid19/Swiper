@@ -21,6 +21,7 @@ export type EditQuestionScreenMode = "View" | "Edit" | "Create";
 export function EditQuestionScreen({ route }: EditQuestionProps) {
 
   const questionId = route.params.questionId;
+  const viewMode = route.params.viewMode;
   const user = useSelector((state: RootState) => state.auth.user);
   const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ export function EditQuestionScreen({ route }: EditQuestionProps) {
   const [question, setQuestion] = useState<QuestionDto>();
 
   useLayoutEffect(() => {
-    if (!question) return;
+    if (!question || viewMode) return;
     navigation.setOptions({
       headerRight: () =>
         <DeleteButton
@@ -53,6 +54,7 @@ export function EditQuestionScreen({ route }: EditQuestionProps) {
   };
 
   const screenMode: EditQuestionScreenMode = useMemo(() => {
+    if(viewMode) return "View"
     if (question?.id) return "Edit";
     if (!route.params?.questionId) return "Create";
     if (!user) return "View";
@@ -68,11 +70,13 @@ export function EditQuestionScreen({ route }: EditQuestionProps) {
 
   return (
     <KeyboardAwareScrollView
-      contentContainerStyle={[styles.container, { flexGrow: 1 }]}
+      contentContainerStyle={[styles.container]}
       enableOnAndroid={true}
       keyboardOpeningTime={0}
       keyboardShouldPersistTaps="handled"
+      extraScrollHeight={80}
       showsVerticalScrollIndicator={false}
+
     >
       <QuestionImageSelect
         questionId={question?.id}
@@ -95,6 +99,8 @@ export function EditQuestionScreen({ route }: EditQuestionProps) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    justifyContent: 'space-between'
-  }
+    paddingBottom: 20,
+    justifyContent: "space-between",
+    //flexGrow: 1,
+  },
 });

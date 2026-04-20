@@ -8,7 +8,14 @@ export class MediaImportService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly api: StreamingApiService,
-  ) {}
+  ) { }
+
+  buildDescription(genres: string, overview: string) {
+    return !genres && !overview
+      ? null
+      : `${genres ? `${genres}` : ""}${genres && overview ? "\n" : ""
+      }${overview || ""}`;
+  };
 
   async fetchAndSavePlatforms() {
     const platforms =
@@ -57,13 +64,18 @@ export class MediaImportService {
       });
     }
 
-    const mediaData = media.map((m) => ({
-      name: m.title,
-      imdbId: m.imdbId,
-      imageUrl:
-        m.imageSet?.verticalPoster?.w480 || null,
-      mediaType: MediaType.MOVIE,
-    }));
+    const mediaData = media.map((m) => {
+      const genres = m.genres?.map(x => x.name).join(", ");
+      const overview = m.overview;
+
+      return {
+        name: m.title,
+        imdbId: m.imdbId,
+        description: this.buildDescription(genres, overview),
+        imageUrl: m.imageSet?.verticalPoster?.w480 || null,
+        mediaType: MediaType.MOVIE,
+      };
+    });
 
     await this.prisma.media.createMany({
       data: mediaData,

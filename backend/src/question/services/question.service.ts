@@ -3,9 +3,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma';
-import { ImageService } from '../../shared/image/image.service';
 import { updateQuestionDto } from '../dto/update-question.dto';
-import { QuestionImageDto } from '../dto/question-image.dto';
 import { CreateQuestionsDto } from '../dto/create-questions.dto';
 import { CreateQuestionDto } from '../dto/create-question.dto';
 import { QuestionDto } from '../dto/question.dto';
@@ -14,7 +12,6 @@ import { QuestionDto } from '../dto/question.dto';
 export class QuestionService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly imageService: ImageService,
   ) {}
 
   async findById(
@@ -53,6 +50,7 @@ export class QuestionService {
         data: {
           bankId: id,
           text: dto.text,
+          description: dto.description
         },
       });
 
@@ -70,6 +68,7 @@ export class QuestionService {
     return this.prisma.question.createMany({
       data: dto.questions.map((q) => ({
         bankId,
+        description: q.description,
         text: q.text,
         imageUrl: q.imageUrl,
       })),

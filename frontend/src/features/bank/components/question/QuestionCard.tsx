@@ -8,16 +8,17 @@ import { getImage } from "../../../../api/services/image.service";
 
 interface QuestionCardProps {
   question: QuestionDto,
-  viewMode: boolean
+  viewMode: boolean,
+  details: boolean,
 }
 
-export function QuestionCard({ question, viewMode }: QuestionCardProps) {
+export function QuestionCard({ question, viewMode, details }: QuestionCardProps) {
 
   const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
 
   const handleOnCardPress = () => {
-    if(!viewMode){
-      navigation.navigate("EditQuestion", { bankId: question.bankId, questionId: question.id })
+    if(details){
+      navigation.navigate("EditQuestion", { bankId: question.bankId, questionId: question.id, viewMode: viewMode })
     }
   }
 
@@ -35,7 +36,7 @@ export function QuestionCard({ question, viewMode }: QuestionCardProps) {
         />
         <Text style={styles.cardText}>{question.text}</Text>
       </View>
-      {!viewMode && (<ChevronRight style={{ marginRight: 6 }} size={ 20 } />)}
+      {details && (<ChevronRight style={{ marginRight: 6 }} size={ 20 } />)}
     </TouchableOpacity>
   );
 }

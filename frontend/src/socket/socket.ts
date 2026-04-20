@@ -1,8 +1,24 @@
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { API_URL } from "../api/client";
 
-export const socket = io(API_URL, {
-  autoConnect: false,
-  reconnection: true,
-  transports: ["websocket"],
-});
+let socket: Socket | null = null;
+
+export const connectSocket = (token: string) => {
+  if (socket) {
+    socket.disconnect();
+  }
+
+  socket = io(API_URL, {
+    auth: { token },
+    transports: ["websocket"],
+  });
+
+  return socket;
+};
+
+export const disconnectSocket = () => {
+  socket?.disconnect();
+  socket = null;
+};
+
+export const getSocket = () => socket;

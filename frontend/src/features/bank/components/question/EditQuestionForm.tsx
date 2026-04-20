@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { InputField, PrimaryButton } from "../../../../shared/components";
 import { useEffect, useState } from "react";
-import { CreateQuestionDto, QuestionDto } from "../../../../shared/types/generated";
+import { CreateQuestionDto, QuestionDto, UpdateBankDto, UpdateQuestionDto } from "../../../../shared/types/generated";
 import { EditQuestionScreenMode } from "../../screens/question/EditQuestionScreen";
 import { ErrorResponse, ValidationErrorMessage } from "../../../../shared/types";
 import { showSuccess } from "../../../../shared/utils/toast.service";
@@ -19,6 +19,7 @@ interface EditQuestionFormProps {
 
 export function EditQuestionForm({ screenMode, bankId, question, setQuestion }: EditQuestionFormProps) {
     const [text, setText] = useState("");
+    const [description, setDescription] = useState<string>();
     const [errors, setErrors] = useState<ValidationErrorMessage<CreateQuestionDto> | null>(null);
 
     const dispatch = useDispatch();
@@ -26,17 +27,18 @@ export function EditQuestionForm({ screenMode, bankId, question, setQuestion }: 
     const setUpDataForUpdate = () => {
         if (!question) return;
         setText(question.text);
+        setDescription(question.description ?? undefined)
     }
 
     const saveQuestion = async () => {
         try {
             if (screenMode === "Edit" && question) {
-                const response = await updateQuestion(question.id, { text });
+                const response = await updateQuestion(question.id, { text, description } as UpdateQuestionDto);
                 setQuestion(response);
                 dispatch(updateQuestionAction(response));
                 showSuccess('Question updated succesfully!');
             } else {
-                const response = await createQuestion(bankId, { text });
+                const response = await createQuestion(bankId, { text, description } as UpdateQuestionDto);
                 setQuestion(response);
                 dispatch(addQuestionAction(response));
                 showSuccess('Question created succesfully!');
@@ -61,23 +63,45 @@ export function EditQuestionForm({ screenMode, bankId, question, setQuestion }: 
                 value={text}
                 onChangeText={setText}
                 label="Question"
+                editable={screenMode != "View"}
                 errorMessages={errors?.text}
             />
 
-            <PrimaryButton
-                title={screenMode === "Edit" ? "Save Changes" : "Create Question "}
-                style={{ width: "100%" }}
-                onPress={saveQuestion}
-                disabled={!text}
+            <InputField
+                label="Description"
+                value={description}
+                editable={screenMode != "View"}
+                onChangeText={(text) => setDescription(text)}
+                autoCapitalize="none"
+                style={styles.descriptionField}
+                textAlignVertical="top"
+                errorMessages={errors?.description}
+                multiline
+                numberOfLines={4}
             />
+
+            {screenMode != "View" && (
+                <PrimaryButton
+                    title={screenMode === "Edit" ? "Save Changes" : "Create Question "}
+                    style={{ width: "100%", marginTop: 10 }}
+                    onPress={saveQuestion}
+                    disabled={!text}
+                />
+            )}
+
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     formContainer: {
+        width: "100%",
+    },
+    descriptionField: {
         flex: 1,
-        justifyContent: "space-evenly",
-        paddingVertical: 10
-    }
+        fontSize: 16,
+        paddingVertical: 10,
+        textAlignVertical: "top",
+        height: 100,
+    },
 });

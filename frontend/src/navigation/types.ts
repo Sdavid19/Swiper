@@ -18,7 +18,7 @@ export type EditBankStackParamList = {
   ShowBanks: undefined;
   EditBank: { bankId?: number };
   BankQuestions: { bankId: number; viewMode: boolean };
-  EditQuestion: { bankId: number; questionId?: number };
+  EditQuestion: { bankId: number; questionId?: number, viewMode: boolean };
 };
 
 export type VoteStackParamList = {

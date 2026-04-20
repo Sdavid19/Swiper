@@ -7,9 +7,9 @@ import {
 } from "react-native";
 import { PrimaryButton } from "../../../../shared/components";
 import { useEffect, useState } from "react";
-import { socket } from "../../../../socket/socket";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppNavigation, AppStackParamList } from "../../../../navigation";
+import { getSocket } from "../../../../socket/socket";
+import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AppNavigation, AppStackParamList, EditBankStackParamList } from "../../../../navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux";
 import { useNavigation } from "@react-navigation/native";
@@ -30,10 +30,12 @@ export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
   const bankId = route.params.bankId;
   const user = useSelector((state: RootState) => state.auth.user);
   const navigation = useNavigation<AppNavigation>();
+  const navigation2 = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
 
   const handleCreateLobby = () => {
+
     if (!user || !bankId) return;
-    socket.emit("createRoom", {
+    getSocket()?.emit("createRoom", {
       bankId: bankId,
     });
   };
@@ -45,7 +47,8 @@ export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
   }, []);
 
   useEffect(() => {
-    socket.on("roomCreated", ({ roomId, bankId }) => {
+
+    getSocket()?.on("roomCreated", ({ roomId, bankId }) => {
       console.log("Room létrehozva:", roomId, bankId);
 
       navigation.reset({
@@ -74,7 +77,7 @@ export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
     });
 
     return () => {
-      socket.off("roomCreated");
+      getSocket()?.off("roomCreated");
     };
   }, []);
 
@@ -94,7 +97,7 @@ export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
 
       <View style={styles.contentContainer}>
         <Text style={styles.sectionTitle}>Questions</Text>
-        <QuestionList questions={bank?.questions || []} viewMode={true} />
+        <QuestionList details={false} questions={bank?.questions || []} viewMode={true} />
       </View>
 
       <View

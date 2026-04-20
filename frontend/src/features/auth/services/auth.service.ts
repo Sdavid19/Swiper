@@ -8,7 +8,7 @@ import {
 } from "../../../shared/types/generated";
 import { store } from "../../../redux/store";
 import { setCredentials, logoutAction } from "../../../redux/authSlice";
-import { socket } from "@/src/socket/socket";
+import { connectSocket, disconnectSocket } from "@/src/socket/socket";
 
 export const login = async (data: SigninDto): Promise<void> => {
   const response = await api.post<SigninResponseDto>("/auth/login", data);
@@ -25,17 +25,16 @@ export const login = async (data: SigninDto): Promise<void> => {
     }),
   );
 
-  socket.auth = { token: response.data.access_token };
-  socket.connect();
+  connectSocket(response.data.access_token);
 };
+
 
 export const logout = async (): Promise<void> => {
   await AsyncStorage.removeItem("auth");
   store.dispatch(logoutAction());
-  socket.auth = {};
-  socket.disconnect();
-};
 
+  disconnectSocket();
+};
 export const signup = async (data: SignupDto): Promise<void> => {
   await api.post<UserDto>("/auth/signup", data);
 };

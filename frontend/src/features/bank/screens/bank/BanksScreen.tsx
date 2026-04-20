@@ -43,11 +43,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     paddingBottom: 15,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     backgroundColor: "#f5f5f5"
   },
   addButton: {
     width: "100%",
-    marginTop: 15
-  }
+    marginTop: 20,
+    marginBottom: 5
+  },
 });

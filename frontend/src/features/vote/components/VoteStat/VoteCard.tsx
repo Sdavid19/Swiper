@@ -8,6 +8,8 @@ import { PrimaryButton } from "@/src/shared/components";
 import { VoteStatNavigation } from "@/src/navigation";
 import { useMemo } from "react";
 import { StatButton } from "./StatButton";
+import { CardyButton } from "@/src/shared/components/CardButton";
+import { ChartColumnDecreasing } from "lucide-react-native";
 
 type CardProps = {
   vote: VoteDto;
@@ -42,17 +44,16 @@ export function VoteCard({ vote }: CardProps) {
           style={styles.image}
         />
       </View>
+      <View style={{ position: "absolute", top: 20, right: 10 }}>
+        <Badge color={vote.bank.category.color} text={vote.bank.category.name} />
+      </View>
 
       <View style={styles.cardBody}>
-        <View>
+        <View style={styles.leftContent}>
           <View style={styles.infoCotainer}>
             <Text style={styles.bankTitle}>
               {shortenString(vote.bank.title, 20)}
             </Text>
-            <Badge
-              text={vote.bank.category.name}
-              color={vote.bank.category.color}
-            />
           </View>
           <View style={styles.descContainer}>
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.desc}>
@@ -60,7 +61,10 @@ export function VoteCard({ vote }: CardProps) {
             </Text>
           </View>
         </View>
-        <StatButton onPressed={handleButtonPressed} />
+        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginHorizontal: 5 }}>
+          <CardyButton Icon={ChartColumnDecreasing} backgroundColor={"#007AFF"} onPressed={handleButtonPressed} />
+        </View>
+
       </View>
     </View>
   );
@@ -81,9 +85,12 @@ const styles = StyleSheet.create({
 
     elevation: 5,
   },
+  leftContent: {
+    width: "80%",
+  },
   imageWrapper: {
     width: "100%",
-    height: 175,
+    height: 160,
     borderTopStartRadius: 10,
     borderTopEndRadius: 10,
     overflow: "hidden",
@@ -93,10 +100,13 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   cardBody: {
-    padding: 10,
+    padding: 15,
+    paddingTop: 15,
+    paddingBottom: 20,
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "stretch",
+    justifyContent: 'space-between',
   },
   infoCotainer: {
     display: "flex",
@@ -105,14 +115,15 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   descContainer: {
-    marginVertical: 5,
+    marginTop: 5,
   },
   desc: {
-    fontSize: 12,
+    fontSize: 13,
+    color: "#666",
   },
   bankTitle: {
-    fontSize: 16,
-    fontWeight: "500",
+    fontSize: 17,
+    fontWeight: "600",
   },
   buttonContainer: {
     flex: 1,

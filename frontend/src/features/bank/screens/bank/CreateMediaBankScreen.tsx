@@ -20,6 +20,8 @@ import { PlatformToggleButton } from "../../components/media/PlatformToggleButto
 import { createBankByMedia } from "../../services/bank.service";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
+import { addBankAction } from "@/src/redux/bankSlice";
 
 type CreateMediaBankScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -34,13 +36,16 @@ export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
   const navigation = useNavigation<AppNavigation>();
   const templateId = route.params.templateId;
   const insets = useSafeAreaInsets();
+  const dispatch = useDispatch();
 
   const handleStartPress = async () => {
     const bank = await createBankByMedia({
       bankTemplateId: templateId,
       platforms: selected,
     });
+
     if (!bank) return;
+    dispatch(addBankAction(bank));
     navigation.navigate("CreateLobby", { bankId: bank.id });
   };
 

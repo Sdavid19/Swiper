@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { AppState, ScrollView, StyleSheet, Text, View } from "react-native";
 import { getAllBanksWithFilter } from "../services/bank.service";
 import { useEffect, useState } from "react";
 import { QuestionBankTemplateDto } from "../../../shared/types/generated";
@@ -7,9 +7,10 @@ import { NavigateLink } from "../components/bank/NavigateLink";
 import { getAllTemplates } from "../services/template.service";
 import { useDispatch, useSelector } from "react-redux";
 import { setBanks } from "@/src/redux/bankSlice";
-import { RootState } from "@/src/redux";
+import { RootState, store } from "@/src/redux";
 
 export function HomeScreen() {
+
   const [templates, setTemplates] = useState<QuestionBankTemplateDto[]>([]);
   const dispatch = useDispatch();
 
@@ -31,7 +32,7 @@ export function HomeScreen() {
     <ScrollView style={styles.container}>
       <View style={styles.sectionContainer}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Featured banks</Text>
+          <Text style={styles.sectionTitle}>Bank creator</Text>
         </View>
 
         {templates.length > 0 ? (

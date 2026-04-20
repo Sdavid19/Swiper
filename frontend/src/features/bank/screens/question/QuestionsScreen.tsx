@@ -34,7 +34,7 @@ export function QuestionsScreen({ route }: EditBankProps) {
 
   return (
     <View style={styles.container}>
-      <QuestionList questions={questions} viewMode={viewMode} />
+      <QuestionList questions={questions} viewMode={viewMode} details={true}/>
 
       {!viewMode && (
         <PrimaryButton
@@ -44,6 +44,7 @@ export function QuestionsScreen({ route }: EditBankProps) {
             navigation.navigate("EditQuestion", {
               bankId,
               questionId: undefined,
+              viewMode: viewMode
             })
           }
         />
@@ -61,6 +62,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     width: "100%",
-    marginTop: 10,
+    marginTop: 20,
+    marginBottom: 5
   },
 });

@@ -42,6 +42,7 @@ export class QuestionBankCopyService {
       {
         questions: questions.map((question) => ({
           text: question.text,
+          description: question.description ?? undefined,
           imageUrl: question.imageUrl,
         })),
       },

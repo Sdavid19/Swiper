@@ -45,6 +45,7 @@ model QuestionBank {
 model Question {
   id       Int     @id @default(autoincrement())
   text     String
+  description String?
   imageUrl String?
 
   bankId Int
@@ -112,6 +113,7 @@ model QuestionBankTemplate {
 model Media {
   id        Int      @id @default(autoincrement())
   name      String
+  description String?
   imdbId    String   @unique
   imageUrl  String?
   mediaType MediaType

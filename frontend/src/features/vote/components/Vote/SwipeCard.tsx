@@ -6,6 +6,7 @@ import {
   Dimensions,
   StyleProp,
   ViewStyle,
+  TouchableOpacity,
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -17,6 +18,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { QuestionDto } from "../../../../shared/types/generated";
 import { getImage } from "@/src/api/services/image.service";
+import { SwipeCardText } from "./SwipeCardText";
 
 const { width } = Dimensions.get("window");
 
@@ -135,7 +137,7 @@ export function SwipeCard({
           imageStyle={{ borderRadius: 12 }}
           resizeMode="cover"
         >
-          <Text style={styles.text}>{item.text}</Text>
+          <SwipeCardText item={item} />
         </ImageBackground>
       </Animated.View>
     </GestureDetector>
@@ -169,17 +171,9 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     justifyContent: "flex-end",
-    padding: 16,
+    //padding: 16,
     backgroundColor: "#000",
     objectFit: "fill",
     borderRadius: 12,
-  },
-  text: {
-    color: "white",
-    fontSize: 22,
-    fontWeight: "600",
-    backgroundColor: "rgba(0,0,0,0.5)",
-    padding: 12,
-    borderRadius: 8,
-  },
+  }
 });

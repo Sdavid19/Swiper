@@ -211,6 +211,7 @@ export class QuestionBankService {
       {
         questions: media.map((m) => ({
           text: m.name,
+          description: m.description ?? undefined,
           imageUrl: m.imageUrl,
         })),
       },

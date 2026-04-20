@@ -3,7 +3,7 @@ import { InputField, PrimaryButton } from "../../../../shared/components";
 import { KeySquare } from "lucide-react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useEffect, useState } from "react";
-import { socket } from "../../../../socket/socket";
+import { getSocket } from "../../../../socket/socket";
 import { ConnectRoomDto } from "../../../../socket/types";
 import { showError } from "../../../../shared/utils/toast.service";
 import { useNavigation } from "@react-navigation/native";
@@ -23,12 +23,12 @@ export function JoinLobbyScreen() {
   const handleJoinRoom = () => {
     if (!roomId || !user) return;
 
-    socket.emit(
+    getSocket()?.emit(
       "checkRoom",
       { roomId: Number(roomId) },
       (data: ConnectRoomDto) => {
         if (data.ok) {
-          socket.emit("joinRoom", {
+          getSocket()?.emit("joinRoom", {
             roomId: data.roomId,
           });
         } else {
@@ -39,18 +39,18 @@ export function JoinLobbyScreen() {
   };
 
   useEffect(() => {
-    socket.on("joinedRoom", ({ roomId, bankId }) => {
+    getSocket()?.on("joinedRoom", ({ roomId, bankId }) => {
       navigation.replace("Lobby", { roomId: roomId, bankId: bankId });
     });
 
-    socket.on("joinError", (err) => {
+    getSocket()?.on("joinError", (err) => {
       showError(err);
     });
 
     return () => {
-      socket.off("connect");
-      socket.off("joinedRoom");
-      socket.off("joinError");
+      getSocket()?.off("connect");
+      getSocket()?.off("joinedRoom");
+      getSocket()?.off("joinError");
     };
   }, []);
 

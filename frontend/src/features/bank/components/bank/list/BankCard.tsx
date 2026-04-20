@@ -7,7 +7,7 @@ import { shortenString } from "../../../../../shared/utils/text.service";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigation } from "../../../../../navigation";
 import { Play } from "lucide-react-native";
-import { PlayButton } from "./PlayButton";
+import { CardyButton } from "../../../../../shared/components/CardButton";
 
 type BankBase = {
   id: number;
@@ -49,7 +49,7 @@ export function BankCard({ bank, isTemplate }: CardProps) {
       </View>
 
       <View style={styles.cardBody}>
-        <View>
+        <View style={styles.leftContent}>
           <View style={styles.infoCotainer}>
             <Text style={styles.bankTitle}>
               {shortenString(bank.title, 20)}
@@ -58,14 +58,17 @@ export function BankCard({ bank, isTemplate }: CardProps) {
 
           <View style={styles.descContainer}>
             <Text style={styles.desc} numberOfLines={1} ellipsizeMode="tail">
-              {shortenString(bank.description, 32)}
+              {bank.description}
             </Text>
           </View>
-        </View>
-
-        <PlayButton onPressed={navigateToCreateLobby} />
       </View>
+
+      <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginHorizontal: 5}}>
+        <CardyButton Icon={Play} backgroundColor={"#22c55e"} onPressed={navigateToCreateLobby} />
+      </View>
+
     </View>
+    </View >
   );
 }
 
@@ -87,7 +90,7 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     width: "100%",
-    height: 155,
+    height: 160,
     borderTopStartRadius: 10,
     borderTopEndRadius: 10,
     overflow: "hidden",
@@ -103,7 +106,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "stretch",
+    justifyContent: 'space-between',
   },
   infoCotainer: {
     display: "flex",
@@ -120,11 +124,14 @@ const styles = StyleSheet.create({
   },
   bankTitle: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   buttonContainer: {
     flex: 1,
     display: "flex",
     alignItems: "flex-end",
+  },
+  leftContent: {
+    width: "72%",
   },
 });

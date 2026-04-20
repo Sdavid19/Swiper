@@ -13,6 +13,11 @@ export class CreateQuestionDto {
 
   @IsString()
   @IsOptional()
+  @ApiProperty({ required: false })
+  description?: string;
+
+  @IsString()
+  @IsOptional()
   @ApiProperty()
   imageUrl?: string | null;
 }

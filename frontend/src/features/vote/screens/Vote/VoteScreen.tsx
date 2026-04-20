@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { View, StyleSheet, Image, Text, TouchableOpacity, Alert } from "react-native";
 import { QuestionDto } from "../../../../shared/types/generated";
 import { getQuestionsByBank } from "../../../bank/services/question.service";
 import { SwipeCard } from "../../components/Vote/SwipeCard";
-import { PrimaryButton } from "../../../../shared/components";
-import { socket } from "@/src/socket/socket";
+import { getSocket } from "@/src/socket/socket";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/redux";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { AppNavigation, AppStackParamList } from "@/src/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Check, X } from "lucide-react-native";
+import { Check, LogOut, X } from "lucide-react-native";
+import { LeaveRoomButton } from "@/src/shared/components/LeaveRoomButton";
 
 type VoteScreenProps = NativeStackScreenProps<AppStackParamList, "Vote">;
 
@@ -20,13 +20,28 @@ export function VoteScreen({ route }: VoteScreenProps) {
   const [trigger, setTrigger] = useState<"left" | "right" | null>(null);
   const [over, setOver] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
-
   const bankId = route.params.bankId;
   const roomId = route.params.roomId;
 
   const user = useSelector((state: RootState) => state.auth.user);
 
   const navigation = useNavigation<AppNavigation>();
+
+  const handleLeaveRoom = () => {
+    if (!user) return;
+
+    getSocket()?.emit("leaveRoom", { roomId });
+    navigation.replace("Tabs", {
+      screen: "VoteStack",
+      params: { screen: "JoinLobby" },
+    });
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <LeaveRoomButton onPress={handleLeaveRoom} />,
+    });
+  }, [navigation]);
 
   useEffect(() => {
     const handleGameEnded = ({ voteId }: { voteId: number }) => {
@@ -72,17 +87,19 @@ export function VoteScreen({ route }: VoteScreenProps) {
       setQuestions(q);
     });
 
-    socket.on("gameEnded", handleGameEnded);
+
+
+    getSocket()?.on("gameEnded", handleGameEnded);
 
     return () => {
-      socket.off("gameEnded", handleGameEnded);
+      getSocket()?.off("gameEnded", handleGameEnded);
     };
   }, []);
 
   const handleSwipe = (dir: "left" | "right") => {
     if (!user) return;
 
-    socket.emit("vote", {
+    getSocket()?.emit("vote", {
       roomId: roomId,
       questionId: questions[index].id,
       answer: dir == "right",

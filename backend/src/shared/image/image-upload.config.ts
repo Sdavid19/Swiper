@@ -1,7 +1,5 @@
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { Request } from 'express';
-import { Express } from 'express';
 
 export const imageUploadConfig = {
   storage: diskStorage({

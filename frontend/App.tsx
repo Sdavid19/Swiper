@@ -8,20 +8,17 @@ import Toast from "react-native-toast-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect } from "react";
 import { AppState } from "react-native";
-import { socket } from "./src/socket/socket";
+import { getSocket } from "./src/socket/socket";
+
 
 export default function App() {
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", (next) => {
-      if (next === "active") {
-        const token = store.getState().auth.token;
 
-        if (token) {
-          if (socket.connected) {
-            socket.disconnect();
-          }
+    const socket = getSocket();
 
-          socket.auth = { token };
+    useEffect(() => {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") {
+        if (socket && !socket.connected) {
           socket.connect();
         }
       }
