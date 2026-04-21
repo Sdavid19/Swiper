@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { VoteStatStackParamList } from "./types";
-import { VoteStatScreen } from "../features/vote/screens/VoteStat/VoteStatScreen";
-import { VotesScreen } from "../features/vote/screens/VoteStat/VotesScreens";
+import { VoteStatScreen } from "../features/voteStat/screens/VoteStatScreen";
+import { VotesScreen } from "../features/voteStat/screens/VotesScreens";
 
 const Stack = createNativeStackNavigator<VoteStatStackParamList>();
 

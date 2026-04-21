@@ -1,10 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AppTabs } from "./AppTabs";
 import { AppStackParamList } from "./types";
-import { CreateLobbyScreen } from "../features/vote/screens/Vote/CreateLobbyScreen";
-import { CreateMediaBankScreen } from "../features/bank/screens/bank/CreateMediaBankScreen";
-import { VoteScreen } from "../features/vote/screens/Vote/VoteScreen";
-import { VoteStatStack } from "./VoteStatStack";
+import { CreateLobbyScreen } from "../features/vote/screens/CreateLobbyScreen";
+import { CreateMediaBankScreen } from "../features/bank/screens/CreateMediaBankScreen";
+import { VoteScreen } from "../features/vote/screens/VoteScreen";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 

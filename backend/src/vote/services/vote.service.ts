@@ -6,12 +6,14 @@ import { VoteDetailsDto } from '../dto/vote-details.dto';
 import { VoteDto } from '../dto/vote.dto';
 import { AnswerStatDto } from '../dto/answer-stat.dto';
 import { AnswerTopStatsDto } from '../dto/answer-top-stats.dto';
+import { VoteFilterDto } from '../dto/vote-filter.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class VoteService {
   constructor(
     private readonly prismaService: PrismaService,
-  ) {}
+  ) { }
 
   async createVoteData(dto: CreateVoteDataDto) {
     const vote =
@@ -49,7 +51,28 @@ export class VoteService {
 
   async getAllVotesUserParticipatedIn(
     userId: number,
+    filter: VoteFilterDto
   ): Promise<VoteDto[]> {
+
+    const { from, to } = filter;
+
+    const dateFilter: Prisma.VoteWhereInput = {};
+
+    if (from && to) {
+      dateFilter.startsAt = {
+        gte: new Date(new Date(from).setHours(0, 0, 0, 0)),
+        lte: new Date(new Date(to).setHours(23, 59, 59, 999)),
+      };
+    } else if (from) {
+      dateFilter.startsAt = {
+        gte: new Date(new Date(from).setHours(0, 0, 0, 0)),
+      };
+    } else if (to) {
+      dateFilter.startsAt = {
+        lte: new Date(new Date(to).setHours(23, 59, 59, 999)),
+      };
+    }
+
     return this.prismaService.vote.findMany({
       where: {
         answers: {
@@ -57,6 +80,7 @@ export class VoteService {
             userId,
           },
         },
+        ...dateFilter,
       },
       include: {
         bank: {
@@ -66,7 +90,9 @@ export class VoteService {
           },
         },
       },
-      orderBy: { startsAt: 'desc' },
+      orderBy: {
+        startsAt: "desc",
+      },
     });
   }
 

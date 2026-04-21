@@ -2,12 +2,12 @@ import { AppState, ScrollView, StyleSheet, Text, View } from "react-native";
 import { getAllBanksWithFilter } from "../services/bank.service";
 import { useEffect, useState } from "react";
 import { QuestionBankTemplateDto } from "../../../shared/types/generated";
-import { BankCard } from "../components/bank/list/BankCard";
-import { NavigateLink } from "../components/bank/NavigateLink";
+import { BankCard } from "../components/filterBankList/BankCard";
 import { getAllTemplates } from "../services/template.service";
 import { useDispatch, useSelector } from "react-redux";
 import { setBanks } from "@/src/redux/bankSlice";
 import { RootState, store } from "@/src/redux";
+import { NavigateLink } from "../components/NavigateLink";
 
 export function HomeScreen() {
 

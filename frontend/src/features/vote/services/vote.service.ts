@@ -6,7 +6,17 @@ export const getTopVoteStats = async (id: number): Promise<AnswerTopStatsDto> =>
   return response.data;
 }
 
-export const getVotesByUserParticipatedIn = async (): Promise<VoteDto[]> => {
-  const response = await api.get(`/votes`);
-  return response.data;
-}
+export const getVotesByUserParticipatedIn = async (
+    from?: string,
+    to?: string
+): Promise<VoteDto[]> => {
+
+    const response = await api.get(`/votes`, {
+        params: {
+            from,
+            to,
+        },
+    });
+
+    return response.data;
+};

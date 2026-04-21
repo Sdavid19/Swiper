@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { VoteStackParamList } from "./types"
-import { CreateLobbyScreen } from "../features/vote/screens/Vote/CreateLobbyScreen"
-import { JoinLobbyScreen } from "../features/vote/screens/Vote/JoinLobbyScreen"
-import { LobbyScreen } from "../features/vote/screens/Vote/LobbyScreen"
-import { VoteScreen } from "../features/vote/screens/Vote/VoteScreen"
+import { CreateLobbyScreen } from "../features/vote/screens/CreateLobbyScreen"
+import { JoinLobbyScreen } from "../features/vote/screens/JoinLobbyScreen"
+import { LobbyScreen } from "../features/vote/screens/LobbyScreen"
+import { VoteScreen } from "../features/vote/screens/VoteScreen"
 
 const Stack = createNativeStackNavigator<VoteStackParamList>()
 
