@@ -1,8 +1,17 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto';
 import { SigninDto } from './dto/signin.dto';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SigninResponseDto } from './dto/signin.response.dto';
 import { UserDto } from '../user/dto';
 
@@ -13,16 +22,15 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  @ApiOkResponse({type: UserDto})
+  @ApiOkResponse({ type: UserDto })
   signUp(@Body() dto: SignupDto) {
     return this.authService.signup(dto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  @ApiOkResponse({type: SigninResponseDto})
+  @ApiOkResponse({ type: SigninResponseDto })
   singIn(@Body() dto: SigninDto) {
     return this.authService.signin(dto);
   }
-
 }

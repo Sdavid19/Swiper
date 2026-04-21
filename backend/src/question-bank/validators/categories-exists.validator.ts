@@ -1,17 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { ValidatorConstraint, ValidatorConstraintInterface, registerDecorator, ValidationOptions } from 'class-validator';
+import {
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  registerDecorator,
+  ValidationOptions,
+} from 'class-validator';
 import { CategoryService } from '../../category';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
 export class CategoriesExist implements ValidatorConstraintInterface {
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor(
+    private readonly categoryService: CategoryService,
+  ) {}
 
   async validate(categoryIds: number[]) {
-    if (!categoryIds || categoryIds.length === 0) return true;
+    if (!categoryIds || categoryIds.length === 0)
+      return true;
 
     for (const id of categoryIds) {
-      const exists = await this.categoryService.findById(id);
+      const exists =
+        await this.categoryService.findByIdOrThrow(id);
       if (!exists) return false;
     }
     return true;
@@ -22,8 +31,13 @@ export class CategoriesExist implements ValidatorConstraintInterface {
   }
 }
 
-export function CategoriesExistValidator(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
+export function CategoriesExistValidator(
+  validationOptions?: ValidationOptions,
+) {
+  return function (
+    object: Object,
+    propertyName: string,
+  ) {
     registerDecorator({
       target: object.constructor,
       propertyName,

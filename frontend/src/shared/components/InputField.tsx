@@ -6,7 +6,7 @@ interface InputFieldProps extends TextInputProps {
     errorMessages?: string[];
     fieldStyle?: StyleProp<ViewStyle>;
     disableErrorMessages?: boolean;
-    Icon?: React.ComponentType<{ size?: number; color?: string; style?: any }>; // új prop
+    Icon?: React.ComponentType<{ size?: number; color?: string; style?: any }>;
 }
 
 export function InputField({ label, errorMessages, fieldStyle, disableErrorMessages = false, Icon, ...props }: InputFieldProps) {

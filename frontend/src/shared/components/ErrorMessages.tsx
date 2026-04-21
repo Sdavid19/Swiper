@@ -8,7 +8,7 @@ export function ErrorMessage({ message }: ErrorMessage) {
     <View style={styles.container}>
       {Array.isArray(message) && message.length > 0 && (
         <View style={styles.messageContainer}>
-          
+
           <TriangleAlert size={30} color="red" />
 
           <View style={{ flex: 1, marginLeft: 10 }}>

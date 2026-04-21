@@ -1,15 +1,15 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
-export class UserDto{
-    @ApiProperty()
-    id: number;
+export class UserDto {
+  @ApiProperty()
+  id: number;
 
-    @ApiProperty()
-    email: string;
+  @ApiProperty()
+  email: string;
 
-    @ApiProperty()
-    name: string;
+  @ApiProperty()
+  name: string;
 
-    @ApiProperty({ nullable: true, type: String })
-    imageUrl?: string | null;
+  @ApiProperty({ nullable: true, type: String })
+  imageUrl?: string | null;
 }

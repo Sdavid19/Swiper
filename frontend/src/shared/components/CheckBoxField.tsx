@@ -7,10 +7,10 @@ export interface CheckboxFieldProps extends CheckboxProps {
     containerStyle?: StyleProp<ViewStyle>
 }
 
-export function CheckboxField({title, containerStyle, ...props}: CheckboxFieldProps){
+export function CheckboxField({ title, containerStyle, ...props }: CheckboxFieldProps) {
     return (
-        <View style={[{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}, containerStyle]}>
-            <Checkbox  {...props}/>
+        <View style={[{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }, containerStyle]}>
+            <Checkbox  {...props} />
             {title && (<Text style={{ marginLeft: 10 }}>{title}</Text>)}
         </View>
     );

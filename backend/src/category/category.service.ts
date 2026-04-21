@@ -1,40 +1,61 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-import { CategoryDto, CreateCategoryDto } from "./dto";
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import {
+  CategoryDto,
+  CreateCategoryDto,
+} from './dto';
 
 @Injectable()
-export class CategoryService { 
-    constructor(private readonly prisma: PrismaService) { }
+export class CategoryService {
+  constructor(
+    private readonly prisma: PrismaService,
+  ) {}
 
-    async findById(id: number) {
-        return this.prisma.category.findUnique({where: {id: id}})
+  async findByIdOrThrow(id: number) {
+    const category =
+      await this.prisma.category.findUnique({
+        where: { id },
+      });
+
+    if (!category) {
+      throw new NotFoundException(
+        `Category with id ${id} not found`,
+      );
     }
 
-      create(dto: CreateCategoryDto): Promise<CategoryDto> { 
-        const newCategory = this.prisma.category.create({
-            data: {
-                name: dto.name,
-                slug: dto.name.toLowerCase()
-            }
-        });
+    return category;
+  }
 
-        return newCategory;
-    }
+  async create(
+    dto: CreateCategoryDto,
+  ): Promise<CategoryDto> {
+    return this.prisma.category.create({
+      data: {
+        name: dto.name,
+        slug: this.generateSlug(dto.name),
+      },
+    });
+  }
 
-    findAll(): Promise<CategoryDto[]> {
-        return this.prisma.category.findMany({orderBy: { name: 'asc' }});
-    }
+  findAll(): Promise<CategoryDto[]> {
+    return this.prisma.category.findMany({
+      orderBy: { name: 'asc' },
+    });
+  }
 
-    async delete(id: number) {
-        const category = await this.findById(id);
+  async delete(id: number) {
+    await this.findByIdOrThrow(id);
 
-        if (!category) {
-            throw new NotFoundException(`Category with id ${id} not found`);
-        }
+    return this.prisma.category.delete({
+      where: { id },
+      select: { id: true },
+    });
+  }
 
-        return this.prisma.category.delete({
-            where: { id },
-            select: {id: true}
-         });
-    }
+  private generateSlug(name: string): string {
+    return name.trim().toLowerCase();
+  }
 }

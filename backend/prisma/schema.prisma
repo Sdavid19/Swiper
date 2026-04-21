@@ -45,10 +45,11 @@ model QuestionBank {
 model Question {
   id       Int     @id @default(autoincrement())
   text     String
+  description String?
   imageUrl String?
 
   bankId Int
-  bank   QuestionBank @relation(fields: [bankId], references: [id])
+  bank   QuestionBank @relation(fields: [bankId], references: [id], onDelete: Cascade)
 
   answers Answer[]
 }
@@ -81,7 +82,7 @@ model Answer {
   voteId Int
   vote   Vote @relation(fields: [voteId], references: [id])
 
-  questionId Int
+  questionId Int 
   question   Question @relation(fields: [questionId], references: [id])
 
   @@unique([userId, voteId, questionId])
@@ -94,24 +95,52 @@ model Category {
   color String @default("#007AFF")
 
   banks QuestionBank[]
+  templates   QuestionBankTemplate[]
+}
+
+model QuestionBankTemplate {
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
+  description String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
 }
 
 model Media {
-  id       Int           @id @default(autoincrement())
-  name     String
-  type     MediaType
-  platform MediaPlatform
+  id        Int      @id @default(autoincrement())
+  name      String
+  description String?
+  imdbId    String   @unique
+  imageUrl  String?
+  mediaType MediaType
+
+  platforms MediaPlatform[]
 }
 
 enum MediaType {
-  SERIES
   MOVIE
+  SERIES
   SHORTFILM
 }
 
-enum MediaPlatform {
-  DISNEY
-  AMAZON
-  NETFLIX
-  HBO
+model Platform {
+  name        String @id
+  imageUrl    String?
+  medias MediaPlatform[]
+}
+
+model MediaPlatform {
+  id Int @id @default(autoincrement())
+
+  mediaId Int
+  media         Media @relation(fields: [mediaId], references: [id])
+
+  platformName  String
+  platform      Platform @relation(fields: [platformName], references: [name])
+
+  @@unique([mediaId, platformName])
 }
