@@ -58,10 +58,10 @@ const styles = StyleSheet.create({
     },
 
     active: {
-        backgroundColor: "#22c55e",
+        backgroundColor: "#e4e4e4",
     },
     activeText: {
-        color: "#f5f5f5",
+        color: "#black",
     },
 
     label: {
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     },
     activeLabel: {
         fontSize: 12,
-        color: "#e9e9e9",
+        color: "#666",
         marginBottom: 4,
     }
 });

@@ -1,10 +1,9 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppNavigation, VoteStackParamList } from "../../../navigation";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { getSocket } from "../../../socket/socket";
 import { useNavigation } from "@react-navigation/native";
-import { LogOut } from "lucide-react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux";
 import { PrimaryButton } from "../../../shared/components";
@@ -80,7 +79,7 @@ export function LobbyScreen({ route }: LobbySreenProps) {
     const handleLeftRoom = ({
       userId: leftUserId,
       roomId: leftRoomId,
-    }: any) => {
+    }: {userId: number, roomId: number}) => {
       if (leftRoomId === roomId && leftUserId !== user?.id) {
         setUsers((prev) => prev.filter((u) => u.id !== leftUserId));
       }

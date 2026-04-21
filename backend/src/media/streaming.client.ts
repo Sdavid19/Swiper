@@ -1,7 +1,7 @@
-import * as streamingAvailability from 'streaming-availability';
+import { Client, Configuration } from 'streaming-availability';
 
-const client = new streamingAvailability.Client(
-  new streamingAvailability.Configuration({
+const client = new Client(
+  new Configuration({
     apiKey: process.env.RAPID_API_KEY,
   }),
 );

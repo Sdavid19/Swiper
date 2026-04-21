@@ -17,7 +17,7 @@ export function QuestionCard({ question, viewMode, details }: QuestionCardProps)
   const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
 
   const handleOnCardPress = () => {
-    if(details){
+    if (details) {
       navigation.navigate("EditQuestion", { bankId: question.bankId, questionId: question.id, viewMode: viewMode })
     }
   }
@@ -27,16 +27,13 @@ export function QuestionCard({ question, viewMode, details }: QuestionCardProps)
       <View style={styles.cardContent}>
         <Image
           style={styles.cardImage}
-          source={{ uri: question.imageUrl
-              ? question.imageUrl.startsWith('http')
-                ? question.imageUrl
-                : getImage(question.imageUrl)
-              : 'https://placecats.com/200/100'
-            }}
+          source={{
+            uri: getImage(question.imageUrl)
+          }}
         />
         <Text style={styles.cardText}>{question.text}</Text>
       </View>
-      {details && (<ChevronRight style={{ marginRight: 6 }} size={ 20 } />)}
+      {details && (<ChevronRight style={{ marginRight: 6 }} size={20} />)}
     </TouchableOpacity>
   );
 }

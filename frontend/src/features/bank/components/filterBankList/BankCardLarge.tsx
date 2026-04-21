@@ -4,7 +4,6 @@ import { BankDto } from "../../../../shared/types/generated";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigation, EditBankNavigation } from "../../../../navigation";
 import { getImage } from "../../../../api/services/image.service";
-import { shortenString } from "../../../../shared/utils/text.service";
 import { CardyButton } from "../../../../shared/components/CardButton";
 import { Play } from "lucide-react-native";
 
@@ -14,10 +13,10 @@ type CardProps = {
 
 export function BankCardLarge({ bank }: CardProps) {
   const navigation = useNavigation<EditBankNavigation>();
-  const navigation2 = useNavigation<AppNavigation>();
+  const appNavigation = useNavigation<AppNavigation>();
 
   const navigateToCreateLobby = () => {
-    navigation2.navigate("CreateLobby", { bankId: bank.id });
+    appNavigation.navigate("CreateLobby", { bankId: bank.id });
   };
 
   const onButtonPress = (id: number) => {
@@ -33,9 +32,7 @@ export function BankCardLarge({ bank }: CardProps) {
       <View style={styles.imageWrapper}>
         <Image
           source={{
-            uri: bank.imageUrl
-              ? getImage(bank.imageUrl)
-              : "https://placecats.com/200/100",
+            uri: getImage(bank.imageUrl)
           }}
           style={styles.image}
         />

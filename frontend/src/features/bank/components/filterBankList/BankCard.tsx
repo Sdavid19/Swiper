@@ -37,9 +37,7 @@ export function BankCard({ bank, isTemplate }: CardProps) {
       <View style={styles.imageWrapper}>
         <Image
           source={{
-            uri: bank.imageUrl
-              ? getImage(bank.imageUrl)
-              : "https://placecats.com/200/100",
+            uri: getImage(bank.imageUrl)
           }}
           style={styles.image}
         />

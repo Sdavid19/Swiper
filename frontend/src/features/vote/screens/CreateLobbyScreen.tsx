@@ -8,8 +8,8 @@ import {
 import { PrimaryButton } from "../../../shared/components";
 import { useEffect, useState } from "react";
 import { getSocket } from "../../../socket/socket";
-import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppNavigation, AppStackParamList, EditBankStackParamList } from "../../../navigation";
+import {  NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AppNavigation, AppStackParamList } from "../../../navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux";
 import { useNavigation } from "@react-navigation/native";
@@ -30,7 +30,6 @@ export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
   const bankId = route.params.bankId;
   const user = useSelector((state: RootState) => state.auth.user);
   const navigation = useNavigation<AppNavigation>();
-  const navigation2 = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
 
   const handleCreateLobby = () => {
 

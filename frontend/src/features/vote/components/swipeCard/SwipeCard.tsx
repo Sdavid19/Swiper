@@ -129,9 +129,7 @@ export function SwipeCard({
       >
         <ImageBackground
           source={
-            item.imageUrl
-              ? { uri: getImage(item.imageUrl) }
-              : { uri: "https://placecats.com/250/400" }
+            { uri: getImage(item.imageUrl) }
           }
           style={styles.image}
           imageStyle={{ borderRadius: 12 }}

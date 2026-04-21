@@ -6,16 +6,14 @@ type UserTableProps = {
     users: UserDto[]
 }
 
-export function UserTable({users}: UserTableProps) {
+export function UserTable({ users }: UserTableProps) {
     return (
         <View style={styles.grid}>
             {users.map((user) => (
                 <View key={user.id} style={styles.userBox}>
                     <Image
                         source={{
-                            uri: user.imageUrl
-                                ? getImage(user.imageUrl)
-                                : 'https://placecats.com/100/100'
+                            uri: getImage(user.imageUrl)
                         }}
                         style={styles.userImage}
                     />

@@ -14,10 +14,9 @@ export function ProfileScreen() {
   const dispatch: AppDispatch = useDispatch();
 
   const navigation = useNavigation<ProfileNavigation>();
+  const appNavigation = useNavigation<AppNavigation>();
 
   const user = useSelector((state: RootState) => state.auth.user);
-
-  console.log(user?.imageUrl)
 
   const handleLogout = () => {
     dispatch(logoutAction());
@@ -39,8 +38,8 @@ export function ProfileScreen() {
       </View>
 
       <View style={{ marginTop: 20 }}>
-        <NavigateCard text="My banks" onPressed={() => console.log('My banks')} />
-        <NavigateCard text="My votes" onPressed={() => console.log('My votes')} />
+        <NavigateCard text="My banks" onPressed={() => appNavigation.navigate("Tabs", {screen: "BankStack", params: {screen: "ShowBanks"}})} />
+        <NavigateCard text="My votes" onPressed={() => appNavigation.navigate("Tabs", {screen: "VoteStatStack", params: {screen: "ShowVotes"}})} />
         <NavigateCard text="Edit profile" onPressed={() => navigation.navigate('EditProfile')} />
         <NavigateCard text="Log out" onPressed={handleLogout} />
       </View>

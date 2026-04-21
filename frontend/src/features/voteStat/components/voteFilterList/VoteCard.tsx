@@ -4,10 +4,7 @@ import { VoteDto } from "@/src/shared/types/generated";
 import { getImage } from "@/src/api/services/image.service";
 import { shortenString } from "@/src/shared/utils/text.service";
 import { Badge } from "@/src/shared/components/Badge";
-import { PrimaryButton } from "@/src/shared/components";
 import { VoteStatNavigation } from "@/src/navigation";
-import { useMemo } from "react";
-import { StatButton } from "../StatButton";
 import { CardyButton } from "@/src/shared/components/CardButton";
 import { ChartColumnDecreasing } from "lucide-react-native";
 
@@ -37,9 +34,7 @@ export function VoteCard({ vote }: CardProps) {
       <View style={styles.imageWrapper}>
         <Image
           source={{
-            uri: vote.bank.imageUrl
-              ? getImage(vote.bank.imageUrl)
-              : "https://placecats.com/200/100",
+            uri: getImage(vote.bank.imageUrl)
           }}
           style={styles.image}
         />

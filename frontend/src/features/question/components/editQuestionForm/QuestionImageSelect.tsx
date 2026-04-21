@@ -89,7 +89,7 @@ export function QuestionImageSelect({
         {image ? (
           <Image
             source={{
-              uri: image ? getImage(image) : "https://placecats.com/200/100",
+              uri: getImage(image)
             }}
             style={styles.image}
           />
