@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { StreamingApiService } from './streaming-api.service';
 import { MediaType } from '@prisma/client';
 import { PrismaService } from '../../prisma';
+import { ShowType } from 'streaming-availability';
 
 @Injectable()
 export class MediaImportService {
@@ -30,10 +31,13 @@ export class MediaImportService {
     });
   }
 
-  async fetchAndSaveMovies() {
-    console.log('Starting to fetch movies...');
+  async fetchAndSaveMedia() {
+    console.log('Starting to fetch meida...');
 
-    const media = await this.api.fetchMovies();
+    const movies = await this.api.fetchMovies();
+    const series = await this.api.fetchSeries();
+
+    const media = [...movies, ...series];
 
     if (media.length === 0) {
       console.log('No movies found.');
@@ -73,7 +77,7 @@ export class MediaImportService {
         imdbId: m.imdbId,
         description: this.buildDescription(genres, overview),
         imageUrl: m.imageSet?.verticalPoster?.w480 || null,
-        mediaType: MediaType.MOVIE,
+        mediaType: this.mapToCustomMediaType(m.showType),
       };
     });
 
@@ -130,6 +134,12 @@ export class MediaImportService {
       );
     }
 
-    console.log('Movies import finished.');
+    console.log('Media import finished.');
+  }
+
+
+  mapToCustomMediaType(t: ShowType){
+    if(t == "movie") return MediaType.MOVIE;
+    if(t == "series") return MediaType.SERIES
   }
 }

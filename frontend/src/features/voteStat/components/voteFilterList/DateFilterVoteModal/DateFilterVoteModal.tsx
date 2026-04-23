@@ -9,36 +9,28 @@ import {
 } from "react-native";
 import { X } from "lucide-react-native";
 import { PrimaryButton } from "@/src/shared/components";
-import { getDefaultRange } from "@/src/shared/utils/date.service";
 import { DatePicker } from "./DatePicker";
-import { RangeBoxes } from "./RangeBoxes";
 
 
 interface Props {
     visible: boolean;
     setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-    onApply?: (from: Date, to: Date) => void;
-    onClear?: () => void;
+    pickerDate: Date | null
+    setPickerDate: React.Dispatch<React.SetStateAction<Date | null>>;
+    onApply: () => void;
+    onClear: () => void;
 }
 
 export function DateFilterModal({
     visible,
     setVisible,
+    pickerDate,
+    setPickerDate,
     onApply,
     onClear
 }: Props) {
 
-    const defaultRange = getDefaultRange();
-
-    const [fromDate, setFromDate] = useState<Date>(defaultRange.from);
-    const [toDate, setToDate] = useState<Date>(defaultRange.to);
     const slideAnim = useRef(new Animated.Value(300)).current;
-    const [active, setActive] = useState<"from" | "to">("from");
-    const [pickerDate, setPickerDate] = useState(new Date());
-
-    useEffect(() => {
-        setPickerDate(active === "from" ? fromDate : toDate);
-    }, [active]);
 
     useEffect(() => {
         if (visible) {
@@ -52,22 +44,6 @@ export function DateFilterModal({
         }
     }, [visible]);
 
-    const apply = () => {
-        onApply?.(fromDate, toDate);
-        setVisible(false);
-    };
-
-    const clear = () => {
-        const { from, to } = getDefaultRange();
-
-        setFromDate(from);
-        setToDate(to);
-        setActive("from");
-
-        setPickerDate(from);
-
-        onClear?.();
-    };
 
     return (
         <Modal visible={visible} transparent animationType="none">
@@ -93,21 +69,26 @@ export function DateFilterModal({
                         </TouchableOpacity>
                     </View>
 
-                    <RangeBoxes active={active} fromDate={fromDate} toDate={toDate} setActive={setActive} />
-
                     <DatePicker
-                        active={active}
                         pickerDate={pickerDate}
-                        fromDate={fromDate}
-                        toDate={toDate}
-                        setFromDate={setFromDate}
                         setPickerDate={setPickerDate}
-                        setToDate={setToDate} /
-                    >
+                    />
 
                     <View style={{ display: "flex", flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: 20 }}>
-                        <PrimaryButton title="Clear filter" onPress={clear} style={{ width: '45%' }}></PrimaryButton>
-                        <PrimaryButton title="Apply filter" onPress={apply} style={{ width: '45%' }}></PrimaryButton>
+                        <PrimaryButton title="Clear filter" 
+                            onPress={() => {
+                                onClear()
+                                setVisible(false)
+                            }} 
+                        style={{ width: '45%' }}></PrimaryButton>
+                        <PrimaryButton
+                            title="Apply filter"
+                            onPress={() => {
+                                onApply();
+                                setVisible(false);
+                            }}
+                            style={{ width: "45%" }}
+                        />
                     </View>
 
                 </Animated.View>

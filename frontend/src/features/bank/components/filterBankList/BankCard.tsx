@@ -6,7 +6,7 @@ import { getImage } from "../../../../api/services/image.service";
 import { shortenString } from "../../../../shared/utils/text.service";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigation } from "../../../../navigation";
-import { Play } from "lucide-react-native";
+import { Play, Plus } from "lucide-react-native";
 import { CardyButton } from "../../../../shared/components/CardButton";
 
 type BankBase = {
@@ -62,7 +62,7 @@ export function BankCard({ bank, isTemplate }: CardProps) {
       </View>
 
       <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginHorizontal: 5}}>
-        <CardyButton Icon={Play} backgroundColor={"#22c55e"} onPressed={navigateToCreateLobby} />
+        <CardyButton Icon={isTemplate ? Plus : Play} backgroundColor={ "#22c55e"} onPressed={navigateToCreateLobby} />
       </View>
 
     </View>

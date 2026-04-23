@@ -3,6 +3,7 @@ import {
   IsOptional,
   IsArray,
   IsNumber,
+  IsBoolean,
 } from 'class-validator';
 import { CategoriesExistValidator } from '../validators/categories-exists.validator';
 
@@ -18,4 +19,8 @@ export class BankFilterDto {
     message: 'Some category IDs do not exist',
   })
   categoryIds?: number[];
+
+  @ApiProperty()
+  @IsBoolean()
+  locked: boolean
 }

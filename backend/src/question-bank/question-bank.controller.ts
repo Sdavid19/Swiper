@@ -60,8 +60,10 @@ export class QuestionBankController {
     @Request() req: { user: JwtPayload },
   ) {
     const categoryIds = filter.categoryIds;
+    const locked = filter.locked;
     return this.bankService.findAll(
       req.user.sub,
+      locked,
       categoryIds,
     );
   }
@@ -139,6 +141,7 @@ export class QuestionBankController {
       dto.platforms,
       dto.bankTemplateId,
       req.user.sub,
+      dto.mediaType
     );
   }
 

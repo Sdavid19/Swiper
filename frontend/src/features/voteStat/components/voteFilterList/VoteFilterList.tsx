@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CalendarSearch, Search, SlidersHorizontal, Timer } from "lucide-react-native";
-import { BankDto, VoteDto } from "@/src/shared/types/generated";
+import {  VoteDto } from "@/src/shared/types/generated";
 import { InputField } from "@/src/shared/components";
-import { BankCardLarge } from "../../../bank/components/filterBankList/BankCardLarge";
 import { FilterBankModal } from "../../../bank/components/filerBankModal/FilterBankModal";
 import { getVotesByUserParticipatedIn } from "../../../vote/services/vote.service";
-import { getDefaultRange } from "@/src/shared/utils/date.service";
 import { VoteCard } from "./VoteCard";
 import { DateFilterModal } from "./DateFilterVoteModal/DateFilterVoteModal";
+import { DatePicker } from "./DateFilterVoteModal/DatePicker";
 
 export function VoteFilterList() {
 
-  const defaultRange = getDefaultRange();
-
-  const [fromDate, setFromDate] = useState<Date | undefined>(defaultRange.from);
-  const [toDate, setToDate] = useState<Date | undefined>(defaultRange.to);
+  const [tempDate, setTempDate] = useState<Date | null>(null);
+  const [appliedDate, setAppliedDate] = useState<Date | null>(null);
 
   const [filter, setFilter] = useState<string>('');
   const [filterModalVisible, setFilterModalVisible] = useState<boolean>(false);
@@ -25,13 +22,16 @@ export function VoteFilterList() {
   const [votes, setVotes] = useState<VoteDto[]>([]);
 
   useEffect(() => {
-    getVotesByUserParticipatedIn(
-      fromDate?.toISOString(),
-      toDate?.toISOString()
-    )
+    getVotesByUserParticipatedIn(appliedDate?.toISOString())
       .then(res => setVotes(res))
       .catch(err => console.log(err));
-  }, [fromDate, toDate]);
+  }, [appliedDate]);
+
+  useEffect(() => {
+    if (dateModalVisible) {
+      setTempDate(appliedDate);
+    }
+  }, [dateModalVisible]);
 
   const f = filter.toLowerCase();
 
@@ -59,11 +59,11 @@ export function VoteFilterList() {
         />
 
         <TouchableOpacity onPress={() => setFilterModalVisible(true)} style={{ padding: 10, borderRadius: 6 }}>
-          <SlidersHorizontal size={28} />
+          <SlidersHorizontal size={28} color={selected.length > 0 ? "#22c55e" : "black"} />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setdateModalVisible(true)} style={{ padding: 10, borderRadius: 6 }}>
-          <CalendarSearch size={28} />
+          <CalendarSearch size={28}  color={appliedDate != null ? "#22c55e" : "black"} />
         </TouchableOpacity>
       </View>
 
@@ -91,19 +91,35 @@ export function VoteFilterList() {
         setVisible={setFilterModalVisible}
       />
 
-      <DateFilterModal
-        visible={dateModalVisible}
-        setVisible={setdateModalVisible}
-        onApply={(from, to) => {
-          setFromDate(from);
-          setToDate(to);
-        }}
-        onClear={() => {
-          const d = getDefaultRange();
-          setFromDate(d.from);
-          setToDate(d.to);
-        }}
-      />
+      {Platform.OS == "ios" &&
+        <DateFilterModal
+          visible={dateModalVisible}
+          setVisible={setdateModalVisible}
+          pickerDate={tempDate ?? new Date()}
+          setPickerDate={setTempDate}
+          onApply={() => {
+            setAppliedDate(tempDate);
+          }}
+          onClear={() => {
+            setAppliedDate(null);
+            setTempDate(null);
+          }}
+        />
+      }
+
+      {(Platform.OS == "android" && dateModalVisible) &&
+        <DatePicker
+          pickerDate={appliedDate}
+          setPickerDate={setAppliedDate}
+          onSelected={() => setdateModalVisible(false)}
+          onClear={() => {
+            setAppliedDate(null);
+            setTempDate(null);
+            setdateModalVisible(false)
+          }}
+        />
+      }
+
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { AppState, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { getAllBanksWithFilter } from "../services/bank.service";
 import { useEffect, useState } from "react";
 import { QuestionBankTemplateDto } from "../../../shared/types/generated";
@@ -6,7 +6,7 @@ import { BankCard } from "../components/filterBankList/BankCard";
 import { getAllTemplates } from "../services/template.service";
 import { useDispatch, useSelector } from "react-redux";
 import { setBanks } from "@/src/redux/bankSlice";
-import { RootState, store } from "@/src/redux";
+import { RootState} from "@/src/redux";
 import { NavigateLink } from "../components/NavigateLink";
 
 export function HomeScreen() {
@@ -14,10 +14,10 @@ export function HomeScreen() {
   const [templates, setTemplates] = useState<QuestionBankTemplateDto[]>([]);
   const dispatch = useDispatch();
 
-  const banks = useSelector((state: RootState) => state.bank);
+  const banks = useSelector((state: RootState) => state.bank.banks);
 
   useEffect(() => {
-    getAllBanksWithFilter()
+    getAllBanksWithFilter({locked: false})
       .then((res) => dispatch(setBanks(res)))
       .catch((err) => console.log(err));
 
@@ -43,7 +43,7 @@ export function HomeScreen() {
           </ScrollView>
         ) : (
           <View style={styles.emptycontainer}>
-            <Text>There are no banks!</Text>
+            <Text>There are no templates!</Text>
           </View>
         )}
       </View>
@@ -61,7 +61,7 @@ export function HomeScreen() {
           </ScrollView>
         ) : (
           <View style={styles.emptycontainer}>
-            <Text>There are no banks!</Text>
+             <Text>There are no banks with the given filters!</Text>
           </View>
         )}
       </View>

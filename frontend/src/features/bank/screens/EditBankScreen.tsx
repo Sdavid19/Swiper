@@ -21,11 +21,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux";
 import { EditBankForm } from "../components/editBankForm/EditBankForm";
 import { useNavigation } from "@react-navigation/native";
-import { DeleteButton } from "../../../shared/components/DeleteButton";
+import { DeleteButton } from "../../../shared/components/Buttons/DeleteButton";
 import { showSuccess } from "../../../shared/utils/toast.service";
 import { addBankAction, removeBankAction } from "../../../redux/bankSlice";
 import { EditBankStackParamList } from "../../../navigation";
-import { CopyButton } from "@/src/shared/components/CopyButton";
+import { CopyButton } from "@/src/shared/components/Buttons/CopyButton";
 
 type EditBankProps = NativeStackScreenProps<EditBankStackParamList, "EditBank">;
 export type EditBankScreenMode = "View" | "Edit" | "Create";
@@ -67,13 +67,13 @@ export function EditBankScreen({ route }: EditBankProps) {
 
     navigation.setOptions({
       headerRight: () => (
-        <View>
+        <>
           {screenMode != "View" ? (
             <DeleteButton onDelete={() => handleDelete(bank.id)} />
           ) : (
             <CopyButton onCopy={() => handleCopy(bank.id)} />
           )}
-        </View>
+        </>
       ),
     });
   }, [bank, navigation]);
@@ -109,6 +109,7 @@ export function EditBankScreen({ route }: EditBankProps) {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
+        
         <View>
           <ImageSelect
             bankId={bank?.id}
@@ -118,6 +119,7 @@ export function EditBankScreen({ route }: EditBankProps) {
             disabled={!isEditable || isCreateMode}
           />
         </View>
+
         <View style={styles.formContainer}>
           <EditBankForm
             creatorId={user!.id}

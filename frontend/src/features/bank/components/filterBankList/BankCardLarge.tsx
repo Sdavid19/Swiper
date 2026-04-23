@@ -6,6 +6,7 @@ import { AppNavigation, EditBankNavigation } from "../../../../navigation";
 import { getImage } from "../../../../api/services/image.service";
 import { CardyButton } from "../../../../shared/components/CardButton";
 import { Play } from "lucide-react-native";
+import { formatDate } from "@/src/shared/utils/date.service";
 
 type CardProps = {
   bank: BankDto;
@@ -43,19 +44,24 @@ export function BankCardLarge({ bank }: CardProps) {
 
       <View style={styles.cardBody}>
         <View style={styles.leftContent}>
-          <View>
-            <View style={styles.infoCotainer}>
-              <Text style={styles.bankTitle} numberOfLines={1}>
-                {bank.title}
-              </Text>
-            </View>
-
-            <View style={styles.descContainer}>
-              <Text style={styles.desc} numberOfLines={2}>
-                {bank.description}
-              </Text>
-            </View>
+          <View style={styles.infoCotainer}>
+            <Text style={styles.bankTitle} numberOfLines={1}>
+              {bank.title}
+            </Text>
           </View>
+
+          <View style={styles.descContainer}>
+            <Text style={styles.desc} numberOfLines={2}>
+              {formatDate(new Date(bank.updatedAt))}
+            </Text>
+          </View>
+
+          <View style={styles.descContainer}>
+            <Text style={styles.desc} numberOfLines={2}>
+              {bank.description}
+            </Text>
+          </View>
+
         </View>
         <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginHorizontal: 5 }}>
           <CardyButton Icon={Play} backgroundColor={"#22c55e"} onPressed={navigateToCreateLobby} />

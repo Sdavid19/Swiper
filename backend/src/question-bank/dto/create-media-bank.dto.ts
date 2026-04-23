@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { MediaType } from '@prisma/client';
 import {
   IsArray,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
@@ -19,4 +21,9 @@ export class CreateMediaBankDto {
   @ApiProperty({ required: true, type: Number })
   @IsNumber()
   bankTemplateId: number;
+
+
+  @ApiProperty({ enum: MediaType })
+  @IsEnum(MediaType)
+  mediaType: MediaType;
 }

@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "module": "node16",
-    "target": "es2020",
-    "lib": ["es2020"],
+    "module": "NodeNext",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "moduleResolution": "NodeNext",
     "declaration": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -17,8 +18,9 @@
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   },
-  "include": ["src"],
+  "include": ["src", "prisma"],
   "exclude": ["node_modules", "dist"]
 }

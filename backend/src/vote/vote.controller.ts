@@ -27,22 +27,22 @@ import { VoteFilterDto } from './dto/vote-filter.dto';
 export class VoteController {
   constructor(
     private readonly voteService: VoteService,
-  ) {}
+  ) { }
 
 
-@Get()
-@UseGuards(AuthGuard)
-@HttpCode(HttpStatus.OK)
-@ApiOkResponse({ type: VoteDto, isArray: true })
-getVotesUserParticipatedIn(
+  @Get()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: VoteDto, isArray: true })
+  getVotesUserParticipatedIn(
     @Request() req: { user: JwtPayload },
     @Query() filter: VoteFilterDto,
-) {
+  ) {
     return this.voteService.getAllVotesUserParticipatedIn(
-        req.user.sub,
-        filter,
+      req.user.sub,
+      filter,
     );
-}
+  }
 
   @Get(':id')
   @UseGuards(AuthGuard)

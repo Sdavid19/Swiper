@@ -59,7 +59,7 @@ export function JoinLobbyScreen() {
       contentContainerStyle={{
         flexGrow: 1,
         paddingHorizontal: 15,
-        paddingBottom: 15,
+        paddingBottom: 20,
       }}
       enableOnAndroid={true}
       keyboardOpeningTime={0}

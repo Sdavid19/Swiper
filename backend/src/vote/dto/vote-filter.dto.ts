@@ -4,9 +4,5 @@ export class VoteFilterDto {
 
     @IsOptional()
     @IsDateString()
-    from?: string;
-
-    @IsOptional()
-    @IsDateString()
-    to?: string;
+    date?: string;
 }

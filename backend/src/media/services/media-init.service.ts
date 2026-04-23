@@ -25,7 +25,7 @@ export class MediaInitService implements OnModuleInit {
 
     if (mediaCount === 0) {
       console.log('fetching media');
-      await this.importer.fetchAndSaveMovies();
+      await this.importer.fetchAndSaveMedia();
     }
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma';
+import { MediaType } from '@prisma/client';
 
 @Injectable()
 export class MediaService {
@@ -8,11 +9,14 @@ export class MediaService {
   ) {}
 
   async findMediaByPlatforms(
-    platformNames?: string[],
+    mediaType: MediaType,
+    platformNames?: string[]
+    
   ) {
     const media =
       await this.prisma.media.findMany({
         where: {
+            mediaType,
           ...(platformNames &&
           platformNames.length > 0
             ? {

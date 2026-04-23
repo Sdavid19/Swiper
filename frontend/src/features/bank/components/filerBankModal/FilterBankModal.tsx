@@ -40,6 +40,11 @@ export function FilterBankModal({
     setVisible(false);
   };
 
+  const clearFilter = () => { 
+    setSelected([]);
+    setVisible(false);
+  };
+
   useEffect(() => {
     if (visible) {
       Animated.timing(slideAnim, {
@@ -85,6 +90,7 @@ export function FilterBankModal({
             selected={tempSelected}
             setSelected={setTempSelected}
             onApply={applyFilter}
+            onClear={clearFilter}
           />
         </Animated.View>
       </View>

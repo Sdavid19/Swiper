@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { Pressable, Text } from "react-native";
+import { Pressable, Text, TouchableOpacity } from "react-native";
 import { AuthNavigation, AuthStackParamList } from "../../../navigation/types";
 
 type NavigateLinkProps = {
@@ -11,16 +11,17 @@ export function NavigateLink({ text, component }: NavigateLinkProps) {
   const navigation = useNavigation<AuthNavigation>();
 
   return (
-    <Pressable onPress={() => navigation.replace(component)}>
+    <TouchableOpacity onPress={() => navigation.replace(component)}>
       <Text
         style={{
           textAlign: "center",
-          marginTop: 20,
+          marginTop: 30,
           textDecorationLine: "underline",
+          color: "#333"
         }}
       >
         {text}
       </Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 }

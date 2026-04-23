@@ -7,7 +7,7 @@ import {
   UpdateBankDto,
 } from "../../../../shared/types/generated";
 import { EditBankScreenMode } from "../../screens/EditBankScreen";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { InputField, PrimaryButton } from "../../../../shared/components";
 import { CheckboxField } from "../../../../shared/components/CheckBoxField";
 import { PickerSelect } from "../../../../shared/components/PickerSelect";
@@ -25,6 +25,7 @@ import {
 } from "../../../../redux/bankSlice";
 import { useNavigation } from "@react-navigation/native";
 import { EditBankNavigation } from "../../../../navigation";
+import { CircleQuestionMark } from "lucide-react-native";
 
 export interface EditBankFormProps {
   screenMode: EditBankScreenMode;
@@ -147,46 +148,36 @@ export function EditBankForm({
         errorMessages={errors?.description}
       />
 
-      <PickerSelect
-        title="Category"
-        value={form.categoryId}
-        onValueChange={(value) =>
-          isEditable && setField("categoryId", value ? Number(value) : 0)
-        }
-        items={categoryOptions}
-        placeholder={{ label: "Select category", value: null }}
-        style={{
-          inputIOSContainer: {
-            zIndex: 100,
-            padding: 20,
-          },
-        }}
-        disabled={!isEditable}
-        errorMessages={errors?.categoryId}
-      />
+      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+        <PickerSelect
+          title="Category"
+          value={form.categoryId}
+          onValueChange={(value) =>
+            isEditable && setField("categoryId", value ? Number(value) : 0)
+          }
+          items={categoryOptions}
+          placeholder={{ label: "Select category", value: null }}
+          style={{
+            inputIOSContainer: {
+              zIndex: 100,
+              padding: 20,
+            }
+          }}
+          disabled={!isEditable}
+          errorMessages={errors?.categoryId}
+        />
 
-      <View style={styles.bottomRow}>
         <PrimaryButton
           title="View questions"
           style={{ width: "40%" }}
           onPress={navigateToQuestionBank}
-        />
-
-        <CheckboxField
-          title="Public"
-          containerStyle={{ width: "70%" }}
-          value={form.public}
-          onValueChange={
-            isEditable ? (value) => setField("public", value) : undefined
-          }
-          disabled={!isEditable}
         />
       </View>
 
       {isEditable && (
         <PrimaryButton
           title={screenMode === "Edit" ? "Save Changes" : "Create Bank"}
-          style={{ width: "100%", marginTop: 35 }}
+          style={{ width: "100%", marginTop: 20 }}
           disabled={buttonDisabled()}
           onPress={saveBank}
         />

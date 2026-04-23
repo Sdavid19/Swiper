@@ -7,16 +7,15 @@ export const getTopVoteStats = async (id: number): Promise<AnswerTopStatsDto> =>
 }
 
 export const getVotesByUserParticipatedIn = async (
-    from?: string,
-    to?: string
+    date?: string,
 ): Promise<VoteDto[]> => {
 
     const response = await api.get(`/votes`, {
         params: {
-            from,
-            to,
+           date
         },
     });
 
+    
     return response.data;
 };

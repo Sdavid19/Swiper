@@ -36,8 +36,6 @@ export function DeleteButton({
         height: 40,
         justifyContent: "center",
         alignItems: "center",
-        padding: 0,
-        margin: 0,
       }}
       onPress={handlePress}
     >

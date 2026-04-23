@@ -49,52 +49,50 @@ export class VoteService {
     });
   }
 
-  async getAllVotesUserParticipatedIn(
-    userId: number,
-    filter: VoteFilterDto
-  ): Promise<VoteDto[]> {
+ async getAllVotesUserParticipatedIn(
+  userId: number,
+  filter: VoteFilterDto
+): Promise<VoteDto[]> {
 
-    const { from, to } = filter;
+  const { date } = filter;
 
-    const dateFilter: Prisma.VoteWhereInput = {};
+  const dateFilter: Prisma.VoteWhereInput = {};
 
-    if (from && to) {
-      dateFilter.startsAt = {
-        gte: new Date(new Date(from).setHours(0, 0, 0, 0)),
-        lte: new Date(new Date(to).setHours(23, 59, 59, 999)),
-      };
-    } else if (from) {
-      dateFilter.startsAt = {
-        gte: new Date(new Date(from).setHours(0, 0, 0, 0)),
-      };
-    } else if (to) {
-      dateFilter.startsAt = {
-        lte: new Date(new Date(to).setHours(23, 59, 59, 999)),
-      };
-    }
+  if (date) {
+    const dayStart = new Date(date);
+    dayStart.setHours(0, 0, 0, 0);
 
-    return this.prismaService.vote.findMany({
-      where: {
-        answers: {
-          some: {
-            userId,
-          },
-        },
-        ...dateFilter,
-      },
-      include: {
-        bank: {
-          include: {
-            creator: true,
-            category: true,
-          },
-        },
-      },
-      orderBy: {
-        startsAt: "desc",
-      },
-    });
+    const dayEnd = new Date(date);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    dateFilter.startsAt = {
+      gte: dayStart,
+      lte: dayEnd,
+    };
   }
+
+  return this.prismaService.vote.findMany({
+    where: {
+      answers: {
+        some: {
+          userId,
+        },
+      },
+      ...dateFilter,
+    },
+    include: {
+      bank: {
+        include: {
+          creator: true,
+          category: true,
+        },
+      },
+    },
+    orderBy: {
+      startsAt: "desc",
+    },
+  });
+}
 
   async getVoteById(
     voteId: number,

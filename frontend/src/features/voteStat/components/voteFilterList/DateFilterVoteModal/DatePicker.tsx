@@ -3,47 +3,38 @@ import { StyleSheet, View } from "react-native";
 
 
 type DatePickerProps = {
-    active: "from" | "to",
-    
-    pickerDate: Date,
-    setPickerDate: React.Dispatch<React.SetStateAction<Date>>
 
-    fromDate: Date,
-    setFromDate: React.Dispatch<React.SetStateAction<Date>>
-
-    toDate: Date,
-    setToDate: React.Dispatch<React.SetStateAction<Date>>
+    pickerDate: Date | null,
+    setPickerDate: React.Dispatch<React.SetStateAction<Date | null>>
+    onSelected?: () => void
+    onClear?: () => void
 }
 
-export function DatePicker({ pickerDate, active, fromDate, toDate, setFromDate, setToDate, setPickerDate }: DatePickerProps) {
+export function DatePicker({ pickerDate, setPickerDate, onSelected, onClear }: DatePickerProps) {
     return (
         <View style={styles.pickerWrap}>
             <RNDateTimePicker
-                value={pickerDate}
+                value={pickerDate ?? new Date()}
                 mode="date"
-                display="spinner"
+                display={'spinner'}
                 themeVariant="light"
-                minimumDate={active == "to" ? fromDate : undefined}
-                maximumDate={active == "from" ? toDate : undefined}
+                neutralButton={{ label: 'Clear', textColor: 'grey' }}
+                positiveButton={{ label: 'Apply', textColor: 'black' }}
+                negativeButton={{ label: 'Cancel ', textColor: 'black' }}
                 onChange={(event, selectedDate) => {
-                    if (event.type === "dismissed") return;
+                    if (event.type === "dismissed") {
+                        onSelected?.();
+                        return;
+                    }
+                    if (event.type == "neutralButtonPressed") {
+                        onClear?.();
+                        return;
+                    }
+
                     if (!selectedDate) return;
 
-                    const safe = new Date(selectedDate);
-
-                    if (active === "from") {
-                        setFromDate(safe);
-                        if (safe > toDate) {
-                            setToDate(safe);
-                        }
-                    } else {
-                        if (safe < fromDate) {
-                            setToDate(fromDate);
-                        } else {
-                            setToDate(safe);
-                        }
-                    }
-                    setPickerDate(safe);
+                    setPickerDate(selectedDate);
+                    onSelected?.();
                 }}
             />
         </View>

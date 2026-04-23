@@ -13,6 +13,8 @@ import { BankDetailDto } from '../dto/bank.detail.dto';
 import { ImageService } from '../../shared/image/image.service';
 import { QuestionService } from '../../question/services/question.service';
 import { MediaService } from '../../media/services/media.service';
+import { MediaType } from '@prisma/client';
+import { formatDate } from '../../shared/date/format-date';
 
 @Injectable()
 export class QuestionBankService {
@@ -21,7 +23,7 @@ export class QuestionBankService {
     private readonly mediaService: MediaService,
     private readonly templateService: QuestionBankTemplateService,
     private readonly questionService: QuestionService,
-  ) {}
+  ) { }
 
   async findById(
     id: number,
@@ -80,7 +82,8 @@ export class QuestionBankService {
 
   findAll(
     userId: number,
-    categoryIds?: number[],
+    locked: boolean,
+    categoryIds?: number[]
   ): Promise<BankDto[]> {
     return this.prisma.questionBank.findMany({
       where: {
@@ -88,6 +91,7 @@ export class QuestionBankService {
         ...(categoryIds && categoryIds.length > 0
           ? { categoryId: { in: categoryIds } }
           : {}),
+        votes: locked ? { some: {} } : { none: {} }
       },
       include: {
         category: true,
@@ -182,16 +186,11 @@ export class QuestionBankService {
     platformNames: string[] | undefined,
     templateId: number,
     userId: number,
+    mediaType: MediaType
   ) {
-    const media =
-      await this.mediaService.findMediaByPlatforms(
-        platformNames,
-      );
+    const media = await this.mediaService.findMediaByPlatforms(mediaType, platformNames);
 
-    const bankToCreateData =
-      await this.templateService.findById(
-        templateId,
-      );
+    const bankToCreateData = await this.templateService.findById(templateId);
 
     if (!bankToCreateData)
       throw new NotFoundException(

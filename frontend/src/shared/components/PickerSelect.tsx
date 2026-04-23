@@ -8,7 +8,7 @@ interface LabeledPickerSelectProps extends PickerSelectProps {
 
 export function PickerSelect({ title, errorMessages, ...props }: LabeledPickerSelectProps) {
     return (
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 20, width: '55%' }}>
             {title && <Text style={styles.label}>{title}</Text>}
 
             <View style={styles.inputContainer}>

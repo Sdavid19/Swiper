@@ -39,9 +39,13 @@ export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
   const dispatch = useDispatch();
 
   const handleStartPress = async () => {
+    if (!template) return;
+    const isMovie = template.category.name.toLocaleUpperCase().includes("MOVIE");
+
     const bank = await createBankByMedia({
       bankTemplateId: templateId,
       platforms: selected,
+      mediaType: isMovie ? "MOVIE" : "SERIES"
     });
 
     if (!bank) return;
@@ -54,7 +58,9 @@ export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
   }, []);
 
   useEffect(() => {
-    getTemplateById(templateId).then(setTemplate).catch(console.error);
+    getTemplateById(templateId)
+      .then(setTemplate)
+      .catch(console.error);
   }, [templateId]);
 
   const numColumns = 3;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Platform, Image } from "react-native";
 import { signup } from "../services/auth.service";
 import { SignupDto } from "../../../shared/types/generated";
 import { NavigateLink } from "../components/NavigateLink";
@@ -10,6 +10,7 @@ import { showSuccess } from "../../../shared/utils/toast.service";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigation } from "../../../navigation";
 import { KeyRound, Mail, User } from "lucide-react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export function SignupScreen() {
 
@@ -31,7 +32,7 @@ export function SignupScreen() {
       await signup(credentials);
       showSuccess('Sucessfully signed up!')
       setErrors(null);
-      navigation.navigate('Login');
+      navigation.replace('Login');
     } catch (err) {
       const error = err as AxiosError<ErrorResponse<SignupDto>>;
       const message = error.response?.data.message;
@@ -43,10 +44,21 @@ export function SignupScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      enableOnAndroid={true}
+      keyboardOpeningTime={0}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
     >
+
+      <View style={styles.logoContainer}>
+        <Image
+          style={styles.logo}
+          source={require('../../../../assets/logo.png')}
+          resizeMode="cover"
+        />
+      </View>
 
       <View style={styles.formContainer}>
         <InputField
@@ -79,7 +91,7 @@ export function SignupScreen() {
         />
 
         <PrimaryButton
-          title="Login"
+          title="Sign up"
           onPress={handleLogin}
           disabled={isButtonDisabled()}
           style={styles.loginButton}
@@ -87,16 +99,15 @@ export function SignupScreen() {
 
         <NavigateLink text="Already have an account?" component="Login" />
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+    paddingHorizontal: 25,
     backgroundColor: '#fff',
   },
   formContainer: {
@@ -106,5 +117,15 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginTop: 10
-  }
+  },
+
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 60
+  },
+
+  logo: {
+    width: 200,
+    height: 200,
+  },
 });

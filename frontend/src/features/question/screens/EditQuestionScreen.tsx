@@ -9,7 +9,7 @@ import { RootState } from "../../../redux";
 import { QuestionImageSelect } from "../components/editQuestionForm/QuestionImageSelect";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
-import { DeleteButton } from "../../../shared/components/DeleteButton";
+import { DeleteButton } from "../../../shared/components/Buttons/DeleteButton";
 import { showSuccess } from "../../../shared/utils/toast.service";
 import { removeQuestionAction } from "../../../redux/questionSlice";
 import { EditQuestionForm } from "../components/editQuestionForm/EditQuestionForm";

@@ -8,11 +8,13 @@ export function FilterBankForm({
   selected,
   setSelected,
   onApply,
+  onClear
 }: {
   categories: CategoryDto[];
   selected: number[];
   setSelected: React.Dispatch<React.SetStateAction<number[]>>;
   onApply: () => void;
+  onClear: () => void;
 }) {
   const toggleCategory = (id: number) => {
     setSelected((prev) =>
@@ -40,17 +42,22 @@ export function FilterBankForm({
         )}
       />
 
-      <PrimaryButton
-        onPress={onApply}
-        style={{ marginBottom: 20 }}
-        title="Apply filter"
-      />
+      <View style={{ display: "flex", flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30, marginHorizontal: 5 }}>
+        <PrimaryButton title="Clear filter"
+          onPress={onClear}
+          style={{ width: '47%' }}></PrimaryButton>
+        <PrimaryButton
+          title="Apply filter"
+          onPress={onApply}
+          style={{ width: "47%", }}
+        />
+      </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-    title: {
+  title: {
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 10,

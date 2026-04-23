@@ -18,7 +18,7 @@ export function BarChartStat({
   userCount,
 }: BarChartStatProps) {
   const max = useMemo(() => {
-    return Math.max(...stat.map((x) => x.yes), 0);
+    return Math.max(...stat.map((stat) => stat.yes), 0);
   }, [stat]);
 
   const sectionCount = () => {

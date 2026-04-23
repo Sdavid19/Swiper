@@ -3,11 +3,14 @@ import {
   IsEmail,
   IsNotEmpty,
   IsString,
+  Length,
+  MaxLength,
   MinLength,
 } from 'class-validator';
+import { ValidationMessages } from '../../shared/constants/validation-messages';
 
 export class SignupDto {
-  @IsEmail()
+  @IsEmail({}, { message: ValidationMessages.emailInvalid })
   @IsNotEmpty()
   @ApiProperty()
   email: string;
@@ -20,5 +23,8 @@ export class SignupDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
+  @Length(3, 20, {
+    message: ValidationMessages.usernameLengthInvalid,
+  })
   name: string;
 }

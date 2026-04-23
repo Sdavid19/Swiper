@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Sport",
+    "color": "#ef4444"
+  },
+  {
+    "name": "Tech",
+    "color": "#3b82f6"
+  },
+  {
+    "name": "Music",
+    "color": "#8b5cf6"
+  },
+  {
+    "name": "Movies",
+    "color": "#f59e0b"
+  },
+  {
+    "name": "Series",
+    "color": "#a855f7"
+  },
+  {
+    "name": "Travel",
+    "color": "#06b6d4"
+  },
+  {
+    "name": "Food",
+    "color": "#f97316"
+  },
+  {
+    "name": "Health",
+    "color": "#10b981"
+  },
+  {
+    "name": "Education",
+    "color": "#6366f1"
+  },
+  {
+    "name": "Finance",
+    "color": "#16a34a"
+  },
+  {
+    "name": "Gaming",
+    "color": "#0ea5e9"
+  },
+  {
+    "name": "Other",
+    "color": "#374151"
+  }
+]
