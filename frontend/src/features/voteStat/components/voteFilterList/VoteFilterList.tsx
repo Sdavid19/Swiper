@@ -1,88 +1,132 @@
-import { useEffect, useState } from "react";
-import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { CalendarSearch, Search, SlidersHorizontal, Timer } from "lucide-react-native";
-import {  VoteDto } from "@/src/shared/types/generated";
+import { useEffect, useState, useCallback } from "react";
+import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View, ListRenderItem } from "react-native";
+import { CalendarSearch, Search, SlidersHorizontal } from "lucide-react-native";
+import { VoteDto } from "@/src/shared/types/generated";
 import { InputField } from "@/src/shared/components";
 import { FilterBankModal } from "../../../bank/components/filerBankModal/FilterBankModal";
-import { getVotesByUserParticipatedIn } from "../../../vote/services/vote.service";
+import { DateFilterModal } from "./DateFilterModal/DateFilterModal";
+import { DatePicker } from "./DateFilterModal/DatePicker";
 import { VoteCard } from "./VoteCard";
-import { DateFilterModal } from "./DateFilterVoteModal/DateFilterVoteModal";
-import { DatePicker } from "./DateFilterVoteModal/DatePicker";
+import { getVotesByUserParticipatedIn } from "../../../vote/services/vote.service";
 
 export function VoteFilterList() {
+  const [filter, setFilter] = useState("");
+  const [selected, setSelected] = useState<number[]>([]);
 
   const [tempDate, setTempDate] = useState<Date | null>(null);
   const [appliedDate, setAppliedDate] = useState<Date | null>(null);
 
-  const [filter, setFilter] = useState<string>('');
-  const [filterModalVisible, setFilterModalVisible] = useState<boolean>(false);
-  const [dateModalVisible, setdateModalVisible] = useState<boolean>(false);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [dateModalVisible, setDateModalVisible] = useState(false);
 
   const [votes, setVotes] = useState<VoteDto[]>([]);
 
-  useEffect(() => {
-    getVotesByUserParticipatedIn(appliedDate?.toISOString())
-      .then(res => setVotes(res))
-      .catch(err => console.log(err));
-  }, [appliedDate]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (dateModalVisible) {
-      setTempDate(appliedDate);
+  const limit = 10;
+
+  const loadVotes = async (pageNumber: number, reset = false) => {
+    if (loading || (!hasMore && !reset)) return;
+
+    setLoading(true);
+
+    try {
+      const res = await getVotesByUserParticipatedIn({
+        date: appliedDate?.toISOString(),
+        text: filter,
+        categoryIds: selected,
+        page: pageNumber,
+        limit,
+      });
+
+      if (reset) {
+        setVotes(res.votes);
+      } else {
+        setVotes((prev) => [...prev, ...res.votes]);
+      }
+
+      setHasMore(res.hasMore);
+      setPage(pageNumber);
+    } finally {
+      setLoading(false);
     }
-  }, [dateModalVisible]);
+  };
 
-  const f = filter.toLowerCase();
+  useEffect(() => {
+    setPage(1);
+    setHasMore(true);
+    loadVotes(1, true);
+  }, [selected, appliedDate, filter]);
 
-  const filteredVotes = votes.filter((vote) => {
-    const matchesText =
-      vote.bank.title.toLowerCase().includes(f) ||
-      vote.bank.description.toLowerCase().includes(f);
+  const onLoadMore = useCallback(() => {
+    if (!loading && hasMore) {
+      loadVotes(page + 1);
+    }
+  }, [page, hasMore, loading]);
 
-    const matchesCategory =
-      selected.length === 0 ||
-      selected.includes(vote.bank.category.id);
+  const renderItem: ListRenderItem<VoteDto> = useCallback(
+    ({ item }) => (
+      <View style={styles.itemWrapper}>
+        <VoteCard vote={item} />
+      </View>
+    ),
+    []
+  );
 
-    return matchesText && matchesCategory;
-  });
+  const keyExtractor = useCallback((item: VoteDto) => item.id.toString(), []);
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', paddingBottom: 10 }}>
+      <View style={styles.topBar}>
+        <Text>{votes.length}</Text>
         <InputField
-          fieldStyle={{ width: '65%' }}
-          disableErrorMessages={true}
+          fieldStyle={{ width: "65%" }}
+          disableErrorMessages
           Icon={Search}
           value={filter}
-          onChangeText={(text) => setFilter(text.toLowerCase().trim())}
+          onChangeText={setFilter}
         />
 
-        <TouchableOpacity onPress={() => setFilterModalVisible(true)} style={{ padding: 10, borderRadius: 6 }}>
-          <SlidersHorizontal size={28} color={selected.length > 0 ? "#22c55e" : "black"} />
+        <TouchableOpacity
+          onPress={() => setFilterModalVisible(true)}
+          style={{ padding: 10 }}
+        >
+          <SlidersHorizontal
+            size={28}
+            color={selected.length > 0 ? "#22c55e" : "black"}
+          />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setdateModalVisible(true)} style={{ padding: 10, borderRadius: 6 }}>
-          <CalendarSearch size={28}  color={appliedDate != null ? "#22c55e" : "black"} />
+        <TouchableOpacity
+          onPress={() => setDateModalVisible(true)}
+          style={{ padding: 10 }}
+        >
+          <CalendarSearch
+            size={28}
+            color={appliedDate ? "#22c55e" : "black"}
+          />
         </TouchableOpacity>
       </View>
 
-      {filteredVotes.length > 0 ? (
-        <FlatList
-          data={filteredVotes}
-          style={{ paddingHorizontal: 5 }}
-          keyExtractor={(item, index) => `${item.id}-${index}`}
-          renderItem={({ item }) => (
-            <View style={styles.itemWrapper}>
-              <VoteCard vote={item} />
-            </View>
-          )}
-        />
-      ) : (
-        <View style={styles.emptycontainer}>
-          <Text style={{ fontSize: 16 }}>There are no votes!</Text>
-        </View>
-      )}
+      <FlatList
+        data={votes}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        onEndReached={onLoadMore}
+        onEndReachedThreshold={0.5}
+        ListEmptyComponent={
+          <View style={styles.emptycontainer}>
+            <Text>There are no votes!</Text>
+          </View>
+        }
+        ListFooterComponent={
+          loading ? (
+            <Text style={{ textAlign: "center" }}>Loading...</Text>
+          ) : null
+        }
+      />
 
       <FilterBankModal
         selected={selected}
@@ -91,48 +135,50 @@ export function VoteFilterList() {
         setVisible={setFilterModalVisible}
       />
 
-      {Platform.OS == "ios" &&
+      {Platform.OS === "ios" && (
         <DateFilterModal
           visible={dateModalVisible}
-          setVisible={setdateModalVisible}
+          setVisible={setDateModalVisible}
           pickerDate={tempDate ?? new Date()}
           setPickerDate={setTempDate}
-          onApply={() => {
-            setAppliedDate(tempDate);
-          }}
+          onApply={() => setAppliedDate(tempDate)}
           onClear={() => {
             setAppliedDate(null);
             setTempDate(null);
           }}
         />
-      }
+      )}
 
-      {(Platform.OS == "android" && dateModalVisible) &&
+      {Platform.OS === "android" && dateModalVisible && (
         <DatePicker
           pickerDate={appliedDate}
           setPickerDate={setAppliedDate}
-          onSelected={() => setdateModalVisible(false)}
+          onSelected={() => setDateModalVisible(false)}
           onClear={() => {
             setAppliedDate(null);
             setTempDate(null);
-            setdateModalVisible(false)
+            setDateModalVisible(false);
           }}
         />
-      }
-
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  topBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    paddingBottom: 10,
+  },
   itemWrapper: {
     width: "100%",
-    alignItems: "center"
+    alignItems: "center",
   },
   emptycontainer: {
     flex: 1,
-    marginBottom: 10,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
-}); 
+});

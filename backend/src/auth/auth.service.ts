@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as argon from 'argon2';
-import { UserService } from '../user';
+import { UserService } from '../user/services/user.service'; 
 import { JwtService } from '@nestjs/jwt';
 import { SigninDto } from './dto/signin.dto';
 import { SignupDto } from './dto';

@@ -4,6 +4,7 @@ import {
   BankDto,
   BankFilterDto,
   BankImageDto,
+  BankListDto,
   BankListItemDto,
   CreateBankDto,
   CreateMediaBankDto,
@@ -16,8 +17,13 @@ export const getAllBanks = async (): Promise<BankDto[]> => {
 
 export const getAllBanksWithFilter = async (
   filter?: BankFilterDto,
-): Promise<BankDto[]> => {
+): Promise<BankListDto> => {
   const response = await api.post("/question-banks", filter);
+  return response.data;
+};
+
+export const getTopBanks = async (): Promise<BankListItemDto[]> => {
+  const response = await api.get("/question-banks/top");
   return response.data;
 };
 
@@ -33,7 +39,7 @@ export const getBankWithQuestionsById = async (
   return response.data;
 };
 
-export const createBank = async (dto: CreateBankDto): Promise<BankDto> => {
+export const createBank = async (dto: CreateBankDto): Promise<BankListItemDto> => {
   const response = await api.post("/question-banks/create", dto);
   return response.data;
 };
@@ -45,7 +51,7 @@ export const copyBank = async (id: number): Promise<BankDto> => {
 
 export const createBankByMedia = async (
   dto: CreateMediaBankDto,
-): Promise<BankDto> => {
+): Promise<BankListItemDto> => {
   const response = await api.post("/question-banks/create-media", dto);
   return response.data;
 };
@@ -53,7 +59,7 @@ export const createBankByMedia = async (
 export const updateBank = async (
   id: number,
   dto: CreateBankDto,
-): Promise<BankDto> => {
+): Promise<BankListItemDto> => {
   const response = await api.put(`/question-banks/${id}`, dto);
   return response.data;
 };

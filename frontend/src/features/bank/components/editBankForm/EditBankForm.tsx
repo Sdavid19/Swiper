@@ -1,31 +1,18 @@
 import { useEffect, useState } from "react";
-import {
-  BankDto,
-  BankListItemDto,
-  CategoryDto,
-  CreateBankDto,
-  UpdateBankDto,
-} from "../../../../shared/types/generated";
+import { BankListItemDto, CategoryDto, CreateBankDto, UpdateBankDto } from "../../../../shared/types/generated";
 import { EditBankScreenMode } from "../../screens/EditBankScreen";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { InputField, PrimaryButton } from "../../../../shared/components";
-import { CheckboxField } from "../../../../shared/components/CheckBoxField";
 import { PickerSelect } from "../../../../shared/components/PickerSelect";
 import { createBank, updateBank } from "../../services/bank.service";
 import { showSuccess } from "../../../../shared/utils/toast.service";
 import { AxiosError } from "axios";
-import {
-  ErrorResponse,
-  ValidationErrorMessage,
-} from "../../../../shared/types";
+import { ErrorResponse, ValidationErrorMessage } from "../../../../shared/types";
 import { useDispatch } from "react-redux";
-import {
-  addBankAction,
-  updateBankAction,
-} from "../../../../redux/bankSlice";
+import { addBankAction, updateBankAction } from "../../../../redux/bankSlice";
 import { useNavigation } from "@react-navigation/native";
 import { EditBankNavigation } from "../../../../navigation";
-import { CircleQuestionMark } from "lucide-react-native";
+import { Plus } from "lucide-react-native";
 
 export interface EditBankFormProps {
   screenMode: EditBankScreenMode;
@@ -128,7 +115,7 @@ export function EditBankForm({
   return (
     <View style={styles.formContainer}>
       <InputField
-        label="Title"
+        label={screenMode == "View" ? "Title" : "Title*"}
         value={form.title}
         onChangeText={(text) => setField("title", text)}
         autoCapitalize="none"
@@ -136,21 +123,9 @@ export function EditBankForm({
         errorMessages={errors?.title}
       />
 
-      <InputField
-        label="Description"
-        value={form.description}
-        onChangeText={(text) => setField("description", text)}
-        autoCapitalize="none"
-        style={styles.descriptionField}
-        multiline
-        numberOfLines={4}
-        editable={isEditable}
-        errorMessages={errors?.description}
-      />
-
-      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <PickerSelect
-          title="Category"
+          title={screenMode == "View" ? "Category" : "Category*"}
           value={form.categoryId}
           onValueChange={(value) =>
             isEditable && setField("categoryId", value ? Number(value) : 0)
@@ -169,15 +144,29 @@ export function EditBankForm({
 
         <PrimaryButton
           title="View questions"
+          disabled={screenMode == "Create"}
           style={{ width: "40%" }}
           onPress={navigateToQuestionBank}
         />
       </View>
 
+      <InputField
+        label="Description"
+        value={form.description}
+        onChangeText={(text) => setField("description", text)}
+        autoCapitalize="none"
+        style={[styles.descriptionField, { height: isEditable ? 110 : 180 }]}
+        multiline
+        numberOfLines={isEditable ? 4 : 6}
+        editable={isEditable}
+        errorMessages={errors?.description}
+      />
+
       {isEditable && (
         <PrimaryButton
+          icon={<Plus color="white" size={18} />}
           title={screenMode === "Edit" ? "Save Changes" : "Create Bank"}
-          style={{ width: "100%", marginTop: 20 }}
+          style={{ width: "100%" }}
           disabled={buttonDisabled()}
           onPress={saveBank}
         />
@@ -206,6 +195,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 10,
     textAlignVertical: "top",
-    height: 80,
   },
 });

@@ -1,7 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Badge } from "../../../../shared/components/Badge";
 import { CategoryDto } from "../../../../shared/types/generated";
-import { PrimaryButton } from "../../../../shared/components";
 import { getImage } from "../../../../api/services/image.service";
 import { shortenString } from "../../../../shared/utils/text.service";
 import { useNavigation } from "@react-navigation/native";
@@ -42,7 +41,8 @@ export function BankCard({ bank, isTemplate }: CardProps) {
           style={styles.image}
         />
       </View>
-      <View style={{ position: "absolute", top: 20, right: 10 }}>
+
+      <View style={{ position: "absolute", top: 10, left: 10 }}>
         <Badge color={bank.category.color} text={bank.category.name} />
       </View>
 
@@ -50,7 +50,7 @@ export function BankCard({ bank, isTemplate }: CardProps) {
         <View style={styles.leftContent}>
           <View style={styles.infoCotainer}>
             <Text style={styles.bankTitle}>
-              {shortenString(bank.title, 20)}
+              {shortenString(bank.title, 20)} {isTemplate ? " creator" : ""}
             </Text>
           </View>
 
@@ -59,13 +59,13 @@ export function BankCard({ bank, isTemplate }: CardProps) {
               {bank.description}
             </Text>
           </View>
-      </View>
+        </View>
 
-      <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginHorizontal: 5}}>
-        <CardyButton Icon={isTemplate ? Plus : Play} backgroundColor={ "#22c55e"} onPressed={navigateToCreateLobby} />
-      </View>
+        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginHorizontal: 5 }}>
+          <CardyButton Icon={isTemplate ? Plus : Play} backgroundColor={isTemplate ? "#007AFF" : "#22c55e"} onPressed={navigateToCreateLobby} />
+        </View>
 
-    </View>
+      </View>
     </View >
   );
 }

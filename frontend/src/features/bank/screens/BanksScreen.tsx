@@ -4,23 +4,27 @@ import { useNavigation } from "@react-navigation/native";
 import { EditBankNavigation, EditBankStackParamList } from "../../../navigation";
 import { BankFilterList } from "../components/filterBankList/BankFilterList";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { PlusIcon } from "lucide-react-native";
 
 type ShowBankProps = NativeStackScreenProps<EditBankStackParamList, "ShowBanks">;
 
 export function BankScreen({ route }: ShowBankProps) {
   const navigation = useNavigation<EditBankNavigation>();
 
-
   return (
     <View style={styles.container}>
 
       <BankFilterList />
 
-      <PrimaryButton
-        title="Add new"
-        style={styles.addButton}
-        onPress={() => navigation.navigate('EditBank', { bankId: undefined })}
-      />
+      <View style={{paddingHorizontal: 5}}>
+        <PrimaryButton
+          icon={<PlusIcon color="white" size={18} />}
+          title="Add new"
+          style={styles.addButton}
+          onPress={() => navigation.navigate('EditBank', { bankId: undefined })}
+        />
+      </View>
+
     </View>
   );
 }
@@ -36,6 +40,6 @@ const styles = StyleSheet.create({
   addButton: {
     width: "100%",
     marginTop: 20,
-    marginBottom: 5
+    marginBottom: 5,
   },
 });

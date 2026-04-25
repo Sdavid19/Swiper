@@ -4,17 +4,33 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBankDto } from '../dto/create-bank.dto';
-import { BankDto } from '../dto/bank.dto';
 import { UpdateBankDto } from '../dto/update-bank.dto';
 import { CreateQuestionDto } from '../../question/dto/create-question.dto';
 import { QuestionBankTemplateService } from '../../question-bank-template/question-bank-template.service';
 import { BankListItemDto } from '../dto/bank-list-item.dto';
 import { BankDetailDto } from '../dto/bank.detail.dto';
-import { ImageService } from '../../shared/image/image.service';
 import { QuestionService } from '../../question/services/question.service';
 import { MediaService } from '../../media/services/media.service';
-import { MediaType } from '@prisma/client';
-import { formatDate } from '../../shared/date/format-date';
+import { MediaType, Prisma } from '@prisma/client';
+import { BankListDto } from '../dto/bank-list.dto';
+
+const BANK_LIST_INCLUDE = {
+  category: true,
+  _count: {
+    select: {
+      votes: true,
+      questions: true,
+    },
+  },
+  creator: {
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      imageUrl: true,
+    },
+  },
+} as const;
 
 @Injectable()
 export class QuestionBankService {
@@ -25,129 +41,125 @@ export class QuestionBankService {
     private readonly questionService: QuestionService,
   ) { }
 
-  async findById(
-    id: number,
-  ): Promise<BankListItemDto> {
-    const bank =
-      await this.prisma.questionBank.findUnique({
-        where: { id },
-        include: {
-          category: true,
-          _count: {
-            select: {
-              votes: true,
-              questions: true,
-            },
-          },
-          creator: {
-            select: {
-              id: true,
-              email: true,
-              name: true,
-              imageUrl: true,
-            },
-          },
-        },
-      });
+  async findById(id: number): Promise<BankListItemDto> {
+    const bank = await this.prisma.questionBank.findUnique({
+      where: { id },
+      include: BANK_LIST_INCLUDE,
+    });
 
     if (!bank) throw new NotFoundException();
 
     return this.mapToBankListItemDto(bank);
   }
 
+  async findTopBanks(userId: number): Promise<BankListItemDto[]> {
+    const banks = await this.prisma.questionBank.findMany({
+      where: { creatorId: userId },
+      include: BANK_LIST_INCLUDE,
+      orderBy: {
+        votes: {
+          _count: 'desc',
+        },
+      },
+      take: 3,
+    });
+
+    return banks.map(this.mapToBankListItemDto.bind(this));
+  }
+
   async findByIdWithQuestions(
     id: number,
   ): Promise<BankDetailDto | null> {
-    const bank =
-      await this.prisma.questionBank.findUnique({
-        where: { id },
-        include: {
-          category: true,
-          questions: true,
-          creator: {
-            select: {
-              id: true,
-              email: true,
-              name: true,
-              imageUrl: true,
-            },
+    const bank = await this.prisma.questionBank.findUnique({
+      where: { id },
+      include: {
+        category: true,
+        questions: true,
+        creator: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            imageUrl: true,
           },
         },
-      });
+      },
+    });
 
     if (!bank) return null;
 
     return bank;
   }
 
-  findAll(
+  async findAll(
     userId: number,
     locked: boolean,
-    categoryIds?: number[]
-  ): Promise<BankDto[]> {
-    return this.prisma.questionBank.findMany({
-      where: {
-        creatorId: userId,
-        ...(categoryIds && categoryIds.length > 0
-          ? { categoryId: { in: categoryIds } }
-          : {}),
-        votes: locked ? { some: {} } : { none: {} }
-      },
-      include: {
-        category: true,
-        creator: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            imageUrl: true,
-          },
-        },
-      },
-      orderBy: {
-        title: 'asc',
-      },
-    });
+    text?: string,
+    categoryIds?: number[],
+    page: number = 1,
+    limit: number = 20,
+  ): Promise<BankListDto> {
+
+    const where: Prisma.QuestionBankWhereInput = {
+      creatorId: userId,
+
+      ...(categoryIds?.length
+        ? { categoryId: { in: categoryIds } }
+        : {}),
+
+      votes: locked ? { some: {} } : { none: {} },
+
+      ...this.buildBankTextSearch(text),
+    };
+
+    const [data, total] = await Promise.all([
+      this.prisma.questionBank.findMany({
+        where,
+        include: BANK_LIST_INCLUDE,
+        orderBy: { title: 'asc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.questionBank.count({ where }),
+    ]);
+
+    return {
+      banks: data.map(this.mapToBankListItemDto.bind(this)),
+      hasMore: page * limit < total,
+    };
   }
 
-  update(
+  async update(
     id: number,
     dto: UpdateBankDto,
-  ): Promise<BankDto> {
-    return this.prisma.questionBank.update({
+  ): Promise<BankListItemDto> {
+    const data = await this.prisma.questionBank.update({
       where: { id },
-      data: { ...dto },
-      include: {
-        category: true,
-        creator: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            imageUrl: true,
-          },
-        },
+      data: {
+        title: dto.title,
+        description: dto.description,
+        imageUrl: dto.imageUrl,
+        categoryId: dto.categoryId,
       },
+      include: BANK_LIST_INCLUDE,
     });
+
+    return this.mapToBankListItemDto(data);
   }
 
-  create(dto: CreateBankDto): Promise<BankDto> {
-    const bank = this.prisma.questionBank.create({
-      data: { ...dto },
-      include: {
-        category: true,
-        creator: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            imageUrl: true,
-          },
-        },
+  async create(dto: CreateBankDto): Promise<BankListItemDto> {
+    const bank = await this.prisma.questionBank.create({
+      data: {
+        title: dto.title,
+        description: dto.description,
+        imageUrl: dto.imageUrl,
+        categoryId: dto.categoryId,
+        creatorId: dto.creatorId,
       },
+      include: BANK_LIST_INCLUDE,
     });
 
-    return bank;
+    return this.mapToBankListItemDto(bank);
   }
 
   async delete(id: number) {
@@ -156,72 +168,60 @@ export class QuestionBankService {
     });
   }
 
-  async updateImage(
-    id: number,
-    newFilename: string,
-  ) {
+  async updateImage(id: number, newFilename: string) {
     return this.prisma.questionBank.update({
       where: { id },
       data: { imageUrl: newFilename },
-      select: { id: true, imageUrl: true },
+      select: {
+        id: true,
+        imageUrl: true,
+      },
     });
   }
 
-  async createQuestion(
-    id: number,
-    dto: CreateQuestionDto,
-  ) {
-    const result =
-      await this.prisma.question.create({
-        data: {
-          bankId: id,
-          text: dto.text,
-        },
-      });
-
-    return result;
+  async createQuestion(id: number, dto: CreateQuestionDto) {
+    return this.prisma.question.create({
+      data: {
+        bankId: id,
+        text: dto.text,
+      },
+    });
   }
 
   async createQuestionBankByMedia(
     platformNames: string[] | undefined,
     templateId: number,
     userId: number,
-    mediaType: MediaType
+    mediaType: MediaType,
   ) {
     const media = await this.mediaService.findMediaByPlatforms(mediaType, platformNames);
 
-    const bankToCreateData = await this.templateService.findById(templateId);
+    const template = await this.templateService.findById(templateId);
 
-    if (!bankToCreateData)
-      throw new NotFoundException(
-        `Template with id ${templateId} dosen't exist!`,
-      );
+    if (!template) {
+      throw new NotFoundException(`Template with id ${templateId} doesn't exist!`,);
+    }
 
     const bank = await this.create({
-      title: bankToCreateData.title,
-      description: bankToCreateData.description,
-      categoryId: bankToCreateData.category.id,
-      imageUrl: bankToCreateData.imageUrl,
+      title: template.title,
+      description: template.description,
+      categoryId: template.category.id,
+      imageUrl: template.imageUrl,
       creatorId: userId,
     });
 
-    await this.questionService.createMany(
-      bank.id,
-      {
-        questions: media.map((m) => ({
-          text: m.name,
-          description: m.description ?? undefined,
-          imageUrl: m.imageUrl,
-        })),
-      },
-    );
+    await this.questionService.createMany(bank.id, {
+      questions: media.map((m) => ({
+        text: m.name,
+        description: m.description ?? undefined,
+        imageUrl: m.imageUrl,
+      })),
+    });
 
     return bank;
   }
 
-  private mapToBankListItemDto(
-    bank: any,
-  ): BankListItemDto {
+  private mapToBankListItemDto(bank: any): BankListItemDto {
     return {
       id: bank.id,
       title: bank.title,
@@ -233,8 +233,29 @@ export class QuestionBankService {
       updatedAt: bank.updatedAt,
       usageCount: bank.usageCount,
       voteCount: bank._count?.votes ?? 0,
-      questionCount: bank._count?.votes ?? 0,
+      questionCount: bank._count?.questions ?? 0,
       creator: bank.creator,
+    };
+  }
+
+  buildBankTextSearch(text?: string): Prisma.QuestionBankWhereInput {
+    if (!text?.trim()) return {};
+
+    return {
+      OR: [
+        {
+          title: {
+            contains: text,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: text,
+            mode: "insensitive",
+          },
+        },
+      ],
     };
   }
 }

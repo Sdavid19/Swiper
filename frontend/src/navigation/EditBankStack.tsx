@@ -11,9 +11,9 @@ export function EditBankStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }} initialRouteName="ShowBanks">
       <Stack.Screen name="ShowBanks" options={{ title: 'My banks' }} component={BankScreen} />
-      <Stack.Screen name="EditBank" options={{ title: 'Edit bank' }} component={EditBankScreen} />
+      <Stack.Screen name="EditBank" options={{ title: '' }} component={EditBankScreen} />
       <Stack.Screen name="BankQuestions" options={{ title: 'Questions' }} component={QuestionsScreen} />
-      <Stack.Screen name="EditQuestion" options={{ title: 'Edit question' }} component={EditQuestionScreen} />
+      <Stack.Screen name="EditQuestion" options={{ title: ''}} component={EditQuestionScreen} />
     </Stack.Navigator>
   )
 }

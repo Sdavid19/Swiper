@@ -10,13 +10,11 @@ export class MediaInitService implements OnModuleInit {
   constructor(
     private readonly prisma: PrismaService,
     private readonly importer: MediaImportService,
-  ) {}
+  ) { }
 
   async onModuleInit() {
-    const mediaCount =
-      await this.prisma.media.count();
-    const platformCount =
-      await this.prisma.platform.count();
+    const mediaCount = await this.prisma.media.count();
+    const platformCount = await this.prisma.platform.count();
 
     if (platformCount === 0) {
       console.log('fetching platforms');

@@ -8,13 +8,13 @@ import {
 import { PrimaryButton } from "../../../shared/components";
 import { useEffect, useState } from "react";
 import { getSocket } from "../../../socket/socket";
-import {  NativeStackScreenProps } from "@react-navigation/native-stack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppNavigation, AppStackParamList } from "../../../navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux";
 import { useNavigation } from "@react-navigation/native";
 import { getBankWithQuestionsById } from "../../bank/services/bank.service";
-import { BankDetailDto, BankDto } from "../../../shared/types/generated";
+import { BankDetailDto } from "../../../shared/types/generated";
 import { QuestionList } from "../../question/components/questionList/QuestionList";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 

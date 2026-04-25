@@ -22,6 +22,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import { addBankAction } from "@/src/redux/bankSlice";
+import { Plus } from "lucide-react-native";
 
 type CreateMediaBankScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -103,6 +104,7 @@ export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
         style={[styles.footer, { paddingBottom: insets.bottom + 10 || 16 }]}
       >
         <PrimaryButton
+        icon={<Plus color="white" />}
           title="Create bank"
           style={styles.button}
           onPress={handleStartPress}

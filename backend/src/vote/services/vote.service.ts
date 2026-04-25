@@ -1,44 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma';
-import { CreateAnswerDto } from '../dto/create-answer.dto';
-import { CreateVoteDataDto } from '../dto/create-vote-data.dto';
-import { VoteDetailsDto } from '../dto/vote-details.dto';
-import { VoteDto } from '../dto/vote.dto';
-import { AnswerStatDto } from '../dto/answer-stat.dto';
-import { AnswerTopStatsDto } from '../dto/answer-top-stats.dto';
-import { VoteFilterDto } from '../dto/vote-filter.dto';
+import { VoteFilterDto, CreateAnswerDto, AnswerTopStatsDto, AnswerStatDto, VoteDetailsDto, VoteDto, CreateVoteDataDto } from '../dto';
 import { Prisma } from '@prisma/client';
+import { UserService } from '../../user/services/user.service';
+import { VoteListDto } from '../dto/vote-list.dto';
 
 @Injectable()
 export class VoteService {
-  constructor(
-    private readonly prismaService: PrismaService,
-  ) { }
+  constructor(private readonly prismaService: PrismaService, private readonly userSerice: UserService) { }
+
 
   async createVoteData(dto: CreateVoteDataDto) {
-    const vote =
-      await this.prismaService.vote.create({
-        data: {
-          title: 'Vote title',
-          bankId: dto.bankId,
-          creatorId: dto.creatorId,
-          startsAt: new Date(),
-          endsAt: new Date(),
-        },
-      });
 
-    await this.createAnswers(
-      dto.answers,
-      vote.id,
-    );
+    const creator = await this.userSerice.findUserById(dto.creatorId);
+
+    const vote = await this.prismaService.vote.create({
+      data: {
+        title: `${creator.name}'s vote`,
+        bankId: dto.bankId,
+        creatorId: dto.creatorId,
+        startsAt: dto.startDate,
+        endsAt: dto.endDate,
+      },
+    });
+
+    await this.createAnswers(dto.answers, vote.id);
 
     return vote;
   }
 
-  async createAnswers(
-    dtos: CreateAnswerDto[],
-    voteId: number,
-  ) {
+  async createAnswers(dtos: CreateAnswerDto[], voteId: number) {
     return this.prismaService.answer.createMany({
       data: dtos.map((answer) => ({
         answer: answer.answer,
@@ -49,57 +40,33 @@ export class VoteService {
     });
   }
 
- async getAllVotesUserParticipatedIn(
-  userId: number,
-  filter: VoteFilterDto
-): Promise<VoteDto[]> {
+  async getAllVotesUserParticipatedIn(
+    userId: number,
+    date?: Date,
+    text?: string,
+    page: number = 1,
+    limit: number = 20,
+    categoryIds?: number[]
+  ): Promise<VoteListDto> {
 
-  const { date } = filter;
-
-  const dateFilter: Prisma.VoteWhereInput = {};
-
-  if (date) {
-    const dayStart = new Date(date);
-    dayStart.setHours(0, 0, 0, 0);
-
-    const dayEnd = new Date(date);
-    dayEnd.setHours(23, 59, 59, 999);
-
-    dateFilter.startsAt = {
-      gte: dayStart,
-      lte: dayEnd,
-    };
-  }
-
-  return this.prismaService.vote.findMany({
-    where: {
-      answers: {
-        some: {
-          userId,
-        },
-      },
-      ...dateFilter,
-    },
-    include: {
+    const where: Prisma.VoteWhereInput = {
       bank: {
-        include: {
-          creator: true,
-          category: true,
-        },
+        ...(categoryIds?.length
+          ? {
+            category: {
+              id: { in: categoryIds },
+            },
+          }
+          : {}),
       },
-    },
-    orderBy: {
-      startsAt: "desc",
-    },
-  });
-}
+      answers: { some: { userId } },
+      ...this.buildVoteDateFilter(date),
+      ...this.buildVoteTextSearch(text),
+    };
 
-  async getVoteById(
-    voteId: number,
-  ): Promise<VoteDetailsDto | null> {
-    const vote =
-      await this.prismaService.vote.findFirst({
-        where: { id: voteId },
+    const [data, total] = await Promise.all([
+      this.prismaService.vote.findMany({
+        where,
         include: {
           bank: {
             include: {
@@ -107,25 +74,61 @@ export class VoteService {
               category: true,
             },
           },
-          answers: {
-            include: {
-              question: true,
-            },
+        },
+        orderBy: { startsAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+
+      this.prismaService.vote.count({ where }),
+    ]);
+
+    return { votes: data, hasMore: page * limit < total };
+  }
+
+  async getVoteById(voteId: number,): Promise<VoteDetailsDto | null> {
+    const vote = await this.prismaService.vote.findFirst({
+      where: { id: voteId },
+      include: {
+        bank: {
+          include: {
+            creator: true,
+            category: true,
           },
         },
-      });
+        answers: {
+          include: {
+            question: true,
+          },
+        },
+      },
+    });
 
     if (!vote) return null;
 
     return vote;
   }
 
-  async getTopStats(voteId: number) {
-    const answers =
-      await this.prismaService.answer.findMany({
-        where: { voteId },
-        include: { question: true, user: true },
-      });
+  async getTopStats(voteId: number, userId: number) {
+    const vote = await this.prismaService.vote.findFirst(
+      {
+        where: {
+          id: voteId,
+          answers: {
+            some: {
+              userId,
+            },
+          },
+        }
+      }
+    )
+
+    if (!vote) throw new NotFoundException("Vote not found");
+
+    const answers = await this.prismaService.answer.findMany({
+      where: { voteId },
+      include: { question: true, user: true },
+    });
 
     const totalUserCount = new Set(
       answers.map((a) => a.userId),
@@ -165,17 +168,57 @@ export class VoteService {
         questionId,
         ...questionStat,
       }))
-      .sort(
-        (a, b) =>
-          b.yes - a.yes ||
-          a.question.text.localeCompare(
-            a.question.text,
-          ),
-      );
+      .sort((a, b) => b.yes - a.yes || a.question.text.localeCompare(a.question.text));
 
     return {
       stats,
       userCount: totalUserCount,
     } as AnswerTopStatsDto;
+  }
+
+  buildVoteDateFilter(date?: Date): Prisma.VoteWhereInput {
+    if (!date) return {};
+
+    const d = new Date(date);
+
+    if (isNaN(d.getTime())) return {};
+
+    const dayStart = new Date(d);
+    dayStart.setHours(0, 0, 0, 0);
+
+    const dayEnd = new Date(d);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    return {
+      startsAt: {
+        gte: dayStart,
+        lte: dayEnd,
+      },
+    };
+  }
+
+  buildVoteTextSearch(text?: string): Prisma.VoteWhereInput {
+    if (!text?.trim()) return {};
+
+    return {
+      bank: {
+        is: {
+          OR: [
+            {
+              title: {
+                contains: text,
+                mode: "insensitive",
+              },
+            },
+            {
+              description: {
+                contains: text,
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+      },
+    };
   }
 }

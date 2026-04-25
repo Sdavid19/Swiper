@@ -6,28 +6,28 @@ import { MediaType } from '@prisma/client';
 export class MediaService {
   constructor(
     private readonly prisma: PrismaService,
-  ) {}
+  ) { }
 
   async findMediaByPlatforms(
     mediaType: MediaType,
     platformNames?: string[]
-    
+
   ) {
     const media =
       await this.prisma.media.findMany({
         where: {
-            mediaType,
+          mediaType,
           ...(platformNames &&
-          platformNames.length > 0
+            platformNames.length > 0
             ? {
-                platforms: {
-                  some: {
-                    platform: {
-                      name: { in: platformNames },
-                    },
+              platforms: {
+                some: {
+                  platform: {
+                    name: { in: platformNames },
                   },
                 },
-              }
+              },
+            }
             : {}),
         },
         take: 200,
@@ -48,9 +48,7 @@ export class MediaService {
     const result = [...array];
 
     for (let i = result.length - 1; i > 0; i--) {
-      const j = Math.floor(
-        Math.random() * (i + 1),
-      );
+      const j = Math.floor(Math.random() * (i + 1),);
       [result[i], result[j]] = [
         result[j],
         result[i],

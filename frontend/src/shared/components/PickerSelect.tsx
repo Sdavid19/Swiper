@@ -6,13 +6,14 @@ interface LabeledPickerSelectProps extends PickerSelectProps {
     errorMessages?: string[];
 }
 
-export function PickerSelect({ title, errorMessages, ...props }: LabeledPickerSelectProps) {
+export function PickerSelect({ title, errorMessages, disabled, ...props }: LabeledPickerSelectProps) {
     return (
         <View style={{ marginBottom: 20, width: '55%' }}>
             {title && <Text style={styles.label}>{title}</Text>}
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, {backgroundColor: !disabled ? '#fff' : 'transparent'}]}>
                 <RNPickerSelect
+                disabled={disabled}
                     {...props}
                     style={{
                         inputIOS: styles.textInput,

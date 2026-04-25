@@ -1,44 +1,18 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Post,
-  Put,
-  Request,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { QuestionBankService } from './services/question-bank.service';
-import { CreateBankDto } from './dto/create-bank.dto';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { BankDto } from './dto/bank.dto';
+import { CreateBankDto } from './dto';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { BankImageDto } from './dto/bank-image.dto';
-import { UpdateBankDto } from './dto/update-bank.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { JwtPayload } from '../auth/interfaces';
-import { BankFilterDto } from './dto/bank-filter.dto';
-import { CreateQuestionDto } from '../question/dto/create-question.dto';
+import { BankDto, CreateMediaBankDto, BankDetailDto, BankListItemDto, BankFilterDto, UpdateBankDto, BankImageDto } from './dto';
 import { QuestionDto } from '../question/dto/question.dto';
-import { CreateMediaBankDto } from './dto/create-media-bank.dto';
-import { BankDetailDto } from './dto/bank.detail.dto';
-import { BankListItemDto } from './dto/bank-list-item.dto';
 import { QuestionBankCopyService } from './services/question-bank-copy.service';
+import { CreateQuestionDto } from '../question/dto/create-question.dto';
 import { QuestionService } from '../question/services/question.service';
 import { QuestionBankImageService } from './services/question-bank-image.service';
 import { imageUploadConfig } from '../shared/image/image-upload.config';
+import { BankListDto } from './dto/bank-list.dto';
 
 @ApiTags('question-banks')
 @ApiBearerAuth()
@@ -49,32 +23,36 @@ export class QuestionBankController {
     private readonly bankImageService: QuestionBankImageService,
     private readonly questionService: QuestionService,
     private readonly copyService: QuestionBankCopyService,
-  ) {}
+  ) { }
 
   @Post()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: BankDto, isArray: true })
+  @ApiOkResponse({ type: BankListDto})
   getBanks(
     @Body() filter: BankFilterDto,
     @Request() req: { user: JwtPayload },
   ) {
-    const categoryIds = filter.categoryIds;
-    const locked = filter.locked;
-    return this.bankService.findAll(
-      req.user.sub,
-      locked,
-      categoryIds,
-    );
+    const { categoryIds, locked, page, limit, text } = filter;
+    return this.bankService.findAll(req.user.sub, locked, text, categoryIds, page, limit);
+  }
+
+  @Get('top')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: BankListItemDto })
+  @UseGuards(AuthGuard)
+  getTopBanks(@Request() req: { user: JwtPayload }) {
+    return this.bankService.findTopBanks(req.user.sub);
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: BankDto })
+  @ApiOkResponse({ type: BankListItemDto })
   @UseGuards(AuthGuard)
   getBankById(@Param('id') id: string) {
     return this.bankService.findById(+id);
   }
+
 
   @Get(':id/details')
   @HttpCode(HttpStatus.OK)
@@ -147,7 +125,7 @@ export class QuestionBankController {
 
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  @ApiCreatedResponse({ type: BankDto })
+  @ApiCreatedResponse({ type: BankListItemDto })
   @UseGuards(AuthGuard)
   updateBank(
     @Param('id') id: string,
@@ -165,17 +143,9 @@ export class QuestionBankController {
 
   @Post('upload/:id')
   @ApiOkResponse({ type: BankImageDto })
-  @UseInterceptors(
-    FileInterceptor('file', imageUploadConfig),
-  )
+  @UseInterceptors(FileInterceptor('file', imageUploadConfig),)
   @UseGuards(AuthGuard)
-  uploadFile(
-    @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return this.bankImageService.updateBankImage(
-      +id,
-      file.filename,
-    );
+  uploadFile(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+    return this.bankImageService.updateBankImage(+id, file.filename);
   }
 }

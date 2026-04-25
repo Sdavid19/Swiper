@@ -8,16 +8,15 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
-import { UserService } from '../user/user.service';
 import { RoomService } from './services/room.service';
 import { AuthService } from '../auth/auth.service';
+import { UserService } from '../user/services/user.service';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class VoteGateway
   implements
-    OnGatewayConnection,
-    OnGatewayDisconnect
-{
+  OnGatewayConnection,
+  OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
@@ -25,11 +24,8 @@ export class VoteGateway
     private roomService: RoomService,
     private userService: UserService,
     private authService: AuthService,
-  ) {}
+  ) { }
 
-  // =========================
-  // AUTH CONNECT
-  // =========================
   async handleConnection(client: Socket) {
     try {
       const token = client.handshake.auth.token;
@@ -39,8 +35,7 @@ export class VoteGateway
         return;
       }
 
-      const user =
-        await this.authService.verifyToken(token);
+      const user = await this.authService.verifyToken(token);
 
       client.data.userId = user.id;
     } catch {
@@ -64,37 +59,23 @@ export class VoteGateway
     @ConnectedSocket() client: Socket,
   ) {
     const userId = client.data.userId;
-
-    const roomId =
-      await this.roomService.createRoom(
-        bankId,
-        userId,
-      );
+    const roomId = await this.roomService.createRoom(bankId, userId);
 
     client.join(roomId.toString());
-
     client.data.roomId = roomId;
 
     this.roomService.addUser(roomId, userId);
-
-    client.emit('roomCreated', {
-      roomId,
-      bankId,
-    });
+    client.emit('roomCreated', { roomId, bankId });
 
     await this.sendRoomUsers(roomId);
   }
 
-  // =========================
-  // JOIN ROOM
-  // =========================
   @SubscribeMessage('joinRoom')
   async joinRoom(
     @MessageBody() { roomId }: { roomId: number },
     @ConnectedSocket() client: Socket,
   ) {
     const userId = client.data.userId;
-
     const room = this.roomService.getRoom(roomId);
 
     if (!room) {
@@ -102,15 +83,8 @@ export class VoteGateway
       return;
     }
 
-    if (
-      room.users
-        .map((user) => user.id)
-        .includes(userId)
-    ) {
-      client.emit(
-        'joinError',
-        'A user already joined with this account!',
-      );
+    if (room.users.map((user) => user.id).includes(userId)) {
+      client.emit('joinError', 'A user already joined with this account!',);
       return;
     }
 
@@ -119,17 +93,11 @@ export class VoteGateway
 
     this.roomService.addUser(roomId, userId);
 
-    client.emit('joinedRoom', {
-      roomId,
-      bankId: room.bankId,
-    });
+    client.emit('joinedRoom', { roomId, bankId: room.bankId });
 
     await this.sendRoomUsers(roomId);
   }
 
-  // =========================
-  // TOGGLE READY
-  // =========================
   @SubscribeMessage('toggleReady')
   async toggleReady(
     @MessageBody()
@@ -147,17 +115,11 @@ export class VoteGateway
     const room = this.roomService.getRoom(roomId);
     if (!room) return;
 
-    this.roomService.setUserReady(
-      roomId,
-      userId,
-      ready,
-    );
+    this.roomService.setUserReady(roomId, userId, ready,);
 
     await this.sendRoomUsers(roomId);
 
-    if (
-      this.roomService.isEveryoneReady(roomId)
-    ) {
+    if (this.roomService.isEveryoneReady(roomId)) {
       if (!room.isCountdownRunning) {
         this.startCountdown(roomId);
       }
@@ -165,15 +127,10 @@ export class VoteGateway
       this.roomService.clearCountdown(roomId);
       room.isCountdownRunning = false;
 
-      this.server
-        .to(roomId.toString())
-        .emit('countdownCanceled');
+      this.server.to(roomId.toString()).emit('countdownCanceled');
     }
   }
 
-  // =========================
-  // VOTE
-  // =========================
   @SubscribeMessage('vote')
   async vote(
     @MessageBody()
@@ -190,25 +147,13 @@ export class VoteGateway
   ) {
     const userId = client.data.userId;
 
-    const savedVote = await this.roomService.vote(
-      roomId,
-      userId,
-      questionId,
-      answer,
-    );
+    const savedVote = await this.roomService.vote(roomId, userId, questionId, answer);
 
     if (savedVote) {
-      this.server
-        .to(roomId.toString())
-        .emit('gameEnded', {
-          voteId: savedVote.id,
-        });
+      this.server.to(roomId.toString()).emit('gameEnded', { voteId: savedVote.id });
     }
   }
 
-  // =========================
-  // LEAVE ROOM
-  // =========================
   @SubscribeMessage('leaveRoom')
   async leaveRoom(
     @MessageBody() { roomId }: { roomId: number },
@@ -227,30 +172,21 @@ export class VoteGateway
 
     client.emit('leftRoom', { roomId, userId });
 
-    const remainingUsers =
-      this.roomService.getUsers(roomId);
+    const remainingUsers = this.roomService.getUsers(roomId);
 
     if (remainingUsers.length === 0) {
       this.roomService.deleteRoom(roomId);
-      console.log(
-        `Room ${roomId} closed because it's empty`,
-      );
+      console.log(`Room ${roomId} closed because it's empty.`);
     } else {
       if (
         !this.roomService.isEveryoneReady(roomId)
       ) {
         this.roomService.clearCountdown(roomId);
-
-        this.server
-          .to(roomId.toString())
-          .emit('countdownCanceled');
+        this.server.to(roomId.toString()).emit('countdownCanceled');
       }
     }
   }
 
-  // =========================
-  // CHECK ROOM
-  // =========================
   @SubscribeMessage('checkRoom')
   checkRoom(
     @MessageBody() { roomId }: { roomId: number },
@@ -259,9 +195,6 @@ export class VoteGateway
     return { ok: !!room, roomId };
   }
 
-  // =========================
-  // STOP COUNTDOWN
-  // =========================
   @SubscribeMessage('stopCountdown')
   stopCountdown(
     @MessageBody() { roomId }: { roomId: number },
@@ -272,14 +205,9 @@ export class VoteGateway
     this.roomService.clearCountdown(roomId);
     room.isCountdownRunning = false;
 
-    this.server
-      .to(roomId.toString())
-      .emit('countdownCanceled');
+    this.server.to(roomId.toString()).emit('countdownCanceled');
   }
 
-  // =========================
-  // COUNTDOWN LOGIC
-  // =========================
   private startCountdown(roomId: number) {
     const room = this.roomService.getRoom(roomId);
     if (!room || room.isCountdownRunning) return;
@@ -288,18 +216,12 @@ export class VoteGateway
 
     let countdown = 5;
 
-    this.server
-      .to(roomId.toString())
-      .emit('countdownStart', countdown);
+    this.server.to(roomId.toString()).emit('countdownStart', countdown);
 
     const interval = setInterval(() => {
-      const currentRoom =
-        this.roomService.getRoom(roomId);
+      const currentRoom = this.roomService.getRoom(roomId);
 
-      if (
-        !currentRoom ||
-        !currentRoom.isCountdownRunning
-      ) {
+      if (!currentRoom || !currentRoom.isCountdownRunning) {
         clearInterval(interval);
         return;
       }
@@ -307,33 +229,21 @@ export class VoteGateway
       countdown--;
 
       if (countdown > 0) {
-        this.server
-          .to(roomId.toString())
-          .emit('countdownTick', countdown);
-      } else {
+        this.server.to(roomId.toString()).emit('countdownTick', countdown);
+      }
+      else {
         clearInterval(interval);
-
         this.roomService.clearCountdown(roomId);
         currentRoom.isCountdownRunning = false;
-
-        this.server
-          .to(roomId.toString())
-          .emit('gameStart', { roomId });
+        this.server.to(roomId.toString()).emit('gameStart', { roomId });
       }
     }, 1000);
 
-    this.roomService.setCountdown(
-      roomId,
-      interval,
-    );
+    this.roomService.setCountdown(roomId, interval);
   }
 
-  // =========================
-  // USERS UPDATE
-  // =========================
   private async sendRoomUsers(roomId: number) {
-    const roomUsers =
-      this.roomService.getUsers(roomId);
+    const roomUsers = this.roomService.getUsers(roomId);
 
     const fullUsers = await Promise.all(
       roomUsers.map(async (u) => {
@@ -342,15 +252,10 @@ export class VoteGateway
             u.id,
           );
 
-        return {
-          ...userData,
-          ready: u.ready,
-        };
+        return { ...userData, ready: u.ready };
       }),
     );
 
-    this.server
-      .to(roomId.toString())
-      .emit('roomUsers', fullUsers);
+    this.server.to(roomId.toString()).emit('roomUsers', fullUsers);
   }
 }

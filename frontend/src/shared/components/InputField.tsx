@@ -9,16 +9,17 @@ interface InputFieldProps extends TextInputProps {
     Icon?: React.ComponentType<{ size?: number; color?: string; style?: any }>;
 }
 
-export function InputField({ label, errorMessages, fieldStyle, disableErrorMessages = false, Icon, ...props }: InputFieldProps) {
+export function InputField({ label, errorMessages, fieldStyle, disableErrorMessages = false, Icon, editable = true, ...props }: InputFieldProps) {
 
     return (
         <View style={[fieldStyle]}>
             {label && (<Text style={styles.label}>{label}</Text>)}
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, {backgroundColor: editable ? '#fff' : 'transparent'}]}>
                 {Icon && <Icon size={20} color={"#666"} style={styles.icon} />}
                 <TextInput
-                    style={styles.textInput}
+                    style={[styles.textInput]}
+                    editable={editable}
                     {...props}
                 />
             </View>
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         paddingHorizontal: 10,
         paddingVertical: 0,
-        backgroundColor: '#fff',
     },
     icon: {
         marginRight: 8,

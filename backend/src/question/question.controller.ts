@@ -12,21 +12,13 @@ import {
   UploadedFile,
   Post,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { QuestionService } from './services/question.service';
-import { QuestionDto } from './dto/question.dto';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
-import { updateQuestionDto } from './dto/update-question.dto';
-import { QuestionImageDto } from './dto/question-image.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { QuestionImageService } from './services/question-image.service';
 import { imageUploadConfig } from '../shared/image/image-upload.config';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { QuestionService } from './services/question.service';
+import { updateQuestionDto, QuestionDto, QuestionImageDto } from './dto';
 
 @ApiTags('questions')
 @ApiBearerAuth()

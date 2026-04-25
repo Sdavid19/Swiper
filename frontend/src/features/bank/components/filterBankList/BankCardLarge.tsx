@@ -1,15 +1,17 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Badge } from "../../../../shared/components/Badge";
-import { BankDto } from "../../../../shared/types/generated";
+import { BankDto, BankListItemDto } from "../../../../shared/types/generated";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigation, EditBankNavigation } from "../../../../navigation";
 import { getImage } from "../../../../api/services/image.service";
 import { CardyButton } from "../../../../shared/components/CardButton";
-import { Play } from "lucide-react-native";
+import { Edit, Eye, Pencil, Play } from "lucide-react-native";
 import { formatDate } from "@/src/shared/utils/date.service";
+import { PrimaryButton } from "@/src/shared/components";
+import { shortenString } from "@/src/shared/utils/text.service";
 
 type CardProps = {
-  bank: BankDto;
+  bank: BankListItemDto;
 };
 
 export function BankCardLarge({ bank }: CardProps) {
@@ -25,10 +27,9 @@ export function BankCardLarge({ bank }: CardProps) {
   };
 
   return (
-    <TouchableOpacity
+    <View
       key={bank.id}
       style={styles.container}
-      onPress={() => onButtonPress(bank.id)}
     >
       <View style={styles.imageWrapper}>
         <Image
@@ -38,36 +39,37 @@ export function BankCardLarge({ bank }: CardProps) {
           style={styles.image}
         />
       </View>
-      <View style={{ position: "absolute", top: 20, right: 10 }}>
+
+       <View style={{ position: "absolute", top: 10, right: 10 }}>
         <Badge color={bank.category.color} text={bank.category.name} />
       </View>
 
+
       <View style={styles.cardBody}>
-        <View style={styles.leftContent}>
-          <View style={styles.infoCotainer}>
-            <Text style={styles.bankTitle} numberOfLines={1}>
-              {bank.title}
-            </Text>
-          </View>
 
-          <View style={styles.descContainer}>
-            <Text style={styles.desc} numberOfLines={2}>
-              {formatDate(new Date(bank.updatedAt))}
-            </Text>
-          </View>
+        <Text style={styles.bankTitle} numberOfLines={1}>
+          {bank.title}
+        </Text>
 
-          <View style={styles.descContainer}>
-            <Text style={styles.desc} numberOfLines={2}>
-              {bank.description}
-            </Text>
-          </View>
-
+        <View style={styles.descContainer}>
+          <Text style={styles.desc}>
+            created {formatDate(new Date(bank.updatedAt))}
+          </Text>
         </View>
-        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginHorizontal: 5 }}>
-          <CardyButton Icon={Play} backgroundColor={"#22c55e"} onPressed={navigateToCreateLobby} />
+
+         <View style={styles.descContainer}>
+          <Text style={styles.desc} numberOfLines={1}>
+            {shortenString(bank.description, 50)}
+          </Text>
         </View>
+
+        <View style={{marginTop: 15, display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+          <PrimaryButton onPress={navigateToCreateLobby} title="Start vote" style={{width: '82.5%'}} icon={<Play size={16} color="#fff" />} />
+          <PrimaryButton onPress={() => onButtonPress(bank.id)} icon={bank.voteCount > 0 ? <Eye size={18}/> : <Pencil size={18}/>} color="#e6e6e6" />
+        </View>
+
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -86,9 +88,6 @@ const styles = StyleSheet.create({
 
     elevation: 5,
   },
-  leftContent: {
-    width: "80%",
-  },
   imageWrapper: {
     width: "100%",
     height: 160,
@@ -105,7 +104,6 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     display: "flex",
-    flexDirection: "row",
     alignItems: "stretch",
     justifyContent: 'space-between',
   },
@@ -116,7 +114,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   descContainer: {
-    marginTop: 5,
+    marginTop: 10,
   },
   desc: {
     fontSize: 13,

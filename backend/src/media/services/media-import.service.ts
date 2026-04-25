@@ -50,11 +50,8 @@ export class MediaImportService {
 
     const platformNames = [
       ...new Set(
-        media.flatMap(
-          (m) =>
-            m.streamingOptions['hu']?.map(
-              (opt) => opt.service.id,
-            ) || [],
+        media.flatMap((m) => m.streamingOptions['hu']?.map(
+          (opt) => opt.service.id,) || [],
         ),
       ),
     ];
@@ -138,8 +135,8 @@ export class MediaImportService {
   }
 
 
-  mapToCustomMediaType(t: ShowType){
-    if(t == "movie") return MediaType.MOVIE;
-    if(t == "series") return MediaType.SERIES
+  mapToCustomMediaType(t: ShowType) {
+    if (t == "movie") return MediaType.MOVIE;
+    if (t == "series") return MediaType.SERIES
   }
 }

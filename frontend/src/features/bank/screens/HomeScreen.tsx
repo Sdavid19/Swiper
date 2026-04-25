@@ -1,44 +1,51 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { getAllBanksWithFilter } from "../services/bank.service";
-import { useEffect, useState } from "react";
-import { QuestionBankTemplateDto } from "../../../shared/types/generated";
+import { getAllBanksWithFilter, getTopBanks } from "../services/bank.service";
+import { useCallback, useEffect, useState } from "react";
+import {
+  BankListItemDto,
+  QuestionBankTemplateDto,
+} from "../../../shared/types/generated";
 import { BankCard } from "../components/filterBankList/BankCard";
 import { getAllTemplates } from "../services/template.service";
-import { useDispatch, useSelector } from "react-redux";
-import { setBanks } from "@/src/redux/bankSlice";
-import { RootState} from "@/src/redux";
+import { useFocusEffect } from "@react-navigation/native";
 import { NavigateLink } from "../components/NavigateLink";
 
 export function HomeScreen() {
-
   const [templates, setTemplates] = useState<QuestionBankTemplateDto[]>([]);
-  const dispatch = useDispatch();
-
-  const banks = useSelector((state: RootState) => state.bank.banks);
+  const [banks, setBanks] = useState<BankListItemDto[]>([]);
 
   useEffect(() => {
-    getAllBanksWithFilter({locked: false})
-      .then((res) => dispatch(setBanks(res)))
-      .catch((err) => console.log(err));
-
     getAllTemplates()
-      .then((res) => {
-        setTemplates(res);
-      })
-      .catch((err) => console.log("Template fetch error:", err));
+      .then(setTemplates)
+      .catch(console.log);
   }, []);
+
+  const loadBanks = async () => {
+    try {
+      const res = await getTopBanks();
+      setBanks(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadBanks();
+    }, [])
+  );
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.sectionContainer}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Bank creator</Text>
+          <Text style={styles.sectionTitle}>Bank creators</Text>
         </View>
 
         {templates.length > 0 ? (
           <ScrollView horizontal>
             {templates.map((template) => (
-              <BankCard key={template.id} bank={template} isTemplate={true} />
+              <BankCard key={template.id} bank={template} isTemplate />
             ))}
           </ScrollView>
         ) : (
@@ -50,9 +57,10 @@ export function HomeScreen() {
 
       <View style={styles.sectionContainer}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>My banks</Text>
+          <Text style={styles.sectionTitle}>My top banks</Text>
           <NavigateLink text="see all" />
         </View>
+
         {banks.length > 0 ? (
           <ScrollView horizontal>
             {banks.map((bank) => (
@@ -61,7 +69,7 @@ export function HomeScreen() {
           </ScrollView>
         ) : (
           <View style={styles.emptycontainer}>
-             <Text>There are no banks with the given filters!</Text>
+            <Text>There are no banks with the given filters!</Text>
           </View>
         )}
       </View>

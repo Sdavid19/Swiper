@@ -3,12 +3,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma';
-import { UpdateUserDto } from './dto/update-user.dto';
 import * as argon from 'argon2';
-import { UserDto } from './dto';
-import { UserImageDto } from './dto/user-image';
-import { SignupDto } from '../auth/dto';
+import { PrismaService } from '../../prisma';
+import { SignupDto } from '../../auth/dto';
+import { UpdateUserDto, UserDto, UserImageDto } from '../dto';
+
 
 @Injectable()
 export class UserService {
@@ -110,20 +109,14 @@ export class UserService {
     return user;
   }
 
-  async updateUserImage(
-    id: number,
-    filename: string,
-  ): Promise<UserImageDto> {
-    const imageUrl = this.prisma.user.update({
+    async updateImage(id: number, newFilename: string) {
+    return this.prisma.questionBank.update({
       where: { id },
-      data: {
-        imageUrl: filename,
-      },
+      data: { imageUrl: newFilename },
       select: {
+        id: true,
         imageUrl: true,
       },
     });
-
-    return imageUrl;
   }
 }

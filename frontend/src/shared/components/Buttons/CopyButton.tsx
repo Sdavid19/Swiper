@@ -1,4 +1,4 @@
-import { Copy, Trash2 } from "lucide-react-native";
+import { BookCopy, Copy, Trash2 } from "lucide-react-native";
 import { Alert, TouchableOpacity } from "react-native";
 
 interface CopyButtonProps {
@@ -41,7 +41,7 @@ export function CopyButton({
       }}
       onPress={handlePress}
     >
-      <Copy size={iconSize} color={iconColor} />
+      <BookCopy size={iconSize} color={iconColor} />
     </TouchableOpacity>
   );
 }

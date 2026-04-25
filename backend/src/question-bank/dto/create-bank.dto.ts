@@ -4,17 +4,21 @@ import {
   IsInt,
   IsNotEmpty,
   IsOptional,
-  IsPositive,
   IsString,
+  Length,
   Validate,
 } from 'class-validator';
 import { CategoryExists } from '../validators/category-exitst.validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { ValidationMessages } from '../../shared/constants/validation-messages';
 
 export class CreateBankDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
+  @Length(1, 100, {
+    message: ValidationMessages.bankTitleLengthInvalid,
+  })
   title: string;
 
   @IsString()

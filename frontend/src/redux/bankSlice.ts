@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BankDto, BankFilterDto } from "../shared/types/generated";
+import { BankDto, BankFilterDto, BankListItemDto } from "../shared/types/generated";
 
 interface UpdateBankImagePayload {
   id: number;
@@ -7,7 +7,7 @@ interface UpdateBankImagePayload {
 }
 
 interface BanksState {
-  banks: BankDto[];
+  banks: BankListItemDto[];
   filter: BankFilterDto;
 }
 
@@ -23,15 +23,23 @@ const banksSlice = createSlice({
   name: "banks",
   initialState,
   reducers: {
-    setBanks: (state, action: PayloadAction<BankDto[]>) => {
+    setBanks: (state, action: PayloadAction<BankListItemDto[]>) => {
       state.banks = action.payload;
+    },
+
+    appendBanks: (state, action) => {
+      const merged = [...state.banks, ...action.payload];
+
+      state.banks = Array.from(
+        new Map(merged.map(item => [item.id, item])).values()
+      );
     },
 
     setFilterAction: (state, action: PayloadAction<BankFilterDto>) => {
       state.filter = action.payload;
     },
 
-    addBankAction: (state, action: PayloadAction<BankDto>) => {
+    addBankAction: (state, action: PayloadAction<BankListItemDto>) => {
       const bank = action.payload;
       if (matchesFilter(bank, state.filter)) {
         state.banks.unshift(action.payload);
@@ -42,7 +50,7 @@ const banksSlice = createSlice({
       state.banks = state.banks.filter(b => b.id !== action.payload);
     },
 
-    updateBankAction: (state, action: PayloadAction<BankDto>) => {
+    updateBankAction: (state, action: PayloadAction<BankListItemDto>) => {
       const index = state.banks.findIndex(b => b.id === action.payload.id);
       if (index !== -1) {
         state.banks[index] = action.payload;
@@ -66,6 +74,7 @@ export default banksSlice.reducer;
 export const {
   setBanks,
   setFilterAction,
+  appendBanks,
   addBankAction,
   removeBankAction,
   updateBankAction,
@@ -75,13 +84,11 @@ export const {
 
 function matchesFilter(bank: BankDto, filter: BankFilterDto) {
   if (filter.locked) return false;
-
   if (
     filter.categoryIds?.length &&
     !filter.categoryIds.includes(bank.category.id)
   ) {
     return false;
   }
-
   return true;
 }

@@ -22,7 +22,6 @@ export class CreateMediaBankDto {
   @IsNumber()
   bankTemplateId: number;
 
-
   @ApiProperty({ enum: MediaType })
   @IsEnum(MediaType)
   mediaType: MediaType;

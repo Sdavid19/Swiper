@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setQuestions } from "../../../redux/questionSlice";
 import { RootState } from "../../../redux";
 import { QuestionList } from "../components/questionList/QuestionList";
+import { PlusIcon } from "lucide-react-native";
 
 type EditBankProps = NativeStackScreenProps<
   EditBankStackParamList,
@@ -34,10 +35,11 @@ export function QuestionsScreen({ route }: EditBankProps) {
 
   return (
     <View style={styles.container}>
-      <QuestionList questions={questions} viewMode={viewMode} details={true}/>
+      <QuestionList questions={questions} viewMode={viewMode} details={true} />
 
       {!viewMode && (
         <PrimaryButton
+          icon={<PlusIcon color="white" />}
           title="Add new"
           style={styles.addButton}
           onPress={() =>

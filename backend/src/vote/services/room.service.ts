@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Room } from '../types';
 import { CreateAnswerDto } from '../dto/create-answer.dto';
 import { VoteService } from './vote.service';
-import { QuestionBankService } from '../../question-bank/services/question-bank.service';
 import { QuestionService } from '../../question/services/question.service';
 
 @Injectable()
@@ -12,7 +11,7 @@ export class RoomService {
   constructor(
     private readonly questionService: QuestionService,
     private readonly voteService: VoteService,
-  ) {}
+  ) { }
 
   async createRoom(
     bankId: number,
@@ -21,15 +20,10 @@ export class RoomService {
     let roomId: number;
 
     do {
-      roomId = Math.floor(
-        100000 + Math.random() * 900000,
-      );
+      roomId = Math.floor(100000 + Math.random() * 900000);
     } while (this.rooms.has(roomId));
 
-    const questions =
-      await this.questionService.findQuestionsByBank(
-        bankId,
-      );
+    const questions = await this.questionService.findQuestionsByBank(bankId);
 
     this.rooms.set(roomId, {
       roomId,
@@ -180,7 +174,7 @@ export class RoomService {
       return (
         userVotes &&
         Object.keys(userVotes).length ===
-          room.questionCount
+        room.questionCount
       );
     });
   }

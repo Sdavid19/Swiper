@@ -6,7 +6,7 @@ import { shortenString } from "@/src/shared/utils/text.service";
 import { Badge } from "@/src/shared/components/Badge";
 import { VoteStatNavigation } from "@/src/navigation";
 import { CardyButton } from "@/src/shared/components/CardButton";
-import { ChartColumnDecreasing } from "lucide-react-native";
+import { ChartColumnDecreasing, Eye } from "lucide-react-native";
 
 type CardProps = {
   vote: VoteDto;
@@ -51,13 +51,13 @@ export function VoteCard({ vote }: CardProps) {
             </Text>
           </View>
           <View style={styles.descContainer}>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.desc}>
-              {formattedDate}
+            <Text style={styles.desc}>
+              stared {formattedDate}
             </Text>
           </View>
         </View>
         <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginHorizontal: 5 }}>
-          <CardyButton Icon={ChartColumnDecreasing} backgroundColor={"#007AFF"} onPressed={handleButtonPressed} />
+          <CardyButton Icon={Eye} backgroundColor={"#007AFF"} onPressed={handleButtonPressed} />
         </View>
 
       </View>

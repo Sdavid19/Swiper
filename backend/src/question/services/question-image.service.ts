@@ -1,10 +1,7 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { ImageService } from '../../shared/image/image.service';
-import { QuestionImageDto } from '../dto/question-image.dto';
+import { QuestionImageDto } from '../dto';
 
 @Injectable()
 export class QuestionImageService {

@@ -26,6 +26,7 @@ import { showSuccess } from "../../../shared/utils/toast.service";
 import { addBankAction, removeBankAction } from "../../../redux/bankSlice";
 import { EditBankStackParamList } from "../../../navigation";
 import { CopyButton } from "@/src/shared/components/Buttons/CopyButton";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 type EditBankProps = NativeStackScreenProps<EditBankStackParamList, "EditBank">;
 export type EditBankScreenMode = "View" | "Edit" | "Create";
@@ -100,16 +101,17 @@ export function EditBankScreen({ route }: EditBankProps) {
   }, []);
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+     <KeyboardAwareScrollView
+          enableOnAndroid={true}
+          keyboardOpeningTime={0}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+      >
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        
         <View>
           <ImageSelect
             bankId={bank?.id}
@@ -130,14 +132,11 @@ export function EditBankScreen({ route }: EditBankProps) {
           />
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scrollContainer: {
     flexGrow: 1,
      paddingHorizontal: 20,

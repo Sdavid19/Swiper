@@ -3,10 +3,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma';
-import { updateQuestionDto } from '../dto/update-question.dto';
-import { CreateQuestionsDto } from '../dto/create-questions.dto';
-import { CreateQuestionDto } from '../dto/create-question.dto';
-import { QuestionDto } from '../dto/question.dto';
+import { updateQuestionDto, CreateQuestionsDto, CreateQuestionDto, QuestionDto } from '../dto';
 
 @Injectable()
 export class QuestionService {
