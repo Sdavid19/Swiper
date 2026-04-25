@@ -7,9 +7,9 @@ import {
   Animated,
 } from "react-native";
 import { X } from "lucide-react-native";
-import { FilterBankForm } from "./FilterBankForm";
-import { CategoryDto } from "../../../../shared/types/generated";
-import { getCategories } from "../../services/category.service";
+import { CategoryFilterForm } from "./CategoryFilterForm";
+import { CategoryDto } from "../../types/generated";
+import { getCategories } from "../../../features/bank/services/category.service";
 
 interface FilterBankModalProps {
   visible: boolean;
@@ -18,7 +18,7 @@ interface FilterBankModalProps {
   setSelected: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export function FilterBankModal({
+export function CategoryFilterModal({
   visible,
   setVisible,
   selected,
@@ -85,7 +85,7 @@ export function FilterBankModal({
             <X size={25} />
           </TouchableOpacity>
 
-          <FilterBankForm
+          <CategoryFilterForm
             categories={categories}
             selected={tempSelected}
             setSelected={setTempSelected}

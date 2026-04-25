@@ -3,7 +3,7 @@ import { BankListItemDto, CategoryDto, CreateBankDto, UpdateBankDto } from "../.
 import { EditBankScreenMode } from "../../screens/EditBankScreen";
 import { StyleSheet, View } from "react-native";
 import { InputField, PrimaryButton } from "../../../../shared/components";
-import { PickerSelect } from "../../../../shared/components/PickerSelect";
+import { PickerSelect } from "../../../../shared/components/Form/PickerSelect";
 import { createBank, updateBank } from "../../services/bank.service";
 import { showSuccess } from "../../../../shared/utils/toast.service";
 import { AxiosError } from "axios";

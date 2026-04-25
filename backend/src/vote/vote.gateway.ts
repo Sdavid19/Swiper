@@ -54,10 +54,7 @@ export class VoteGateway
   }
 
   @SubscribeMessage('createRoom')
-  async createRoom(
-    @MessageBody() { bankId }: { bankId: number },
-    @ConnectedSocket() client: Socket,
-  ) {
+  async createRoom(@MessageBody() { bankId }: { bankId: number }, @ConnectedSocket() client: Socket,) {
     const userId = client.data.userId;
     const roomId = await this.roomService.createRoom(bankId, userId);
 
@@ -71,10 +68,7 @@ export class VoteGateway
   }
 
   @SubscribeMessage('joinRoom')
-  async joinRoom(
-    @MessageBody() { roomId }: { roomId: number },
-    @ConnectedSocket() client: Socket,
-  ) {
+  async joinRoom(@MessageBody() { roomId }: { roomId: number }, @ConnectedSocket() client: Socket,) {
     const userId = client.data.userId;
     const room = this.roomService.getRoom(roomId);
 
@@ -245,17 +239,13 @@ export class VoteGateway
   private async sendRoomUsers(roomId: number) {
     const roomUsers = this.roomService.getUsers(roomId);
 
-    const fullUsers = await Promise.all(
+    const allUsers = await Promise.all(
       roomUsers.map(async (u) => {
-        const userData =
-          await this.userService.findUserById(
-            u.id,
-          );
-
+        const userData = await this.userService.findUserById(u.id);
         return { ...userData, ready: u.ready };
       }),
     );
 
-    this.server.to(roomId.toString()).emit('roomUsers', fullUsers);
+    this.server.to(roomId.toString()).emit('roomUsers', allUsers);
   }
 }

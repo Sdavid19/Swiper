@@ -1,3 +1,3 @@
 export * from './ErrorMessages';
-export * from './InputField';
-export * from './PrimaryButton';
+export * from './Form/InputField';
+export * from './Form/PrimaryButton';

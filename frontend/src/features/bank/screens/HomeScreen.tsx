@@ -69,7 +69,7 @@ export function HomeScreen() {
           </ScrollView>
         ) : (
           <View style={styles.emptycontainer}>
-            <Text>There are no banks with the given filters!</Text>
+            <Text>There are no banks!</Text>
           </View>
         )}
       </View>

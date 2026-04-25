@@ -16,7 +16,7 @@ export class QuestionBankImageService {
     const newFilename = await this.imageService.optimizeImage(filename);
 
     await this.imageService.deleteIfExists(bank.imageUrl);
-
+    
     return this.questionBankServie.updateImage(id, newFilename);
   }
 }

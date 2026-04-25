@@ -35,22 +35,21 @@ export function BankCard({ bank, isTemplate }: CardProps) {
     <View key={bank.id} style={styles.container}>
       <View style={styles.imageWrapper}>
         <Image
-          source={{
-            uri: getImage(bank.imageUrl)
-          }}
+          source={{ uri: getImage(bank.imageUrl) }}
           style={styles.image}
         />
       </View>
 
-      <View style={{ position: "absolute", top: 10, left: 10 }}>
+      <View style={{ position: "absolute", top: 10, right: 10 }}>
         <Badge color={bank.category.color} text={bank.category.name} />
       </View>
 
       <View style={styles.cardBody}>
         <View style={styles.leftContent}>
+
           <View style={styles.infoCotainer}>
             <Text style={styles.bankTitle}>
-              {shortenString(bank.title, 20)} {isTemplate ? " creator" : ""}
+              {shortenString(bank.title, 20)} {isTemplate ? "creator" : ""}
             </Text>
           </View>
 

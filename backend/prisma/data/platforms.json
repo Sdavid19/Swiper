@@ -1,0 +1,42 @@
+[
+  {
+    "name": "netflix",
+    "imageUrl": "https://media.movieofthenight.com/services/netflix/logo-light-theme.svg"
+  },
+  {
+    "name": "prime",
+    "imageUrl": "https://media.movieofthenight.com/services/prime/logo-light-theme.svg"
+  },
+  {
+    "name": "disney",
+    "imageUrl": "https://media.movieofthenight.com/services/disney/logo-light-theme.svg"
+  },
+  {
+    "name": "hbo",
+    "imageUrl": "https://media.movieofthenight.com/services/hbo/logo-light-theme.svg"
+  },
+  {
+    "name": "apple",
+    "imageUrl": "https://media.movieofthenight.com/services/apple/logo-light-theme.svg"
+  },
+  {
+    "name": "mubi",
+    "imageUrl": "https://media.movieofthenight.com/services/mubi/logo-light-theme.svg"
+  },
+  {
+    "name": "curiosity",
+    "imageUrl": "https://media.movieofthenight.com/services/curiosity/logo-light-theme.svg"
+  },
+  {
+    "name": "crunchyroll",
+    "imageUrl": "https://media.movieofthenight.com/services/crunchyroll/logo-light-theme.svg"
+  },
+  {
+    "name": "skyshowtime",
+    "imageUrl": "https://media.movieofthenight.com/services/skyshowtime/logo-light-theme.svg"
+  },
+  {
+    "name": "zee5",
+    "imageUrl": "https://media.movieofthenight.com/services/zee5/logo-light-theme.svg"
+  }
+]

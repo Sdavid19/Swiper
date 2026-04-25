@@ -47,7 +47,7 @@ export function VoteCard({ vote }: CardProps) {
         <View style={styles.leftContent}>
           <View style={styles.infoCotainer}>
             <Text style={styles.bankTitle}>
-              {shortenString(vote.bank.title, 20)}
+              {shortenString(vote.title, 20)}
             </Text>
           </View>
           <View style={styles.descContainer}>

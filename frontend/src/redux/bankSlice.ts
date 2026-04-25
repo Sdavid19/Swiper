@@ -14,7 +14,7 @@ interface BanksState {
 const initialState: BanksState = {
   banks: [],
   filter: {
-    locked: false,
+    state: undefined,
     categoryIds: [],
   },
 };
@@ -83,7 +83,7 @@ export const {
 
 
 function matchesFilter(bank: BankDto, filter: BankFilterDto) {
-  if (filter.locked) return false;
+  if (filter.state == "LOCKED") return false;
   if (
     filter.categoryIds?.length &&
     !filter.categoryIds.includes(bank.category.id)

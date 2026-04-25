@@ -1,9 +1,16 @@
-import { Client, Configuration } from 'streaming-availability';
+import { Configuration, Client } from 'streaming-availability';
 
-const client = new Client(
-  new Configuration({
-    apiKey: process.env.RAPID_API_KEY,
-  }),
-);
 
-export default client;
+export function createStreamingClient() {
+  const apiKey = process.env.RAPID_API_KEY;
+
+  if (!apiKey) {
+    return null;
+  }
+
+  const config = new Configuration({
+    apiKey,
+  });
+
+  return new Client(config);
+}

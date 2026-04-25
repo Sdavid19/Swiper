@@ -12,15 +12,9 @@ export const imageUploadConfig = {
         filename: string,
       ) => void,
     ) => {
-      const uniqueSuffix =
-        Date.now() +
-        '-' +
-        Math.round(Math.random() * 1e9);
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
 
-      callback(
-        null,
-        uniqueSuffix + extname(file.originalname),
-      );
+      callback(null, uniqueSuffix + extname(file.originalname));
     },
   }),
 
@@ -35,12 +29,8 @@ export const imageUploadConfig = {
     const allowed = /\/(jpg|jpeg|png|webp)$/;
 
     if (!file.mimetype.match(allowed)) {
-      return callback(
-        new Error('Only image files allowed'),
-        false,
-      );
+      return callback(new Error('Only image files allowed'), false,);
     }
-
     callback(null, true);
   },
 

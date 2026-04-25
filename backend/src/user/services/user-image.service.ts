@@ -10,13 +10,10 @@ export class UserImageService {
         private readonly imageService: ImageService,
     ) { }
 
-    async updateBankImage(id: number, filename: string,): Promise<UserImageDto> {
+    async updateUserImage(id: number, filename: string,): Promise<UserImageDto> {
         const user = await this.userService.findUserById(id);
-
         const newFilename = await this.imageService.optimizeImage(filename);
-
         await this.imageService.deleteIfExists(user.imageUrl);
-
         return this.userService.updateImage(id, newFilename);
     }
 }

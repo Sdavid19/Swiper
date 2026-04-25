@@ -1,5 +1,5 @@
 import { StyleProp, Text, View, ViewStyle } from "react-native";
-import { PrimaryButton } from "./PrimaryButton";
+import { PrimaryButton } from "./Form/PrimaryButton";
 import Checkbox, { CheckboxProps } from "expo-checkbox";
 
 export interface CheckboxFieldProps extends CheckboxProps {

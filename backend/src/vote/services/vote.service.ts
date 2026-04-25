@@ -7,7 +7,10 @@ import { VoteListDto } from '../dto/vote-list.dto';
 
 @Injectable()
 export class VoteService {
-  constructor(private readonly prismaService: PrismaService, private readonly userSerice: UserService) { }
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly userSerice: UserService
+  ) { }
 
 
   async createVoteData(dto: CreateVoteDataDto) {
@@ -201,24 +204,35 @@ export class VoteService {
     if (!text?.trim()) return {};
 
     return {
-      bank: {
-        is: {
-          OR: [
-            {
+      OR: [
+        {
+          title: {
+            contains: text,
+            mode: "insensitive",
+          },
+        },
+        {
+          bank: {
+            is: {
               title: {
                 contains: text,
                 mode: "insensitive",
               },
             },
-            {
+          },
+        },
+        {
+          bank: {
+            is: {
               description: {
                 contains: text,
                 mode: "insensitive",
               },
             },
-          ],
+          },
         },
-      },
+      ],
     };
   }
+
 }

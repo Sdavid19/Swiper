@@ -13,10 +13,7 @@ export class RoomService {
     private readonly voteService: VoteService,
   ) { }
 
-  async createRoom(
-    bankId: number,
-    creatorId: number,
-  ): Promise<number> {
+  async createRoom(bankId: number, creatorId: number,): Promise<number> {
     let roomId: number;
 
     do {
@@ -60,13 +57,8 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    if (
-      !room.users.find((u) => u.id === userId)
-    ) {
-      room.users.push({
-        id: userId,
-        ready: false,
-      });
+    if (!room.users.find((u) => u.id === userId)) {
+      room.users.push({ id: userId, ready: false, });
     }
   }
 
@@ -171,11 +163,7 @@ export class RoomService {
 
     return room.users.every((user) => {
       const userVotes = room.votes[user.id];
-      return (
-        userVotes &&
-        Object.keys(userVotes).length ===
-        room.questionCount
-      );
+      return userVotes && Object.keys(userVotes).length === room.questionCount;
     });
   }
 
@@ -183,9 +171,7 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    const asnwers = Object.entries(
-      room.votes,
-    ).flatMap(([userId, questions]) => {
+    const asnwers = Object.entries(room.votes,).flatMap(([userId, questions]) => {
       return Object.entries(questions).map(
         ([questionId, answer]) =>
           ({

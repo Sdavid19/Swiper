@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  Length,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Length, MinLength, } from 'class-validator';
 import { ValidationMessages } from '../../shared/constants/validation-messages';
 
 export class SignupDto {

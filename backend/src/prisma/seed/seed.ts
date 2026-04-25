@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import * as fs from "fs";
-import * as path from "path";
+import { loadJson } from "../../shared/files/load-json";
 
 const prisma = new PrismaClient();
 
@@ -16,10 +15,7 @@ type TemplateInput = {
   imageUrl: string;
 };
 
-function loadJson<T>(relativePath: string): T {
-  const filePath = path.join(process.cwd(), relativePath);
-  return JSON.parse(fs.readFileSync(filePath, "utf-8"));
-}
+
 
 async function seedCategories(categories: CategoryInput[]) {
   for (const cat of categories) {
@@ -72,8 +68,8 @@ async function seedTemplates(templates: TemplateInput[]) {
 }
 
 async function main() {
-  const categories = loadJson<CategoryInput[]>("prisma/data/categories.json");
-  const templates = loadJson<TemplateInput[]>("prisma/data/templates.json");
+  const categories = await loadJson<CategoryInput[]>("prisma/data/categories.json");
+  const templates =  await loadJson<TemplateInput[]>("prisma/data/templates.json");
 
   await seedCategories(categories);
   await seedTemplates(templates);

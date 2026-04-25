@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import * as argon from 'argon2';
 import { PrismaService } from '../../prisma';
 import { SignupDto } from '../../auth/dto';
@@ -11,9 +7,7 @@ import { UpdateUserDto, UserDto, UserImageDto } from '../dto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async findUserById(id: number) {
     const user = this.prisma.user.findUnique({
@@ -26,32 +20,17 @@ export class UserService {
       },
     });
 
-    if (!user) {
-      throw new NotFoundException(
-        `User with id ${id} not found`,
-      );
-    }
+    if (!user) throw new NotFoundException(`User with id ${id} not found`,);
 
     return user;
   }
 
-  async createUser(
-    dto: SignupDto,
-  ): Promise<UserDto> {
-    const existingUser =
-      await this.prisma.user.findFirst({
-        where: { email: dto.email },
-      });
+  async createUser(dto: SignupDto,): Promise<UserDto> {
+    const existingUser = await this.prisma.user.findFirst({ where: { email: dto.email }, });
 
-    if (existingUser) {
-      throw new BadRequestException(
-        'Email already in use',
-      );
-    }
+    if (existingUser) throw new BadRequestException('Account with this email already exists',);
 
-    const hashedPassword = await argon.hash(
-      dto.password,
-    );
+    const hashedPassword = await argon.hash(dto.password,);
 
     const user = await this.prisma.user.create({
       data: {
@@ -76,20 +55,13 @@ export class UserService {
     });
   }
 
-  async updateUser(
-    id: number,
-    dto: UpdateUserDto,
-  ): Promise<UserDto> {
+  async updateUser(id: number, dto: UpdateUserDto,): Promise<UserDto> {
     const data: UpdateUserDto = {};
 
-    if (dto.name) {
-      data.name = dto.name;
-    }
+    if (dto.name) data.name = dto.name;
 
     if (dto.password) {
-      data.password = await argon.hash(
-        dto.password,
-      );
+      data.password = await argon.hash(dto.password);
     }
 
     const user = await this.prisma.user.update({
@@ -109,8 +81,8 @@ export class UserService {
     return user;
   }
 
-    async updateImage(id: number, newFilename: string) {
-    return this.prisma.questionBank.update({
+  async updateImage(id: number, newFilename: string) {
+    return this.prisma.user.update({
       where: { id },
       data: { imageUrl: newFilename },
       select: {
@@ -119,4 +91,5 @@ export class UserService {
       },
     });
   }
+
 }

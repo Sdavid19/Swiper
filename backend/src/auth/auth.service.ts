@@ -1,10 +1,6 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as argon from 'argon2';
-import { UserService } from '../user/services/user.service'; 
+import { UserService } from '../user/services/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { SigninDto } from './dto/signin.dto';
 import { SignupDto } from './dto';
@@ -16,20 +12,17 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async signup(dto: SignupDto): Promise<UserDto> {
-    const existing =
-      await this.userService.findUserByEmail(
-        dto.email,
-      );
+    const existing = await this.userService.findUserByEmail(dto.email,);
 
     if (existing) {
       throw new BadRequestException({
         statusCode: 400,
         error: 'Field error',
         message: {
-          email: ['Email already exists'],
+          email: ['Account with this email already exists'],
         },
       });
     }
@@ -42,27 +35,13 @@ export class AuthService {
   async signin(
     dto: SigninDto,
   ): Promise<SigninResponseDto> {
-    const user =
-      await this.userService.findUserByEmail(
-        dto.email,
-      );
+    const user = await this.userService.findUserByEmail(dto.email,);
 
-    if (!user) {
-      throw new UnauthorizedException(
-        'Invalid credentials!',
-      );
-    }
+    if (!user) throw new UnauthorizedException('Invalid credentials!',);
 
-    const validPassword = await argon.verify(
-      user.passwordHash,
-      dto.password,
-    );
+    const validPassword = await argon.verify(user.passwordHash, dto.password);
 
-    if (!validPassword) {
-      throw new UnauthorizedException(
-        'Invalid credentials!',
-      );
-    }
+    if (!validPassword) throw new UnauthorizedException('Invalid credentials!',);
 
     const payload = {
       sub: user.id,
@@ -71,8 +50,7 @@ export class AuthService {
     };
 
     return {
-      access_token:
-        await this.jwtService.signAsync(payload),
+      access_token: await this.jwtService.signAsync(payload),
       user: {
         id: user.id,
         email: user.email,
@@ -84,17 +62,10 @@ export class AuthService {
 
   async verifyToken(token: string) {
     try {
-      const payload =
-        this.jwtService.verify(token);
+      const payload = this.jwtService.verify(token);
+      const user = await this.userService.findUserById(payload.sub,);
 
-      const user =
-        await this.userService.findUserById(
-          payload.sub,
-        );
-
-      if (!user) {
-        throw new UnauthorizedException();
-      }
+      if (!user) throw new UnauthorizedException();
 
       return user;
     } catch {

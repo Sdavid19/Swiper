@@ -28,13 +28,10 @@ export class QuestionBankController {
   @Post()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: BankListDto})
-  getBanks(
-    @Body() filter: BankFilterDto,
-    @Request() req: { user: JwtPayload },
-  ) {
-    const { categoryIds, locked, page, limit, text } = filter;
-    return this.bankService.findAll(req.user.sub, locked, text, categoryIds, page, limit);
+  @ApiOkResponse({ type: BankListDto })
+  getBanks(@Body() filter: BankFilterDto, @Request() req: { user: JwtPayload },) {
+    const { categoryIds, state, page, limit, text } = filter;
+    return this.bankService.findAll(req.user.sub, state, text, categoryIds, page, limit);
   }
 
   @Get('top')
@@ -59,9 +56,7 @@ export class QuestionBankController {
   @ApiOkResponse({ type: BankDetailDto })
   @UseGuards(AuthGuard)
   getBankDetailsById(@Param('id') id: string) {
-    return this.bankService.findByIdWithQuestions(
-      +id,
-    );
+    return this.bankService.findByIdWithQuestions(+id,);
   }
 
   @Get(':id/questions')
@@ -72,9 +67,7 @@ export class QuestionBankController {
   })
   @UseGuards(AuthGuard)
   getQuestionsByBankId(@Param('id') id: string) {
-    return this.questionService.findQuestionsByBank(
-      +id,
-    );
+    return this.questionService.findQuestionsByBank(+id,);
   }
 
   @Post(':id/copy')
@@ -93,10 +86,7 @@ export class QuestionBankController {
     @Param('id') id: string,
     @Body() dto: CreateQuestionDto,
   ) {
-    return this.questionService.createQuestion(
-      +id,
-      dto,
-    );
+    return this.questionService.createQuestion(+id, dto,);
   }
 
   @Post('create')
@@ -115,7 +105,7 @@ export class QuestionBankController {
     @Body() dto: CreateMediaBankDto,
     @Request() req: { user: JwtPayload },
   ) {
-    return this.bankService.createQuestionBankByMedia(
+    return this.bankService.createMediaQuestionBankByTemplate(
       dto.platforms,
       dto.bankTemplateId,
       req.user.sub,

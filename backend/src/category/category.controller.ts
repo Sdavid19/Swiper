@@ -1,31 +1,14 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import {
-  CategoryDto,
-  CreateCategoryDto,
-} from './dto';
-import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { CategoryDto, CreateCategoryDto } from './dto';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 
 @ApiTags('category')
 @ApiBearerAuth()
 @Controller('category')
 export class CategoryController {
-  constructor(
-    private readonly categoryService: CategoryService,
-  ) {}
+  constructor(private readonly categoryService: CategoryService) { }
 
   @Get()
   @ApiOkResponse({

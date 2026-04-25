@@ -1,29 +1,33 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View, ListRenderItem } from "react-native";
 import { CalendarSearch, Search, SlidersHorizontal } from "lucide-react-native";
 import { VoteDto } from "@/src/shared/types/generated";
-import { InputField } from "@/src/shared/components";
-import { FilterBankModal } from "../../../bank/components/filerBankModal/FilterBankModal";
 import { DateFilterModal } from "./DateFilterModal/DateFilterModal";
 import { DatePicker } from "./DateFilterModal/DatePicker";
 import { VoteCard } from "./VoteCard";
 import { getVotesByUserParticipatedIn } from "../../../vote/services/vote.service";
+import { SearchInputField } from "@/src/shared/components/SearchInputField";
+import { CategoryFilterModal } from "@/src/shared/components/FilterCategoryModal/CategoryFilterModal";
 
 export function VoteFilterList() {
-  const [filter, setFilter] = useState("");
+  const requestId = useRef(0);
+
+  const [textFilter, setTextFilter] = useState("");
+  const [debouncedFilter, setDebouncedFilter] = useState("");
   const [selected, setSelected] = useState<number[]>([]);
 
   const [tempDate, setTempDate] = useState<Date | null>(null);
   const [appliedDate, setAppliedDate] = useState<Date | null>(null);
 
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [dateModalVisible, setDateModalVisible] = useState(false);
 
   const [votes, setVotes] = useState<VoteDto[]>([]);
-
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
 
   const limit = 10;
 
@@ -31,21 +35,21 @@ export function VoteFilterList() {
     if (loading || (!hasMore && !reset)) return;
 
     setLoading(true);
+    const currentRequest = ++requestId.current;
 
     try {
       const res = await getVotesByUserParticipatedIn({
         date: appliedDate?.toISOString(),
-        text: filter,
+        text: debouncedFilter,
         categoryIds: selected,
         page: pageNumber,
         limit,
       });
 
-      if (reset) {
-        setVotes(res.votes);
-      } else {
-        setVotes((prev) => [...prev, ...res.votes]);
-      }
+      if (currentRequest !== requestId.current) return;
+
+      if (reset) setVotes(res.votes);
+      else setVotes((prev) => [...prev, ...res.votes]);
 
       setHasMore(res.hasMore);
       setPage(pageNumber);
@@ -58,7 +62,7 @@ export function VoteFilterList() {
     setPage(1);
     setHasMore(true);
     loadVotes(1, true);
-  }, [selected, appliedDate, filter]);
+  }, [selected, appliedDate, debouncedFilter]);
 
   const onLoadMore = useCallback(() => {
     if (!loading && hasMore) {
@@ -71,8 +75,7 @@ export function VoteFilterList() {
       <View style={styles.itemWrapper}>
         <VoteCard vote={item} />
       </View>
-    ),
-    []
+    ), []
   );
 
   const keyExtractor = useCallback((item: VoteDto) => item.id.toString(), []);
@@ -80,13 +83,10 @@ export function VoteFilterList() {
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.topBar}>
-        <Text>{votes.length}</Text>
-        <InputField
-          fieldStyle={{ width: "65%" }}
-          disableErrorMessages
-          Icon={Search}
-          value={filter}
-          onChangeText={setFilter}
+        <SearchInputField
+          textFilter={textFilter}
+          setTextFilter={setTextFilter}
+          setDebounceTextFilter={setDebouncedFilter}
         />
 
         <TouchableOpacity
@@ -115,20 +115,16 @@ export function VoteFilterList() {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         onEndReached={onLoadMore}
+        contentContainerStyle={votes.length === 0 && styles.emptyContent}
         onEndReachedThreshold={0.5}
         ListEmptyComponent={
-          <View style={styles.emptycontainer}>
-            <Text>There are no votes!</Text>
+          <View style={styles.emptyContent}>
+            <Text>There are no votes with the given filters!</Text>
           </View>
-        }
-        ListFooterComponent={
-          loading ? (
-            <Text style={{ textAlign: "center" }}>Loading...</Text>
-          ) : null
         }
       />
 
-      <FilterBankModal
+      <CategoryFilterModal
         selected={selected}
         setSelected={setSelected}
         visible={filterModalVisible}
@@ -176,8 +172,9 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
-  emptycontainer: {
-    flex: 1,
+  emptyContent: {
+    flexGrow: 1,
+    display: 'flex',
     justifyContent: "center",
     alignItems: "center",
   },

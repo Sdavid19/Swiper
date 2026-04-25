@@ -1,17 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-  Request,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { UserService } from './services/user.service';
 import { JwtPayload } from '../auth/interfaces';
@@ -20,12 +7,16 @@ import { Express } from 'express';
 import { ApiBearerAuth, ApiOkResponse, ApiTags, } from '@nestjs/swagger';
 import { UserDto, UserImageDto, UpdateUserDto } from './dto';
 import { imageUploadConfig } from '../shared/image/image-upload.config';
+import { UserImageService } from './services/user-image.service';
 
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {
-  constructor(private userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+    private readonly userImageService: UserImageService
+  ) { }
 
   @UseGuards(AuthGuard)
   @ApiOkResponse({ type: UserDto })
@@ -55,6 +46,6 @@ export class UserController {
   @UseGuards(AuthGuard)
   uploadFile(@Param('id') id: string, @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.userService.updateImage(+id, file.filename,);
+    return this.userImageService.updateUserImage(+id, file.filename,);
   }
 }

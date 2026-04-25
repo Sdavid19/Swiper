@@ -4,9 +4,7 @@ import { dmmfToRuntimeDataModel } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class QuestionBankTemplateService {
-  constructor(
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async findAll() {
     return this.prisma.questionBankTemplate.findMany(
@@ -26,4 +24,5 @@ export class QuestionBankTemplateService {
       },
     );
   }
+
 }

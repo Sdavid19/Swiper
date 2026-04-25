@@ -6,3 +6,4 @@ export * from "./bank.dto";
 export * from "./create-bank.dto";
 export * from "./create-media-bank.dto";
 export * from "./update-bank.dto";
+export * from "./bank-list.dto"

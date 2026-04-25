@@ -3,10 +3,17 @@ import {
   IsOptional,
   IsArray,
   IsNumber,
-  IsBoolean,
   IsString,
+  IsEnum,
 } from 'class-validator';
 import { CategoriesExistValidator } from '../validators/categories-exists.validator';
+import { Type } from 'class-transformer';
+
+export enum BankState {
+  OPEN = "OPEN",
+  LOCKED = "LOCKED",
+  ALL = "ALL"
+}
 
 export class BankFilterDto {
   @ApiProperty({
@@ -21,9 +28,10 @@ export class BankFilterDto {
   })
   categoryIds?: number[];
 
-  @ApiProperty()
-  @IsBoolean()
-  locked: boolean
+  @ApiProperty({ enum: BankState, required: false })
+  @IsEnum(BankState)
+  @IsOptional()
+  state?: BankState;
 
   @ApiProperty({
     required: false,
@@ -41,7 +49,7 @@ export class BankFilterDto {
   @IsNumber()
   limit?: number;
 
-   @ApiProperty({ required: false,})
+  @ApiProperty({ required: false, })
   @IsOptional()
   @IsString()
   text?: string;

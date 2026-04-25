@@ -1,36 +1,11 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateBankDto } from '../dto/create-bank.dto';
-import { UpdateBankDto } from '../dto/update-bank.dto';
-import { CreateQuestionDto } from '../../question/dto/create-question.dto';
+import { CreateBankDto, UpdateBankDto, BankDetailDto, BankListItemDto, BankListDto, BankState } from '../dto';
+import { CreateQuestionDto } from '../../question/dto';
 import { QuestionBankTemplateService } from '../../question-bank-template/question-bank-template.service';
-import { BankListItemDto } from '../dto/bank-list-item.dto';
-import { BankDetailDto } from '../dto/bank.detail.dto';
 import { QuestionService } from '../../question/services/question.service';
 import { MediaService } from '../../media/services/media.service';
 import { MediaType, Prisma } from '@prisma/client';
-import { BankListDto } from '../dto/bank-list.dto';
-
-const BANK_LIST_INCLUDE = {
-  category: true,
-  _count: {
-    select: {
-      votes: true,
-      questions: true,
-    },
-  },
-  creator: {
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      imageUrl: true,
-    },
-  },
-} as const;
 
 @Injectable()
 export class QuestionBankService {
@@ -44,7 +19,7 @@ export class QuestionBankService {
   async findById(id: number): Promise<BankListItemDto> {
     const bank = await this.prisma.questionBank.findUnique({
       where: { id },
-      include: BANK_LIST_INCLUDE,
+      include: this.bankIncludeOptions(),
     });
 
     if (!bank) throw new NotFoundException();
@@ -55,7 +30,7 @@ export class QuestionBankService {
   async findTopBanks(userId: number): Promise<BankListItemDto[]> {
     const banks = await this.prisma.questionBank.findMany({
       where: { creatorId: userId },
-      include: BANK_LIST_INCLUDE,
+      include: this.bankIncludeOptions(),
       orderBy: {
         votes: {
           _count: 'desc',
@@ -93,29 +68,23 @@ export class QuestionBankService {
 
   async findAll(
     userId: number,
-    locked: boolean,
+    state: BankState,
     text?: string,
     categoryIds?: number[],
     page: number = 1,
     limit: number = 20,
   ): Promise<BankListDto> {
-
     const where: Prisma.QuestionBankWhereInput = {
       creatorId: userId,
-
-      ...(categoryIds?.length
-        ? { categoryId: { in: categoryIds } }
-        : {}),
-
-      votes: locked ? { some: {} } : { none: {} },
-
-      ...this.buildBankTextSearch(text),
+      ...this.buildCategoryFilter(categoryIds),
+      ...this.buildStateFilter(state),
+      ...this.buildBankTextSearchFilter(text),
     };
 
     const [data, total] = await Promise.all([
       this.prisma.questionBank.findMany({
         where,
-        include: BANK_LIST_INCLUDE,
+        include: this.bankIncludeOptions(),
         orderBy: { title: 'asc' },
         skip: (page - 1) * limit,
         take: limit,
@@ -141,7 +110,7 @@ export class QuestionBankService {
         imageUrl: dto.imageUrl,
         categoryId: dto.categoryId,
       },
-      include: BANK_LIST_INCLUDE,
+      include: this.bankIncludeOptions(),
     });
 
     return this.mapToBankListItemDto(data);
@@ -156,7 +125,7 @@ export class QuestionBankService {
         categoryId: dto.categoryId,
         creatorId: dto.creatorId,
       },
-      include: BANK_LIST_INCLUDE,
+      include: this.bankIncludeOptions(),
     });
 
     return this.mapToBankListItemDto(bank);
@@ -188,14 +157,13 @@ export class QuestionBankService {
     });
   }
 
-  async createQuestionBankByMedia(
+  async createMediaQuestionBankByTemplate(
     platformNames: string[] | undefined,
     templateId: number,
     userId: number,
     mediaType: MediaType,
   ) {
     const media = await this.mediaService.findMediaByPlatforms(mediaType, platformNames);
-
     const template = await this.templateService.findById(templateId);
 
     if (!template) {
@@ -238,7 +206,7 @@ export class QuestionBankService {
     };
   }
 
-  buildBankTextSearch(text?: string): Prisma.QuestionBankWhereInput {
+  buildBankTextSearchFilter(text?: string): Prisma.QuestionBankWhereInput {
     if (!text?.trim()) return {};
 
     return {
@@ -258,4 +226,46 @@ export class QuestionBankService {
       ],
     };
   }
+
+  buildStateFilter(state?: BankState): Prisma.QuestionBankWhereInput {
+    switch (state) {
+      case BankState.LOCKED:
+        return { votes: { some: {} } };
+
+      case BankState.OPEN:
+        return { votes: { none: {} } };
+
+      case BankState.ALL:
+        return {};
+    }
+  }
+
+  buildCategoryFilter(categoryIds?: number[]): Prisma.QuestionBankWhereInput {
+    if (categoryIds?.length > 0) {
+      return { categoryId: { in: categoryIds } };
+    } else {
+      return {};
+    }
+  }
+
+  bankIncludeOptions() {
+    return {
+      category: true,
+      _count: {
+        select: {
+          votes: true,
+          questions: true,
+        },
+      },
+      creator: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          imageUrl: true,
+        },
+      },
+    } as const;
+  }
+
 }

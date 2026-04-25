@@ -21,14 +21,16 @@ export function LeaveRoomButton({ onPress }: LeaveRoomButtonProps) {
 
 
     return (
-        <TouchableOpacity style={{
-        width: 40,
-        height: 40,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 0,
-        margin: 0,
-      }} onPress={handleLeaveRoom}>
+        <TouchableOpacity
+            style={{
+                width: 40,
+                height: 40,
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 0,
+                margin: 0,
+            }}
+            onPress={handleLeaveRoom}>
             <LogOut size={30} color="red" />
         </TouchableOpacity>
     );

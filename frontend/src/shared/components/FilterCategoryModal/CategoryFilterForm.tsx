@@ -1,9 +1,9 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { PrimaryButton } from "../../../../shared/components";
-import { CategoryDto } from "../../../../shared/types/generated";
-import { ToggleButton } from "./ToggleButton";
+import { PrimaryButton } from "..";
+import { CategoryDto } from "../../types/generated";
+import { CategoryToggleButton } from "./CategoryToggleButton";
 
-export function FilterBankForm({
+export function CategoryFilterForm({
   categories,
   selected,
   setSelected,
@@ -34,7 +34,7 @@ export function FilterBankForm({
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ paddingTop: 10 }}
         renderItem={({ item }) => (
-          <ToggleButton
+          <CategoryToggleButton
             item={item}
             isSelected={selected.includes(item.id)}
             toggleCategory={toggleCategory}

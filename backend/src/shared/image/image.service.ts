@@ -5,24 +5,13 @@ import sharp from 'sharp';
 
 @Injectable()
 export class ImageService {
-  private uploadsDir = path.join(
-    process.cwd(),
-    'uploads',
-  );
+  private uploadsDir = path.join(process.cwd(), 'uploads');
 
-  async optimizeImage(
-    inputFile: string,
-  ): Promise<string> {
-    const inputPath = path.join(
-      this.uploadsDir,
-      inputFile,
-    );
+  async optimizeImage(inputFile: string,): Promise<string> {
+    const inputPath = path.join(this.uploadsDir, inputFile,);
 
     const outputFile = `optimized-${Date.now()}-${path.basename(inputFile)}`;
-    const outputPath = path.join(
-      this.uploadsDir,
-      outputFile,
-    );
+    const outputPath = path.join(this.uploadsDir, outputFile,);
 
     const buffer = await fs.readFile(inputPath);
 
@@ -34,7 +23,7 @@ export class ImageService {
       .jpeg({ quality: 75, mozjpeg: true })
       .toFile(outputPath);
 
-    await fs.unlink(inputPath).catch(() => {});
+    await fs.unlink(inputPath).catch(() => { });
 
     return outputFile;
   }
@@ -42,10 +31,7 @@ export class ImageService {
   async deleteIfExists(file?: string | null) {
     if (!file) return;
 
-    const filePath = path.join(
-      this.uploadsDir,
-      file,
-    );
-    await fs.unlink(filePath).catch(() => {});
+    const filePath = path.join(this.uploadsDir, file);
+    await fs.unlink(filePath).catch(() => { });
   }
 }

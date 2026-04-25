@@ -14,7 +14,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   }
 
   async onModuleInit() {
-    console.log('Prisma connecting to:', process.env.DATABASE_URL);
     await this.$connect();
   }
 }
