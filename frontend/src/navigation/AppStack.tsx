@@ -4,6 +4,7 @@ import { AppStackParamList } from "./types";
 import { CreateLobbyScreen } from "../features/vote/screens/CreateLobbyScreen";
 import { CreateMediaBankScreen } from "../features/bank/screens/CreateMediaBankScreen";
 import { VoteScreen } from "../features/vote/screens/VoteScreen";
+import { LobbyScreen } from "../features/vote/screens/LobbyScreen";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -22,8 +23,13 @@ export function AppStack() {
       />
       <Stack.Screen
         name="CreateLobby"
-        options={{ title: "Create lobby" }}
+        options={{ title: "Create room" }}
         component={CreateLobbyScreen}
+      />
+      <Stack.Screen
+        name="Lobby"
+        options={{ title: "Vote room" }}
+        component={LobbyScreen}
       />
       <Stack.Screen
         name="CreateMediaBank"

@@ -1,10 +1,4 @@
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View, } from "react-native";
 import { PrimaryButton } from "../../../shared/components";
 import { useEffect, useState } from "react";
 import { getSocket } from "../../../socket/socket";
@@ -17,6 +11,7 @@ import { getBankWithQuestionsById } from "../../bank/services/bank.service";
 import { BankDetailDto } from "../../../shared/types/generated";
 import { QuestionList } from "../../question/components/questionList/QuestionList";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Plus } from "lucide-react-native";
 
 type CreateLobbyScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -49,28 +44,10 @@ export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
 
     getSocket()?.on("roomCreated", ({ roomId, bankId }) => {
       console.log("Room létrehozva:", roomId, bankId);
-
       navigation.reset({
         index: 0,
         routes: [
-          {
-            name: "Tabs",
-            state: {
-              routes: [
-                {
-                  name: "VoteStack",
-                  state: {
-                    routes: [
-                      {
-                        name: "Lobby",
-                        params: { roomId, bankId },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
+          { name: 'Lobby', params: { roomId, bankId } }
         ],
       });
     });
@@ -103,7 +80,8 @@ export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
         style={[styles.footer, { paddingBottom: insets.bottom + 10 || 16 }]}
       >
         <PrimaryButton
-          title="Start vote"
+        icon={<Plus size={18} color="white" />}
+          title="Create room"
           style={styles.button}
           disabled={bank?.questions.length === 0}
           onPress={handleCreateLobby}
@@ -116,7 +94,7 @@ export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
+    padding: 20,
   },
 
   header: {

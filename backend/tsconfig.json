@@ -2,7 +2,10 @@
   "compilerOptions": {
     "module": "NodeNext",
     "target": "ES2022",
-    "lib": ["ES2022"],
+    "isolatedModules": true,
+    "lib": [
+      "ES2022"
+    ],
     "moduleResolution": "NodeNext",
     "declaration": false,
     "removeComments": true,
@@ -13,14 +16,25 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
-    "incremental": false, 
+    "rootDir": ".",
+    "incremental": false,
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false,
     "skipLibCheck": true,
-    "types": ["node"]
+    "types": [
+      "node",
+      "jest"
+    ]
   },
-  "include": ["src", "prisma"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src",
+    "test",
+    "prisma",
+    "**/*.ts"
+, "scripts/test-prepare.js"  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

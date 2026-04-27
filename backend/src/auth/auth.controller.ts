@@ -9,7 +9,7 @@ import { UserDto } from '../user/dto';
 export class AuthController {
   constructor(private authService: AuthService) { }
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   @Post('signup')
   @ApiOkResponse({ type: UserDto })
   signUp(@Body() dto: SignupDto) {

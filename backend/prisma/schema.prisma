@@ -20,6 +20,8 @@ model User {
   questionBanks QuestionBank[]
   createdVotes  Vote[]
   answers       Answer[]
+
+  @@map("users")
 }
 
 model QuestionBank {
@@ -40,18 +42,22 @@ model QuestionBank {
 
   categoryId Int
   category   Category @relation(fields: [categoryId], references: [id])
+
+   @@map("question-banks")
 }
 
 model Question {
-  id       Int        @id @default(autoincrement())
-  text     String
+  id          Int     @id @default(autoincrement())
+  text        String
   description String?
-  imageUrl String?
+  imageUrl    String?
 
   bankId Int
   bank   QuestionBank @relation(fields: [bankId], references: [id], onDelete: Cascade)
 
   answers Answer[]
+
+  @@map("questions")
 }
 
 model Vote {
@@ -69,6 +75,8 @@ model Vote {
   creator   User @relation(fields: [creatorId], references: [id])
 
   answers Answer[]
+
+  @@map("votes")
 }
 
 model Answer {
@@ -82,20 +90,23 @@ model Answer {
   voteId Int
   vote   Vote @relation(fields: [voteId], references: [id])
 
-  questionId Int 
+  questionId Int
   question   Question @relation(fields: [questionId], references: [id])
 
   @@unique([userId, voteId, questionId])
+  @@map("answers")
 }
 
 model Category {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  slug String @unique
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  slug  String @unique
   color String @default("#007AFF")
 
-  banks QuestionBank[]
-  templates   QuestionBankTemplate[]
+  banks     QuestionBank[]
+  templates QuestionBankTemplate[]
+
+  @@map("categories")
 }
 
 model QuestionBankTemplate {
@@ -108,17 +119,21 @@ model QuestionBankTemplate {
 
   categoryId Int
   category   Category @relation(fields: [categoryId], references: [id])
+
+  @@map("question-bank-templates")
 }
 
 model Media {
-  id        Int      @id @default(autoincrement())
-  name      String
+  id          Int       @id @default(autoincrement())
+  name        String
   description String?
-  imdbId    String   @unique
-  imageUrl  String?
-  mediaType MediaType
+  imdbId      String    @unique
+  imageUrl    String?
+  mediaType   MediaType
 
   platforms MediaPlatform[]
+
+  @@map("media")
 }
 
 enum MediaType {
@@ -128,19 +143,22 @@ enum MediaType {
 }
 
 model Platform {
-  name        String @id
-  imageUrl    String?
-  medias MediaPlatform[]
+  name     String          @id
+  imageUrl String?
+  medias   MediaPlatform[]
+
+  @@map("paltforms")
 }
 
 model MediaPlatform {
   id Int @id @default(autoincrement())
 
   mediaId Int
-  media         Media @relation(fields: [mediaId], references: [id])
+  media   Media @relation(fields: [mediaId], references: [id])
 
-  platformName  String
-  platform      Platform @relation(fields: [platformName], references: [name])
+  platformName String
+  platform     Platform @relation(fields: [platformName], references: [name])
 
   @@unique([mediaId, platformName])
+  @@map("media-platforms")
 }

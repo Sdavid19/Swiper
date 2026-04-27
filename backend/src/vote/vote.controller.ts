@@ -19,7 +19,7 @@ export class VoteController {
   getVotesUserParticipatedIn(@Request() req: { user: JwtPayload }, @Body() filter: VoteFilterDto) {
     const { categoryIds, date, limit, page, text } = filter;
 
-    return this.voteService.getAllVotesUserParticipatedIn(
+    return this.voteService.findAllVotesUserParticipatedIn(
       req.user.sub,
       new Date(date), text, page, limit, categoryIds
     );
@@ -33,11 +33,11 @@ export class VoteController {
     return this.voteService.getVoteById(+id);
   }
 
-  @Get(':id/top')
+  @Get(':id/stat')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: AnswerTopStatsDto })
   getTopStat(@Request() req: { user: JwtPayload }, @Param('id') id: string,) {
-    return this.voteService.getTopStats(+id, req.user.sub);
+    return this.voteService.getStats(+id, req.user.sub);
   }
 }

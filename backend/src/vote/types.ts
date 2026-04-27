@@ -15,3 +15,33 @@ export type Room = {
   };
 };
 
+export type VoteMessageDto = {
+  roomId: number;
+  questionId: number;
+  answer: boolean;
+}
+
+export type LeaveRoomMessageDto = {
+  roomId: number
+}
+
+export type StopCountdownMessageDto = {
+  roomId: number
+}
+
+export type JoinRoomMessageDto = {
+  roomId: number
+}
+
+export type CheckRoomMessageDto = {
+  roomId: number
+}
+
+export type ToggleReadyMessageDto = {
+  roomId: number;
+  ready: boolean;
+}
+
+export type CreateRoomMessageDto = {
+  bankId: number;
+}

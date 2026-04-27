@@ -2,8 +2,8 @@ import { Book, BookLock, BookText } from "lucide-react-native";
 import { TouchableOpacity } from "react-native";
 
 type StateFilterButtonProps = {
-    state?: "OPEN" | "LOCKED" | "ALL"
-    setState: React.Dispatch<React.SetStateAction<"OPEN" | "LOCKED" | "ALL" | undefined>>
+    state: "OPEN" | "LOCKED" | "ALL"
+    setState: React.Dispatch<React.SetStateAction<"OPEN" | "LOCKED" | "ALL" >>
 }
 
 export function StateFilterButton({ state, setState }: StateFilterButtonProps) {
@@ -14,7 +14,7 @@ export function StateFilterButton({ state, setState }: StateFilterButtonProps) {
         } else if (state == "OPEN") {
             setState("LOCKED")
         } else if (state == "LOCKED") {
-            setState(undefined);
+            setState("ALL");
         }
     }
 
@@ -23,7 +23,7 @@ export function StateFilterButton({ state, setState }: StateFilterButtonProps) {
             onPress={onPress}
             style={{ padding: 10 }}
         >
-            {state == undefined && <Book size={28} color="black" />}
+            {state == "ALL" && <Book size={28} color="black" />}
             {state == "OPEN" && <BookText size={28} color="#007AFF" />}
             {state == "LOCKED" && <BookLock size={28} color="red" />}
         </TouchableOpacity>

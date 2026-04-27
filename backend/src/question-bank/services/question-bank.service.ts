@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBankDto, UpdateBankDto, BankDetailDto, BankListItemDto, BankListDto, BankState } from '../dto';
 import { CreateQuestionDto } from '../../question/dto';
@@ -6,6 +6,7 @@ import { QuestionBankTemplateService } from '../../question-bank-template/questi
 import { QuestionService } from '../../question/services/question.service';
 import { MediaService } from '../../media/services/media.service';
 import { MediaType, Prisma } from '@prisma/client';
+import { CategoryService } from '../../category';
 
 @Injectable()
 export class QuestionBankService {
@@ -14,6 +15,7 @@ export class QuestionBankService {
     private readonly mediaService: MediaService,
     private readonly templateService: QuestionBankTemplateService,
     private readonly questionService: QuestionService,
+    private readonly categoryService: CategoryService,
   ) { }
 
   async findById(id: number): Promise<BankListItemDto> {
@@ -72,7 +74,7 @@ export class QuestionBankService {
     text?: string,
     categoryIds?: number[],
     page: number = 1,
-    limit: number = 20,
+    limit: number = 10,
   ): Promise<BankListDto> {
     const where: Prisma.QuestionBankWhereInput = {
       creatorId: userId,
@@ -98,10 +100,7 @@ export class QuestionBankService {
     };
   }
 
-  async update(
-    id: number,
-    dto: UpdateBankDto,
-  ): Promise<BankListItemDto> {
+  async update(id: number, dto: UpdateBankDto): Promise<BankListItemDto> {
     const data = await this.prisma.questionBank.update({
       where: { id },
       data: {
@@ -116,14 +115,27 @@ export class QuestionBankService {
     return this.mapToBankListItemDto(data);
   }
 
-  async create(dto: CreateBankDto): Promise<BankListItemDto> {
+  async create(dto: CreateBankDto, userId: number): Promise<BankListItemDto> {
+
+    const category = await this.categoryService.findById(dto.categoryId);
+
+    if (!category) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Field error',
+        message: {
+          category: [`There is no category with id ${dto.categoryId}`],
+        },
+      });
+    }
+
     const bank = await this.prisma.questionBank.create({
       data: {
         title: dto.title,
         description: dto.description,
         imageUrl: dto.imageUrl,
         categoryId: dto.categoryId,
-        creatorId: dto.creatorId,
+        creatorId: userId,
       },
       include: this.bankIncludeOptions(),
     });
@@ -175,8 +187,7 @@ export class QuestionBankService {
       description: template.description,
       categoryId: template.category.id,
       imageUrl: template.imageUrl,
-      creatorId: userId,
-    });
+    }, userId);
 
     await this.questionService.createMany(bank.id, {
       questions: media.map((m) => ({
@@ -206,7 +217,7 @@ export class QuestionBankService {
     };
   }
 
-  buildBankTextSearchFilter(text?: string): Prisma.QuestionBankWhereInput {
+   buildBankTextSearchFilter(text?: string): Prisma.QuestionBankWhereInput {
     if (!text?.trim()) return {};
 
     return {
@@ -227,7 +238,7 @@ export class QuestionBankService {
     };
   }
 
-  buildStateFilter(state?: BankState): Prisma.QuestionBankWhereInput {
+   buildStateFilter(state?: BankState): Prisma.QuestionBankWhereInput {
     switch (state) {
       case BankState.LOCKED:
         return { votes: { some: {} } };
@@ -240,7 +251,7 @@ export class QuestionBankService {
     }
   }
 
-  buildCategoryFilter(categoryIds?: number[]): Prisma.QuestionBankWhereInput {
+   buildCategoryFilter(categoryIds?: number[]): Prisma.QuestionBankWhereInput {
     if (categoryIds?.length > 0) {
       return { categoryId: { in: categoryIds } };
     } else {
@@ -248,7 +259,7 @@ export class QuestionBankService {
     }
   }
 
-  bankIncludeOptions() {
+   bankIncludeOptions() {
     return {
       category: true,
       _count: {

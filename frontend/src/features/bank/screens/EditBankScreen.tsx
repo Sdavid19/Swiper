@@ -3,8 +3,6 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import {
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   View,
@@ -124,7 +122,6 @@ export function EditBankScreen({ route }: EditBankProps) {
 
         <View style={styles.formContainer}>
           <EditBankForm
-            creatorId={user!.id}
             categories={categories}
             bank={bank}
             setBank={setBank}

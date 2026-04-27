@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { VoteDto } from "@/src/shared/types/generated";
-import { getImage } from "@/src/api/services/image.service";
+import { getImage } from "@/src/shared/utils/image.service";
 import { shortenString } from "@/src/shared/utils/text.service";
 import { Badge } from "@/src/shared/components/Badge";
 import { VoteStatNavigation } from "@/src/navigation";

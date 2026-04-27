@@ -4,7 +4,7 @@ import { QuestionDto } from "../../../../shared/types/generated";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { EditBankStackParamList } from "../../../../navigation";
-import { getImage } from "../../../../api/services/image.service";
+import { getImage } from "../../../../shared/utils/image.service";
 
 interface QuestionCardProps {
   question: QuestionDto,

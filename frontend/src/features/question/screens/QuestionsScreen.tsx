@@ -39,7 +39,7 @@ export function QuestionsScreen({ route }: EditBankProps) {
 
       {!viewMode && (
         <PrimaryButton
-          icon={<PlusIcon color="white" />}
+          icon={<PlusIcon color="white" size={18} />}
           title="Add new"
           style={styles.addButton}
           onPress={() =>
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
     justifyContent: "center",
-    padding: 10,
+    padding: 15,
   },
   addButton: {
     width: "100%",

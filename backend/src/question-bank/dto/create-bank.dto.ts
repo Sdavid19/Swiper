@@ -8,7 +8,6 @@ import {
   Length,
   Validate,
 } from 'class-validator';
-import { CategoryExists } from '../validators/category-exitst.validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ValidationMessages } from '../../shared/constants/validation-messages';
 
@@ -26,15 +25,9 @@ export class CreateBankDto {
   @ApiProperty({ required: false })
   description: string;
 
-  @Type(() => Number)
-  @IsInt()
-  @ApiProperty()
-  creatorId: number;
-
   @ApiProperty()
   @Type(() => Number)
   @IsInt()
-  @Validate(CategoryExists)
   categoryId: number;
 
   @IsString()

@@ -49,12 +49,12 @@ api.interceptors.response.use(
       } else if (status === 400 && err.response.data.error === "Field error") {
         return Promise.reject(err);
       } else if (status === 500) {
-        showError("Server error, please try again later");
+        showError("Server error, please try again later.");
       } else {
         showError((err.response.data.message as string) || "Unexpected error");
       }
     } else {
-      showError("Network error, check your connection");
+      showError("Network error, check your connection.");
     }
 
     return Promise.reject(err);

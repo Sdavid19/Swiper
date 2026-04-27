@@ -2,7 +2,7 @@ import api from "@/src/api/client";
 import { AnswerTopStatsDto, VoteFilterDto, VoteListDto } from "@/src/shared/types/generated";
 
 export const getTopVoteStats = async (id: number): Promise<AnswerTopStatsDto> => {
-    const response = await api.get(`/votes/${id}/top`);
+    const response = await api.get(`/votes/${id}/stat`);
     return response.data;
 }
 

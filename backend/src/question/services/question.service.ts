@@ -1,63 +1,47 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma';
 import { updateQuestionDto, CreateQuestionsDto, CreateQuestionDto, QuestionDto } from '../dto';
+import { QuestionBankService } from '../../question-bank/services/question-bank.service';
 
 @Injectable()
 export class QuestionService {
   constructor(
     private readonly prisma: PrismaService,
-  ) {}
+  ) { }
 
-  async findById(
-    id: number,
-  ): Promise<QuestionDto> {
-    const question =
-      await this.prisma.question.findUnique({
-        where: { id },
-      });
+  async findById(id: number,): Promise<QuestionDto> {
+    const question = await this.prisma.question.findUnique({ where: { id } });
 
-    if (!question)
-      throw new NotFoundException(
-        `Question with id ${id} not found!`,
-      );
+    if (!question) throw new NotFoundException(`Question with id ${id} not found!`,);
 
     return question;
   }
 
-  async findQuestionsByBank(
-    id: number,
-  ): Promise<QuestionDto[]> {
-    const questions =
-      await this.prisma.question.findMany({
-        where: { bankId: id },
-      });
+  async findQuestionsByBank(bankId: number,): Promise<QuestionDto[]> {
+    const bank = await this.prisma.questionBank.findUnique({
+      where: { id: bankId },
+    });
 
+    if (!bank) throw new NotFoundException(`There is no bank with id ${bankId}`);
+
+    const questions = await this.prisma.question.findMany({ where: { bankId } });
+    
     return questions;
   }
 
-  async createQuestion(
-    id: number,
-    dto: CreateQuestionDto,
-  ) {
-    const result =
-      await this.prisma.question.create({
-        data: {
-          bankId: id,
-          text: dto.text,
-          description: dto.description
-        },
-      });
+  async createQuestion(id: number, dto: CreateQuestionDto,) {
+    const result = await this.prisma.question.create({
+      data: {
+        bankId: id,
+        text: dto.text,
+        description: dto.description
+      },
+    });
 
     return result;
   }
 
-  async createMany(
-    bankId: number,
-    dto: CreateQuestionsDto,
-  ) {
+  async createMany(bankId: number, dto: CreateQuestionsDto,) {
     if (!dto.questions.length) {
       return;
     }
@@ -74,18 +58,14 @@ export class QuestionService {
   }
 
   async getAllQuestionsByBankId(id: number) {
-    const questions =
-      await this.prisma.question.findMany({
-        where: { bankId: id },
-      });
+    const questions = await this.prisma.question.findMany({
+      where: { bankId: id },
+    });
 
     return questions;
   }
 
-  updateQuestion(
-    id: number,
-    dto: updateQuestionDto,
-  ) {
+  updateQuestion(id: number, dto: updateQuestionDto,) {
     return this.prisma.question.update({
       where: { id },
       data: dto,
@@ -98,10 +78,7 @@ export class QuestionService {
     });
   }
 
-  async updateImage(
-    id: number,
-    newFilename: string,
-  ) {
+  async updateImage(id: number, newFilename: string) {
     return this.prisma.question.update({
       where: { id },
       data: { imageUrl: newFilename },

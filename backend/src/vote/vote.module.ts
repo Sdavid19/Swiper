@@ -7,7 +7,7 @@ import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 import { QuestionModule } from '../question/question.module';
 import { MediaModule } from '../media';
-import { QuestioBankModule } from '../question-bank/question-bank.module';
+import { QuestionBankModule } from '../question-bank/question-bank.module';
 import { QuestioBankTemplateModule } from '../question-bank-template/question-bank-template.module';
 
 @Module({
@@ -15,7 +15,7 @@ import { QuestioBankTemplateModule } from '../question-bank-template/question-ba
     UserModule,
     AuthModule,
     QuestionModule,
-    QuestioBankModule,
+    QuestionBankModule,
     QuestioBankTemplateModule,
     MediaModule,
   ],

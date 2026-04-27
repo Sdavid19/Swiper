@@ -12,18 +12,16 @@ import { useDispatch } from "react-redux";
 import { addBankAction, updateBankAction } from "../../../../redux/bankSlice";
 import { useNavigation } from "@react-navigation/native";
 import { EditBankNavigation } from "../../../../navigation";
-import { Plus } from "lucide-react-native";
+import { Plus, Save } from "lucide-react-native";
 
 export interface EditBankFormProps {
   screenMode: EditBankScreenMode;
-  creatorId: number;
   bank?: BankListItemDto;
   setBank: React.Dispatch<React.SetStateAction<BankListItemDto | undefined>>;
   categories: CategoryDto[];
 }
 
 export function EditBankForm({
-  creatorId,
   screenMode,
   bank,
   setBank,
@@ -38,14 +36,14 @@ export function EditBankForm({
     description: "",
     categoryId: 0,
     public: false,
-    creatorId: creatorId,
   });
 
   const [errors, setErrors] =
     useState<ValidationErrorMessage<CreateBankDto> | null>(null);
 
   const buttonDisabled = () => {
-    return !form.title || !form.categoryId;
+    return (!form.title || !form.categoryId) ||
+     (form.title == bank?.title && form.description == bank?.description && form.categoryId == bank.category.id);
   };
 
   const navigateToQuestionBank = () => {
@@ -66,7 +64,6 @@ export function EditBankForm({
       setForm({
         title: bank.title,
         categoryId: bank.category.id,
-        creatorId: creatorId,
         description: bank.description,
         public: bank.public,
       });
@@ -164,7 +161,7 @@ export function EditBankForm({
 
       {isEditable && (
         <PrimaryButton
-          icon={<Plus color="white" size={18} />}
+          icon={ screenMode === "Edit"  ? <Save color="white" size={18} /> : <Plus color="white" size={18} />}
           title={screenMode === "Edit" ? "Save Changes" : "Create Bank"}
           style={{ width: "100%" }}
           disabled={buttonDisabled()}

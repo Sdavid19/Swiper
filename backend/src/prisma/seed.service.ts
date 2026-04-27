@@ -5,9 +5,10 @@ import { PrismaService } from './prisma.service';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async onModuleInit() {
+    if (process.env.NODE_ENV === 'test') return;
     await this.seedIfEmpty();
   }
 
@@ -15,7 +16,6 @@ export class SeedService implements OnModuleInit {
     const categoryCount = await this.prisma.category.count();
 
     if (categoryCount > 0) {
-      console.log('Database already seeded, skipping...');
       return;
     }
 

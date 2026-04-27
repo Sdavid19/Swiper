@@ -2,17 +2,12 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
-import {
-  ValidationError,
-  BadRequestException,
-} from '@nestjs/common';
-import {
-  DocumentBuilder,
-  SwaggerModule,
-} from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { FieldErrorValidationPipe } from './shared/pipes/field-validation.pipe';
+import { GlobalExceptionFilter } from './shared/filters/GlobalExceptionFilter';
 
 async function bootstrap() {
   const app =
@@ -27,36 +22,8 @@ async function bootstrap() {
     fallbackOnErrors: true,
   });
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      exceptionFactory: (
-        validationErrors: ValidationError[] = [],
-      ) => {
-        const formatted: Record<
-          string,
-          string[]
-        > = {};
-
-        validationErrors.forEach((error) => {
-          if (error.constraints) {
-            formatted[error.property] =
-              Object.values(error.constraints);
-          } else {
-            formatted[error.property] = [];
-          }
-        });
-
-        return new BadRequestException({
-          statusCode: 400,
-          error: 'Field error',
-          message: formatted,
-        });
-      },
-    }),
-  );
+  app.useGlobalPipes(new FieldErrorValidationPipe());
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   const config = new DocumentBuilder()
     .setTitle('My API')
@@ -71,17 +38,11 @@ async function bootstrap() {
     })
     .build();
 
-  const document = SwaggerModule.createDocument(
-    app,
-    config,
-  );
+  const document = SwaggerModule.createDocument(app, config,);
 
-  writeFileSync(
-    './swagger.json',
-    JSON.stringify(document, null, 2),
-  );
+  writeFileSync('./swagger.json', JSON.stringify(document, null, 2));
   SwaggerModule.setup('api', app, document);
-
+  []
   await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

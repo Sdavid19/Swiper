@@ -1,4 +1,4 @@
-import { API_URL } from "../client";
+import { API_URL } from "../../api/client";
 
 export const getImage = (imageName: string | null | undefined) => {
   if(!imageName) return "https://placehold.net/default.png"

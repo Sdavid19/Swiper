@@ -6,10 +6,8 @@ import { CategoryDto, CreateCategoryDto, } from './dto';
 export class CategoryService {
   constructor(private readonly prisma: PrismaService,) { }
 
-  async findByIdOrThrow(id: number) {
+  async findById(id: number) {
     const category = await this.prisma.category.findUnique({ where: { id } });
-
-    if (!category) throw new NotFoundException(`Category with id ${id} not found`,);
 
     return category;
   }
@@ -28,7 +26,9 @@ export class CategoryService {
   }
 
   async delete(id: number) {
-    await this.findByIdOrThrow(id);
+    const category = await this.findById(id);
+
+    if(!category) throw new NotFoundException(`Category with id ${id} not exists`)
 
     return this.prisma.category.delete({
       where: { id },

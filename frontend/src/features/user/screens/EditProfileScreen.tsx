@@ -12,7 +12,7 @@ import { AxiosError } from "axios";
 import { ErrorResponse, ValidationErrorMessage } from "../../../shared/types";
 import { ImageSelect } from "../components/ImageSelect";
 import { UpdateUserDto } from "../../../shared/types/generated";
-import { KeyRound, User } from "lucide-react-native";
+import { KeyRound, Save, User } from "lucide-react-native";
 
 export function EditProfileScreen() {
 
@@ -49,7 +49,6 @@ export function EditProfileScreen() {
       if (name || password) {
         setErrors(null);
         showSuccess('Proifle updated successfully!')
-        //navigation.navigate('Tabs', {screen: 'Profile'});
       }
     } catch (err) {
       const error = err as AxiosError<ErrorResponse<UpdateUserDto>>
@@ -63,50 +62,51 @@ export function EditProfileScreen() {
 
 
   return (
-  <KeyboardAvoidingView
-    style={styles.container}
-    behavior={Platform.OS === "ios" ? "padding" : undefined}
-  >
-    <View style={styles.content}>
-      <View style={styles.formContainer}>
-        <ImageSelect shape="oval" userImageUrl={user?.imageUrl} />
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View style={styles.content}>
+        <View style={styles.formContainer}>
+          <ImageSelect shape="oval" userImageUrl={user?.imageUrl} />
 
-        <InputField
-          label="Name"
-          placeholder="Steve"
-          value={name}
-          onChangeText={setName}
-          autoCapitalize="none"
-          errorMessages={errors?.name}
-          Icon={User}
-        />
-        <InputField
-          label="Password"
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          errorMessages={errors?.password}
-          Icon={KeyRound}
-        />
-        <InputField
-          label="Password again"
-          placeholder="Password"
-          value={passwordAgain}
-          onChangeText={setPasswordAgain}
-          secureTextEntry
-          Icon={KeyRound}
+          <InputField
+            label="Name"
+            placeholder="Steve"
+            value={name}
+            onChangeText={setName}
+            autoCapitalize="none"
+            errorMessages={errors?.name}
+            Icon={User}
+          />
+          <InputField
+            label="Password"
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            errorMessages={errors?.password}
+            Icon={KeyRound}
+          />
+          <InputField
+            label="Password again"
+            placeholder="Password"
+            value={passwordAgain}
+            onChangeText={setPasswordAgain}
+            secureTextEntry
+            Icon={KeyRound}
+          />
+        </View>
+
+        <PrimaryButton
+          icon={<Save size={18} color="white"></Save>}
+          title="Save"
+          onPress={handleUpdate}
+          disabled={isButtonDisabled()}
         />
       </View>
-
-      <PrimaryButton 
-        title="Save" 
-        onPress={handleUpdate} 
-        disabled={isButtonDisabled()} 
-      />
-    </View>
-  </KeyboardAvoidingView>
-);
+    </KeyboardAvoidingView>
+  );
 }
 
 const styles = StyleSheet.create({

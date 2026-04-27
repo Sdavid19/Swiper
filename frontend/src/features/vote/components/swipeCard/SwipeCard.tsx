@@ -17,7 +17,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import { QuestionDto } from "../../../../shared/types/generated";
-import { getImage } from "@/src/api/services/image.service";
+import { getImage } from "@/src/shared/utils/image.service";
 import { SwipeCardText } from "./SwipeCardText";
 
 const { width } = Dimensions.get("window");

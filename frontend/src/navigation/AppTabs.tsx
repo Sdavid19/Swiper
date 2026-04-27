@@ -23,7 +23,7 @@ export function AppTabs() {
         name="BankStack"
         options={{
           headerShown: false,
-          tabBarLabel: "Banks",
+          tabBarLabel: "My banks",
           tabBarIcon: ({ color, size }) => (
             <BookSearch color={color} size={size} />
           ),
@@ -35,7 +35,7 @@ export function AppTabs() {
         name="VoteStack"
         options={{
           headerShown: false,
-          tabBarLabel: "Vote",
+          tabBarLabel: "Join room",
           tabBarIcon: ({ color, size }) => (
             <Plus color={color} size={size + 10} />
           ),

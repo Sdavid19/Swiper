@@ -27,7 +27,7 @@ export class QuestionController {
   constructor(
     private readonly questionService: QuestionService,
     private readonly questionImageService: QuestionImageService,
-  ) {}
+  ) { }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
@@ -45,19 +45,14 @@ export class QuestionController {
     @Param('id') id: string,
     @Body() dto: updateQuestionDto,
   ) {
-    return this.questionService.updateQuestion(
-      +id,
-      dto,
-    );
+    return this.questionService.updateQuestion(+id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   deleteQuestion(@Param('id') id: string) {
-    return this.questionService.deleteQuestion(
-      +id,
-    );
+    return this.questionService.deleteQuestion(+id,);
   }
 
   @Post('upload/:id')
@@ -70,9 +65,6 @@ export class QuestionController {
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.questionImageService.updateQuestionImage(
-      +id,
-      file.filename,
-    );
+    return this.questionImageService.updateQuestionImage(+id, file.filename);
   }
 }

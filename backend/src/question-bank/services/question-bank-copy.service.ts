@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { BankDto } from '../dto/bank.dto';
 import { QuestionBankService } from './question-bank.service';
 import { QuestionService } from '../../question/services/question.service';
+import { BankListItemDto } from '../dto';
 
 @Injectable()
 export class QuestionBankCopyService {
@@ -10,7 +11,7 @@ export class QuestionBankCopyService {
     private readonly bankService: QuestionBankService,
   ) { }
 
-  async copy(id: number): Promise<BankDto> {
+  async copy(id: number): Promise<BankListItemDto> {
     const bank = await this.bankService.findById(id);
 
     if (!bank) throw new NotFoundException(`Questionbank with id ${id} not found!`,);
@@ -21,10 +22,9 @@ export class QuestionBankCopyService {
       public: bank.public,
       title: `${bank.title} copy`,
       imageUrl: bank.imageUrl,
-      creatorId: bank.creator.id,
       categoryId: bank.category.id,
       description: bank.description,
-    });
+    }, bank.creator.id);
 
     const questionsToCreate = questions.map((question) => ({
       text: question.text,
@@ -36,4 +36,5 @@ export class QuestionBankCopyService {
 
     return createdBank;
   }
+  
 }

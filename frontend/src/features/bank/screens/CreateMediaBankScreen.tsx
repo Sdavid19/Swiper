@@ -104,7 +104,7 @@ export function CreateMediaBankScreen({ route }: CreateMediaBankScreenProps) {
         style={[styles.footer, { paddingBottom: insets.bottom + 10 || 16 }]}
       >
         <PrimaryButton
-        icon={<Plus color="white" />}
+          icon={<Plus color="white" size={18} />}
           title="Create bank"
           style={styles.button}
           onPress={handleStartPress}

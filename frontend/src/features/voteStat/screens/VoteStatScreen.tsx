@@ -58,7 +58,7 @@ export function VoteStatScreen({ route }: VoteStatScreenProps) {
 
       <BarChartStat stat={stat} handleSelect={handleSelect} selectedQuestion={selectedQuestion} userCount={userCount} />
 
-      {selectedQuestion && (
+      {selectedQuestion &&
         <PieChartStat
           colors={colors}
           selectedColors={selectedColors}
@@ -66,11 +66,9 @@ export function VoteStatScreen({ route }: VoteStatScreenProps) {
           selectedQuestion={selectedQuestion}
           setSelectedPieData={setSelectedPieData}
         />
-      )}
+      }
 
-      {selectedPieData && (
-        <UserStat users={users} selectedPieData={selectedPieData} />
-      )}
+      {selectedPieData && <UserStat users={users} selectedPieData={selectedPieData} />}
     </ScrollView>
   );
 }

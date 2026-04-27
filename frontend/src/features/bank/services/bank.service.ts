@@ -44,7 +44,7 @@ export const createBank = async (dto: CreateBankDto): Promise<BankListItemDto> =
   return response.data;
 };
 
-export const copyBank = async (id: number): Promise<BankDto> => {
+export const copyBank = async (id: number): Promise<BankListItemDto> => {
   const response = await api.post(`/question-banks/${id}/copy`);
   return response.data;
 };

@@ -1,7 +1,7 @@
 import { CircleUser, Edit3 } from "lucide-react-native";
 import { Alert, Image, StyleSheet, View, TouchableOpacity } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
-import { getImage } from "../../../api/services/image.service";
+import { getImage } from "../../../shared/utils/image.service";
 import { uploadUserImage } from "../services/user.service";
 import { AppDispatch, RootState, updateUserData } from "../../../redux";
 import { useDispatch, useSelector } from "react-redux";

@@ -3,7 +3,7 @@ import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useState, useEffect } from "react";
-import { getImage } from "../../../../api/services/image.service";
+import { getImage } from "../../../../shared/utils/image.service";
 import { showInfo } from "../../../../shared/utils/toast.service";
 import { uploadBankImage } from "../../services/bank.service";
 import { useDispatch } from "react-redux";

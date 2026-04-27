@@ -25,6 +25,16 @@ export class QuestionBankController {
     private readonly copyService: QuestionBankCopyService,
   ) { }
 
+
+
+  @Post('create')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({ type: BankListItemDto })
+  @UseGuards(AuthGuard)
+  createBank(@Body() dto: CreateBankDto, @Request() req: { user: JwtPayload },) {
+    return this.bankService.create(dto, req.user.sub);
+  }
+
   @Post()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -72,7 +82,7 @@ export class QuestionBankController {
 
   @Post(':id/copy')
   @HttpCode(HttpStatus.CREATED)
-  @ApiOkResponse({ type: CreateQuestionDto })
+  @ApiOkResponse({ type: BankListItemDto })
   @UseGuards(AuthGuard)
   copyQuestionBank(@Param('id') id: string) {
     return this.copyService.copy(+id);
@@ -87,14 +97,6 @@ export class QuestionBankController {
     @Body() dto: CreateQuestionDto,
   ) {
     return this.questionService.createQuestion(+id, dto,);
-  }
-
-  @Post('create')
-  @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({ type: BankListItemDto })
-  @UseGuards(AuthGuard)
-  createBank(@Body() dto: CreateBankDto) {
-    return this.bankService.create(dto);
   }
 
   @Post('create-media')

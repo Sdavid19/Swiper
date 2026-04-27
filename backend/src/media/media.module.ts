@@ -5,6 +5,7 @@ import { MediaInitService } from './services/media-init.service';
 import { MediaImportService } from './services/media-import.service';
 import { StreamingApiService } from './services/streaming-api.service';
 import { MediaBackupService } from './services/media-backup.service';
+import { MediaBootstrapService } from './services/media-bootstrap.service';
 
 @Module({
   controllers: [MediaController],
@@ -13,13 +14,15 @@ import { MediaBackupService } from './services/media-backup.service';
     MediaInitService,
     MediaImportService,
     StreamingApiService,
-    MediaBackupService
+    MediaBackupService,
+    MediaBootstrapService
   ],
   exports: [
     MediaService,
     MediaInitService,
     MediaImportService,
     StreamingApiService,
+    MediaBootstrapService
   ],
 })
-export class MediaModule {}
+export class MediaModule { }

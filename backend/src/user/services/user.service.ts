@@ -10,7 +10,12 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) { }
 
   async findUserById(id: number) {
-    const user = this.prisma.user.findUnique({
+
+    if (id === undefined || id === null) {
+      throw new BadRequestException('User ID must be provided');
+    }
+
+    const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
         id: true,
@@ -28,7 +33,7 @@ export class UserService {
   async createUser(dto: SignupDto,): Promise<UserDto> {
     const existingUser = await this.prisma.user.findFirst({ where: { email: dto.email }, });
 
-    if (existingUser) throw new BadRequestException('Account with this email already exists',);
+    if (existingUser) throw new BadRequestException('Account with this email already exists');
 
     const hashedPassword = await argon.hash(dto.password,);
 

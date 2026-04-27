@@ -1,4 +1,4 @@
-import { getImage } from "@/src/api/services/image.service";
+import { getImage } from "@/src/shared/utils/image.service";
 import { UserDto } from "@/src/shared/types/generated";
 import { Image, StyleSheet, Text, View } from "react-native";
 

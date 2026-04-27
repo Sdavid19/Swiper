@@ -20,7 +20,7 @@ export function BankFilterList() {
   const [categoryFilterModalVisible, setCategoryFilterModalVisible] = useState(false);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
 
-  const [stateFilter, setStateFilter] = useState<"OPEN" | "LOCKED" | "ALL">();
+  const [stateFilter, setStateFilter] = useState<"OPEN" | "LOCKED" | "ALL">("ALL");
 
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);

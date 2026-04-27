@@ -6,7 +6,6 @@ import {
   IsString,
   IsEnum,
 } from 'class-validator';
-import { CategoriesExistValidator } from '../validators/categories-exists.validator';
 import { Type } from 'class-transformer';
 
 export enum BankState {
@@ -23,9 +22,6 @@ export class BankFilterDto {
   @IsOptional()
   @IsArray()
   @IsNumber({}, { each: true })
-  @CategoriesExistValidator({
-    message: 'Some category IDs do not exist',
-  })
   categoryIds?: number[];
 
   @ApiProperty({ enum: BankState, required: false })

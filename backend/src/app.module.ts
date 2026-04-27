@@ -3,12 +3,11 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { CategoryModule } from './category';
-import { QuestioBankModule } from './question-bank/question-bank.module';
+import { QuestionBankModule } from './question-bank/question-bank.module';
 import { QuestionModule } from './question/question.module';
 import { VoteModule } from './vote/vote.module';
 import { MediaModule } from './media';
 import { QuestioBankTemplateModule } from './question-bank-template/question-bank-template.module';
-import { QuestionBankCopyService } from './question-bank/services/question-bank-copy.service';
 
 @Module({
   imports: [
@@ -16,7 +15,7 @@ import { QuestionBankCopyService } from './question-bank/services/question-bank-
     UserModule,
     PrismaModule,
     CategoryModule,
-    QuestioBankModule,
+    QuestionBankModule,
     QuestionModule,
     VoteModule,
     MediaModule,

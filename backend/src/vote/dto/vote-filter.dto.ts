@@ -1,7 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsDateString, IsNumber, IsOptional, IsString } from "class-validator";
-import { CategoriesExistValidator } from "../../question-bank/validators/categories-exists.validator";
-
 export class VoteFilterDto {
 
     @IsOptional()
@@ -16,9 +14,6 @@ export class VoteFilterDto {
     @IsOptional()
     @IsArray()
     @IsNumber({}, { each: true })
-    @CategoriesExistValidator({
-        message: 'Some category IDs do not exist',
-    })
     categoryIds?: number[];
 
     @ApiProperty({

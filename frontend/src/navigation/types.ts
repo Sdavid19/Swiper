@@ -1,12 +1,12 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { BankDto } from "../shared/types/generated";
 
 export type AppStackParamList = {
   Tabs: NavigatorScreenParams<AppTabParamList>;
   CreateLobby: { bankId: number };
   CreateMediaBank: { templateId: number };
   Vote: { roomId: number; bankId: number };
+   Lobby: { roomId: number; bankId: number };
 };
 
 export type AuthStackParamList = {
@@ -23,7 +23,7 @@ export type EditBankStackParamList = {
 
 export type VoteStackParamList = {
   JoinLobby: undefined;
-  Lobby: { roomId: number; bankId: number };
+ 
 };
 
 export type VoteStatStackParamList = {

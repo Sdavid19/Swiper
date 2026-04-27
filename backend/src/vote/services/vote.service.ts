@@ -9,13 +9,12 @@ import { VoteListDto } from '../dto/vote-list.dto';
 export class VoteService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly userSerice: UserService
+    private readonly userService: UserService
   ) { }
-
 
   async createVoteData(dto: CreateVoteDataDto) {
 
-    const creator = await this.userSerice.findUserById(dto.creatorId);
+    const creator = await this.userService.findUserById(dto.creatorId);
 
     const vote = await this.prismaService.vote.create({
       data: {
@@ -43,7 +42,7 @@ export class VoteService {
     });
   }
 
-  async getAllVotesUserParticipatedIn(
+  async findAllVotesUserParticipatedIn(
     userId: number,
     date?: Date,
     text?: string,
@@ -112,7 +111,7 @@ export class VoteService {
     return vote;
   }
 
-  async getTopStats(voteId: number, userId: number) {
+  async getStats(voteId: number, userId: number) {
     const vote = await this.prismaService.vote.findFirst(
       {
         where: {

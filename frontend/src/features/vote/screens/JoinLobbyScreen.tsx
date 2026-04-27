@@ -7,13 +7,13 @@ import { getSocket } from "../../../socket/socket";
 import { ConnectRoomDto } from "../../../socket/types";
 import { showError } from "../../../shared/utils/toast.service";
 import { useNavigation } from "@react-navigation/native";
-import { VoteNavigation } from "../../../navigation";
+import { AppNavigation, VoteNavigation } from "../../../navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux";
 
 export function JoinLobbyScreen() {
   const [roomId, setRoomId] = useState("");
-  const navigation = useNavigation<VoteNavigation>();
+  const appNavigation = useNavigation<AppNavigation>();
   const user = useSelector((state: RootState) => state.auth.user);
 
   const buttonDisabled = () => {
@@ -23,8 +23,7 @@ export function JoinLobbyScreen() {
   const handleJoinRoom = () => {
     if (!roomId || !user) return;
 
-    getSocket()?.emit(
-      "checkRoom",
+    getSocket()?.emit("checkRoom",
       { roomId: Number(roomId) },
       (data: ConnectRoomDto) => {
         if (data.ok) {
@@ -40,7 +39,7 @@ export function JoinLobbyScreen() {
 
   useEffect(() => {
     getSocket()?.on("joinedRoom", ({ roomId, bankId }) => {
-      navigation.replace("Lobby", { roomId: roomId, bankId: bankId });
+      appNavigation.replace("Lobby", { roomId: roomId, bankId: bankId })
     });
 
     getSocket()?.on("joinError", (err) => {
@@ -89,7 +88,7 @@ export function JoinLobbyScreen() {
 
           <PrimaryButton
             icon={<UserRoundPlus size={18} color="white" />}
-            title="Join vote"
+            title="Join room"
             disabled={buttonDisabled()}
             onPress={handleJoinRoom}
           />

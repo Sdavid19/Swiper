@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppNavigation, VoteStackParamList } from "../../../navigation";
+import { AppNavigation, AppStackParamList, VoteStackParamList } from "../../../navigation";
 import { StyleSheet, Text, View } from "react-native";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { getSocket } from "../../../socket/socket";
@@ -14,17 +14,20 @@ import { LeaveRoomButton } from "@/src/shared/components/LeaveRoomButton";
 import { RoomCode } from "../components/lobby/RoomCode";
 import { Lobby } from "../components/lobby/Lobby";
 
-type LobbySreenProps = NativeStackScreenProps<VoteStackParamList, "Lobby">;
+type LobbySreenProps = NativeStackScreenProps<AppStackParamList, "Lobby">;
 
 export function LobbyScreen({ route }: LobbySreenProps) {
   const roomId = route.params.roomId;
   const bankId = route.params.bankId;
 
   const [users, setUsers] = useState<LobbyUserDto[]>([]);
+
   const [ready, setReady] = useState<boolean>(false);
   const [allReady, setAllReady] = useState<boolean>(false);
+
   const [countDown, setCountDown] = useState<number>(5);
   const [bank, setBank] = useState<BankDto>();
+
   const navigation = useNavigation<AppNavigation>();
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -58,7 +61,6 @@ export function LobbyScreen({ route }: LobbySreenProps) {
       .then((b) => setBank(b))
       .catch((err) => console.log(err));
 
-
     const handleRoomUsers = (usersList: LobbyUserDto[]) => {
       setUsers(usersList);
     };
@@ -79,7 +81,7 @@ export function LobbyScreen({ route }: LobbySreenProps) {
     const handleLeftRoom = ({
       userId: leftUserId,
       roomId: leftRoomId,
-    }: {userId: number, roomId: number}) => {
+    }: { userId: number, roomId: number }) => {
       if (leftRoomId === roomId && leftUserId !== user?.id) {
         setUsers((prev) => prev.filter((u) => u.id !== leftUserId));
       }
@@ -139,7 +141,7 @@ export function LobbyScreen({ route }: LobbySreenProps) {
         }
         style={{
           backgroundColor: ready ? "#22c55e" : "#b8b8b8",
-          marginTop: 20,
+          marginBottom: 30,
         }}
       />
     </View>

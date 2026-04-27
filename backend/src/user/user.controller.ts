@@ -3,7 +3,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { UserService } from './services/user.service';
 import { JwtPayload } from '../auth/interfaces';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
+import type { Express } from 'express';
 import { ApiBearerAuth, ApiOkResponse, ApiTags, } from '@nestjs/swagger';
 import { UserDto, UserImageDto, UpdateUserDto } from './dto';
 import { imageUploadConfig } from '../shared/image/image-upload.config';

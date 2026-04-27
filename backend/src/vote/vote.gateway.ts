@@ -1,29 +1,20 @@
-import {
-  ConnectedSocket,
-  MessageBody,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets';
+import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { RoomService } from './services/room.service';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/services/user.service';
+import type { CheckRoomMessageDto, CreateRoomMessageDto, JoinRoomMessageDto, LeaveRoomMessageDto, StopCountdownMessageDto, ToggleReadyMessageDto, VoteMessageDto } from './types';
 
 @WebSocketGateway({ cors: { origin: '*' } })
-export class VoteGateway
-  implements
-  OnGatewayConnection,
-  OnGatewayDisconnect {
+export class VoteGateway implements OnGatewayConnection, OnGatewayDisconnect {
+
   @WebSocketServer()
   server: Server;
 
   constructor(
     private roomService: RoomService,
     private userService: UserService,
-    private authService: AuthService,
+    private authService: AuthService
   ) { }
 
   async handleConnection(client: Socket) {
@@ -36,7 +27,6 @@ export class VoteGateway
       }
 
       const user = await this.authService.verifyToken(token);
-
       client.data.userId = user.id;
     } catch {
       client.disconnect();
@@ -54,7 +44,7 @@ export class VoteGateway
   }
 
   @SubscribeMessage('createRoom')
-  async createRoom(@MessageBody() { bankId }: { bankId: number }, @ConnectedSocket() client: Socket,) {
+  async createRoom(@MessageBody() { bankId }: CreateRoomMessageDto, @ConnectedSocket() client: Socket) {
     const userId = client.data.userId;
     const roomId = await this.roomService.createRoom(bankId, userId);
 
@@ -68,7 +58,7 @@ export class VoteGateway
   }
 
   @SubscribeMessage('joinRoom')
-  async joinRoom(@MessageBody() { roomId }: { roomId: number }, @ConnectedSocket() client: Socket,) {
+  async joinRoom(@MessageBody() { roomId }: JoinRoomMessageDto, @ConnectedSocket() client: Socket,) {
     const userId = client.data.userId;
     const room = this.roomService.getRoom(roomId);
 
@@ -94,14 +84,7 @@ export class VoteGateway
 
   @SubscribeMessage('toggleReady')
   async toggleReady(
-    @MessageBody()
-    {
-      roomId,
-      ready,
-    }: {
-      roomId: number;
-      ready: boolean;
-    },
+    @MessageBody() { roomId, ready }: ToggleReadyMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
     const userId = client.data.userId;
@@ -127,16 +110,7 @@ export class VoteGateway
 
   @SubscribeMessage('vote')
   async vote(
-    @MessageBody()
-    {
-      roomId,
-      questionId,
-      answer,
-    }: {
-      roomId: number;
-      questionId: number;
-      answer: boolean;
-    },
+    @MessageBody() { roomId, questionId, answer }: VoteMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
     const userId = client.data.userId;
@@ -150,7 +124,7 @@ export class VoteGateway
 
   @SubscribeMessage('leaveRoom')
   async leaveRoom(
-    @MessageBody() { roomId }: { roomId: number },
+    @MessageBody() { roomId }: LeaveRoomMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
     const userId = client.data.userId;
@@ -182,17 +156,13 @@ export class VoteGateway
   }
 
   @SubscribeMessage('checkRoom')
-  checkRoom(
-    @MessageBody() { roomId }: { roomId: number },
-  ) {
+  checkRoom(@MessageBody() { roomId }: CheckRoomMessageDto) {
     const room = this.roomService.getRoom(roomId);
     return { ok: !!room, roomId };
   }
 
   @SubscribeMessage('stopCountdown')
-  stopCountdown(
-    @MessageBody() { roomId }: { roomId: number },
-  ) {
+  stopCountdown(@MessageBody() { roomId }: StopCountdownMessageDto) {
     const room = this.roomService.getRoom(roomId);
     if (!room) return;
 

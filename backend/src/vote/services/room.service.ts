@@ -66,20 +66,12 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    room.users = room.users.filter(
-      (u) => u.id !== userId,
-    );
+    room.users = room.users.filter((u) => u.id !== userId);
 
     delete room.votes[userId];
 
-    if (this.isEveryoneVoted(roomId)) {
-      room.endDate = new Date();
-      this.saveVotes(roomId);
-    }
-
     if (room.users.length === 0) {
-      if (room.countdown)
-        clearTimeout(room.countdown);
+      if (room.countdown) clearTimeout(room.countdown);
       this.rooms.delete(roomId);
     }
   }
@@ -89,17 +81,11 @@ export class RoomService {
     return room ? room.users : [];
   }
 
-  setUserReady(
-    roomId: number,
-    userId: number,
-    ready: boolean,
-  ) {
+  setUserReady(roomId: number, userId: number, ready: boolean) {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    const user = room.users.find(
-      (u) => u.id === userId,
-    );
+    const user = room.users.find((u) => u.id === userId);
     if (user) user.ready = ready;
   }
 
@@ -107,16 +93,10 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return false;
 
-    return (
-      room.users.length > 0 &&
-      room.users.every((u) => u.ready)
-    );
+    return room.users.length > 0 && room.users.every((u) => u.ready);
   }
 
-  setCountdown(
-    roomId: number,
-    countdown: NodeJS.Timeout,
-  ) {
+  setCountdown(roomId: number, countdown: NodeJS.Timeout) {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
@@ -133,12 +113,7 @@ export class RoomService {
     }
   }
 
-  vote(
-    roomId: number,
-    userId: number,
-    questionId: number,
-    answer: boolean,
-  ) {
+  async vote(roomId: number, userId: number, questionId: number, answer: boolean) {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
@@ -152,7 +127,7 @@ export class RoomService {
       const room = this.rooms.get(roomId);
       if (!room) return;
       room.endDate = new Date();
-      return this.saveVotes(roomId);
+      return await this.saveVotes(roomId);
     }
     return null;
   }
@@ -171,7 +146,7 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    const asnwers = Object.entries(room.votes,).flatMap(([userId, questions]) => {
+    const asnwers = Object.entries(room.votes).flatMap(([userId, questions]) => {
       return Object.entries(questions).map(
         ([questionId, answer]) =>
           ({
@@ -182,7 +157,7 @@ export class RoomService {
       );
     });
 
-    return this.voteService.createVoteData({
+    return await this.voteService.createVoteData({
       answers: asnwers,
       bankId: room.bankId,
       creatorId: room.creatorId,

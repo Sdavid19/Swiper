@@ -1,11 +1,10 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Badge } from "../../../../shared/components/Badge";
-import { BankDto, BankListItemDto } from "../../../../shared/types/generated";
+import { BankListItemDto } from "../../../../shared/types/generated";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigation, EditBankNavigation } from "../../../../navigation";
-import { getImage } from "../../../../api/services/image.service";
-import { CardyButton } from "../../../../shared/components/CardButton";
-import { Edit, Eye, Pencil, Play } from "lucide-react-native";
+import { getImage } from "../../../../shared/utils/image.service";
+import { Eye, Pencil, Play } from "lucide-react-native";
 import { formatDate } from "@/src/shared/utils/date.service";
 import { PrimaryButton } from "@/src/shared/components";
 import { shortenString } from "@/src/shared/utils/text.service";

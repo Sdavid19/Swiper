@@ -9,6 +9,7 @@ import { createQuestion, updateQuestion } from "../../services/question.service"
 import { useDispatch } from "react-redux";
 import { addQuestionAction, updateQuestionAction } from "../../../../redux/questionSlice";
 import { EditQuestionScreenMode } from "../../screens/EditQuestionScreen";
+import { Plus, Save } from "lucide-react-native";
 
 interface EditQuestionFormProps {
     screenMode: EditQuestionScreenMode,
@@ -28,6 +29,10 @@ export function EditQuestionForm({ screenMode, bankId, question, setQuestion }: 
         if (!question) return;
         setText(question.text);
         setDescription(question.description ?? undefined)
+    }
+
+    const buttonDisabled = () => {
+        return !text || (text == question?.text && description == question.description)
     }
 
     const saveQuestion = async () => {
@@ -82,10 +87,11 @@ export function EditQuestionForm({ screenMode, bankId, question, setQuestion }: 
 
             {screenMode != "View" && (
                 <PrimaryButton
+                    icon={screenMode === "Edit" ? <Save color="white" size={18} /> : <Plus color="white" size={18} />}
                     title={screenMode === "Edit" ? "Save Changes" : "Create Question "}
                     style={{ width: "100%", marginTop: 10 }}
                     onPress={saveQuestion}
-                    disabled={!text}
+                    disabled={buttonDisabled()}
                 />
             )}
 

@@ -21,6 +21,19 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  test_database:
+    image: postgres:16
+    container_name: test_database
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: swiper_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
   adminer:
     image: adminer
     container_name: adminer

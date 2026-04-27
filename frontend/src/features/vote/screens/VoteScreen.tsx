@@ -1,16 +1,17 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { View, StyleSheet, Image, Text, TouchableOpacity, Alert } from "react-native";
+import { View, StyleSheet, Image, Text } from "react-native";
 import { QuestionDto } from "../../../shared/types/generated";
 import { getQuestionsByBank } from "../../question/services/question.service";
-import { SwipeCard } from "../components/swipeCard/SwipeCard"; 
+import { SwipeCard } from "../components/swipeCard/SwipeCard";
 import { getSocket } from "@/src/socket/socket";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/redux";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { AppNavigation, AppStackParamList } from "@/src/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Check, LogOut, X } from "lucide-react-native";
 import { LeaveRoomButton } from "@/src/shared/components/LeaveRoomButton";
+import { SwipeButton } from "../components/swipeCard/SwipeButton";
+import { showError } from "@/src/shared/utils/toast.service";
 
 type VoteScreenProps = NativeStackScreenProps<AppStackParamList, "Vote">;
 
@@ -31,6 +32,7 @@ export function VoteScreen({ route }: VoteScreenProps) {
     if (!user) return;
 
     getSocket()?.emit("leaveRoom", { roomId });
+
     navigation.replace("Tabs", {
       screen: "VoteStack",
       params: { screen: "JoinLobby" },
@@ -78,16 +80,18 @@ export function VoteScreen({ route }: VoteScreenProps) {
     };
 
     getQuestionsByBank(bankId).then((q) => {
+      if (q.length == 0) {
+        navigation.replace("Tabs", { screen: 'Home' })
+        showError("This vote is empty. Returning home...");
+      }
       q.forEach((item) => {
-        if (item.imageUrl) {
-          Image.prefetch(item.imageUrl);
-        }
+        if (item.imageUrl) Image.prefetch(item.imageUrl);
       });
-
       setQuestions(q);
+    }).catch((err) => {
+      navigation.replace("Tabs", { screen: 'Home' })
+      showError("Error during vote. Returning home...");
     });
-
-
 
     getSocket()?.on("gameEnded", handleGameEnded);
 
@@ -115,6 +119,12 @@ export function VoteScreen({ route }: VoteScreenProps) {
 
     setIsSwiping(false);
   };
+
+  const handleSwipeButtonPressed = (side: "left" | "right") => {
+    if (over || isSwiping) return;
+    setIsSwiping(true);
+    setTrigger(side);
+  }
 
   useEffect(() => {
     if (!trigger) return;
@@ -149,29 +159,8 @@ export function VoteScreen({ route }: VoteScreenProps) {
       )}
 
       <View style={styles.buttons}>
-        <TouchableOpacity
-          disabled={over}
-          style={styles.button}
-          onPress={() => {
-            if (over || isSwiping) return;
-            setIsSwiping(true);
-            setTrigger("left");
-          }}
-        >
-          <X size={35} color="red" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          disabled={over}
-          style={styles.button}
-          onPress={() => {
-            if (over || isSwiping) return;
-            setIsSwiping(true);
-            setTrigger("right");
-          }}
-        >
-          <Check size={35} color="green" />
-        </TouchableOpacity>
+        <SwipeButton side="left" over={over} onPress={() => handleSwipeButtonPressed("left")} />
+        <SwipeButton side="right" over={over} onPress={() => handleSwipeButtonPressed("right")} />
       </View>
     </View>
   );
@@ -190,20 +179,5 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-evenly",
-  },
-  button: {
-    width: 80,
-    height: 80,
-    backgroundColor: "white",
-    borderRadius: 100,
-    justifyContent: "center",
-    alignItems: "center",
-
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-
-    elevation: 5,
-  },
+  }
 });

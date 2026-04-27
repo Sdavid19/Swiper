@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Badge } from "../../../../shared/components/Badge";
 import { CategoryDto } from "../../../../shared/types/generated";
-import { getImage } from "../../../../api/services/image.service";
+import { getImage } from "../../../../shared/utils/image.service";
 import { shortenString } from "../../../../shared/utils/text.service";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigation } from "../../../../navigation";

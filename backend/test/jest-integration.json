@@ -1,0 +1,15 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "..",
+  "testEnvironment": "node",
+  "testRegex": ".integration-spec.ts$",
+  "setupFiles": ["<rootDir>/test/helpers/load-env.ts"],
+  "transform": {
+    "^.+\\.(t|j)s$": [
+      "ts-jest",
+      {
+        "tsconfig": "tsconfig.json"
+      }
+    ]
+  }
+}

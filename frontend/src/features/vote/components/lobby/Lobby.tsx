@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { UserDto } from "../../../../shared/types/generated";
-import { getImage } from "../../../../api/services/image.service";
+import { getImage } from "../../../../shared/utils/image.service";
 import { Check, Copy, User } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import { showInfo, showSuccess } from "../../../../shared/utils/toast.service";
