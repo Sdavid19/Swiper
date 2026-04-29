@@ -1,9 +1,6 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import { UserDto } from "../../../../shared/types/generated";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { getImage } from "../../../../shared/utils/image.service";
-import { Check, Copy, User } from "lucide-react-native";
-import * as Clipboard from "expo-clipboard";
-import { showInfo, showSuccess } from "../../../../shared/utils/toast.service";
+import { User } from "lucide-react-native";
 import { LobbyUserDto } from "../../../../shared/types/lobby-user.dto";
 import { StatusBadge } from "./StatusBadge";
 

@@ -13,13 +13,13 @@ export function PickerSelect({ label, errorMessages, disabled, ...props }: Label
 
             <View style={[styles.inputContainer, {backgroundColor: !disabled ? '#fff' : 'transparent'}]}>
                 <RNPickerSelect
-                disabled={disabled}
+                    disabled={disabled}
                     {...props}
                     style={{
                         inputIOS: styles.textInput,
                         inputAndroid: styles.textInput,
                         placeholder: { color: '#999' },
-                        inputIOSContainer: { zIndex: 100 }
+                        inputIOSContainer: { zIndex: 100 },
                     }}
                     useNativeAndroidPickerStyle={false}
                 />

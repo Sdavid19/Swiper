@@ -34,8 +34,7 @@ export function EditBankForm({
   const [form, setForm] = useState<CreateBankDto>({
     title: "",
     description: "",
-    categoryId: 0,
-    public: false,
+    categoryId: 0
   });
 
   const [errors, setErrors] =
@@ -65,7 +64,6 @@ export function EditBankForm({
         title: bank.title,
         categoryId: bank.category.id,
         description: bank.description,
-        public: bank.public,
       });
     }
   };

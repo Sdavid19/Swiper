@@ -1,6 +1,6 @@
 import { QuestionBankService } from './question-bank.service';
 
-describe('QuestionBankService - mapToBankListItemDto', () => {
+describe('Map bank entity to bank list item', () => {
   let service: QuestionBankService;
 
   beforeEach(() => {

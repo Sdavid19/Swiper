@@ -82,7 +82,7 @@ describe('Auth (e2e)', () => {
             expect(resp.body.creator.id).toBe(user.id);
         });
 
-        it('should not create question bank without categpry', async () => {
+        it('should not create question bank without category', async () => {
             const res = await request(app.getHttpServer())
                 .post('/question-banks/create')
                 .set('Authorization', `Bearer ${accessToken}`)

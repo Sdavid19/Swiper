@@ -119,7 +119,7 @@ export class VoteGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     //ha véget ért a szavazás és van elmentett, akkor véget ért a szavazás
     if (savedVote) {
-      this.server.to(roomId.toString()).emit('gameEnded', { voteId: savedVote.id });
+      this.server.to(roomId.toString()).emit('voteEnded', { voteId: savedVote.id });
     }
   }
 
@@ -200,7 +200,7 @@ export class VoteGateway implements OnGatewayConnection, OnGatewayDisconnect {
         clearInterval(interval);
         this.roomService.clearCountdown(roomId);
         currentRoom.isCountdownRunning = false;
-        this.server.to(roomId.toString()).emit('gameStart', { roomId });
+        this.server.to(roomId.toString()).emit('voteStart', { roomId });
       }
     }, 1000);
 

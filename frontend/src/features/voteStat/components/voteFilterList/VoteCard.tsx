@@ -52,7 +52,7 @@ export function VoteCard({ vote }: CardProps) {
           </View>
           <View style={styles.descContainer}>
             <Text style={styles.desc}>
-              stared {formattedDate}
+              ended {formattedDate}
             </Text>
           </View>
         </View>

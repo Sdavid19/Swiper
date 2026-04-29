@@ -87,7 +87,7 @@ export function LobbyScreen({ route }: LobbySreenProps) {
       }
     };
 
-    const handleGameStart = ({ roomId }: { roomId: number }) => {
+    const handleVoteStart = ({ roomId }: { roomId: number }) => {
       navigation.navigate("Vote", {
         roomId,
         bankId: bankId,
@@ -99,7 +99,7 @@ export function LobbyScreen({ route }: LobbySreenProps) {
     getSocket()?.on("countdownTick", handleCountdownTick);
     getSocket()?.on("countdownCanceled", handleCountdownCanceled);
     getSocket()?.on("leftRoom", handleLeftRoom);
-    getSocket()?.on("gameStart", handleGameStart);
+    getSocket()?.on("voteStart", handleVoteStart);
 
     return () => {
       getSocket()?.off("roomUsers", handleRoomUsers);
@@ -107,7 +107,7 @@ export function LobbyScreen({ route }: LobbySreenProps) {
       getSocket()?.off("countdownTick", handleCountdownTick);
       getSocket()?.off("countdownCanceled", handleCountdownCanceled);
       getSocket()?.off("leftRoom", handleLeftRoom);
-      getSocket()?.off("gameStart", handleGameStart);
+      getSocket()?.off("voteStart", handleVoteStart);
     };
   }, []);
 

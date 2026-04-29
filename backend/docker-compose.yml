@@ -1,13 +1,4 @@
 services:
-  app:
-    build: .
-    container_name: app
-    ports:
-      - "3000:3000"
-    depends_on:
-      - database
-    env_file:
-      - .env
   database:
     image: postgres:16
     container_name: database
@@ -20,19 +11,11 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-
-  test_database:
-    image: postgres:16
-    container_name: test_database
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: swiper_db
-    ports:
-      - "5433:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   adminer:
     image: adminer
@@ -40,6 +23,17 @@ services:
     restart: always
     ports:
       - "8080:8080"
+
+  backend:
+    build: .
+    container_name: backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      database:
+        condition: service_healthy
+    env_file:
+      - ./.env
 
 volumes:
   db_data:

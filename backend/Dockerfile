@@ -1,60 +1,36 @@
-# =========================
-# 1. BUILD STAGE
-# =========================
+# ==================== BUILD STAGE ====================
 FROM node:20 AS builder
+
 WORKDIR /app
+
 COPY package*.json ./
-# Incremental build kikapcsolása a biztonság kedvéért a Dockerben
-RUN npm install
-COPY . .
+RUN npm ci
+
+# Prisma generate
+COPY prisma ./prisma
 RUN npx prisma generate
-# Kényszerített tiszta build
+
+# Teljes forrás másolása és build
+COPY . .
 RUN npm run build
 
-# =========================
-# 2. RUNTIME STAGE
-# =========================
-FROM node:20
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --omit=dev
-COPY prisma ./prisma
-COPY --from=builder /app/dist ./dist
-COPY prisma/data ./prisma/data
+# ==================== PRODUCTION STAGE ====================
+FROM node:20-slim
 
-# Ez a sor segít, ha a Prisma kliens hiányozna
-RUN npx prisma generate
+WORKDIR /app
+
+# Függőségek
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+
+# Fontos: a dist/src mappát másoljuk, ne csak dist-et!
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+
+# OpenSSL (Prisma miatt kellhet)
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 3000
 
-# Ez a parancs megkeresi a main.js-t bárhol is van a dist-en belül és elindítja
-# =========================
-# 1. BUILD STAGE
-# =========================
-FROM node:20 AS builder
-WORKDIR /app
-COPY package*.json ./
-# Incremental build kikapcsolása a biztonság kedvéért a Dockerben
-RUN npm install
-COPY . .
-RUN npx prisma generate
-# Kényszerített tiszta build
-RUN npm run build
-
-# =========================
-# 2. RUNTIME STAGE
-# =========================
-FROM node:20
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --omit=dev
-COPY prisma ./prisma
-COPY --from=builder /app/dist ./dist
-
-# Ez a sor segít, ha a Prisma kliens hiányozna
-RUN npx prisma generate
-
-EXPOSE 3000
-
-# Ez a parancs megkeresi a main.js-t bárhol is van a dist-en belül és elindítja
-CMD npx prisma migrate deploy && node $(find dist -name main.js | head -n 1)
+# Itt kell a helyes útvonal: dist/src/main.js
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]

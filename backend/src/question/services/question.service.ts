@@ -71,7 +71,7 @@ export class QuestionService {
   }
 
   deleteQuestion(id: number) {
-    this.prisma.question.delete({
+    return this.prisma.question.delete({
       where: { id },
     });
   }

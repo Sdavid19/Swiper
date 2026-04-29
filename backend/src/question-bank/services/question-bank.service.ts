@@ -144,6 +144,10 @@ export class QuestionBankService {
   }
 
   async delete(id: number) {
+    const  bank = await this.findById(id);
+
+    if(!bank) throw new NotFoundException(`Question bank with id ${id} not found`);
+
     return this.prisma.questionBank.delete({
       where: { id },
     });

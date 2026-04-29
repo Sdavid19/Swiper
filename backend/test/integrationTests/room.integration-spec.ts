@@ -5,7 +5,7 @@ import { RoomService } from "../../src/vote/services/room.service";
 import { resetDb } from "../helpers/db-reset";
 import { Category, QuestionBank, User } from "@prisma/client";
 
-describe('RoomService Integration', () => {
+describe('RoomService integration test', () => {
     let module: TestingModule;
     let prisma: PrismaService;
     let roomService: RoomService;
@@ -58,7 +58,7 @@ describe('RoomService Integration', () => {
         await module.close();
     });
 
-    it('should manage the full room lifecycle and save votes to DB', async () => {
+    it('should manage room correctly and save votes to DB', async () => {
         const roomId = await roomService.createRoom(bank.id, testUser1.id);
         expect(roomId).toBeDefined();
         expect(typeof roomId).toBe('number');

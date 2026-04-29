@@ -87,11 +87,11 @@ describe('QuestionBankService - filters', () => {
       expect(service.buildCategoryFilter()).toEqual({});
     });
 
-    it('should return empty object if empty array', () => {
+    it('should return empty filter object if empty array', () => {
       expect(service.buildCategoryFilter([])).toEqual({});
     });
 
-    it('should return filter when categoryIds provided', () => {
+    it('should return bank filter when categoryIds provided', () => {
       expect(service.buildCategoryFilter([1, 2, 3])).toEqual({
         categoryId: { in: [1, 2, 3] },
       });

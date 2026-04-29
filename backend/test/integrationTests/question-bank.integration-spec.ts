@@ -7,7 +7,7 @@ import { BankState } from "../../src/question-bank/dto";
 import { Category, Media, QuestionBankTemplate, User } from "@prisma/client";
 import { QuestionService } from "../../src/question/services/question.service";
 
-describe('QuestionBank Integration', () => {
+describe('QuestionBank integration test', () => {
     let module: TestingModule;
     let prisma: PrismaService;
     let bankService: QuestionBankService;

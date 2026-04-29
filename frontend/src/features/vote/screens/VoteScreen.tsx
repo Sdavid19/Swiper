@@ -46,7 +46,7 @@ export function VoteScreen({ route }: VoteScreenProps) {
   }, [navigation]);
 
   useEffect(() => {
-    const handleGameEnded = ({ voteId }: { voteId: number }) => {
+    const handleVoteEnded = ({ voteId }: { voteId: number }) => {
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -93,10 +93,10 @@ export function VoteScreen({ route }: VoteScreenProps) {
       showError("Error during vote. Returning home...");
     });
 
-    getSocket()?.on("gameEnded", handleGameEnded);
+    getSocket()?.on("voteEnded", handleVoteEnded);
 
     return () => {
-      getSocket()?.off("gameEnded", handleGameEnded);
+      getSocket()?.off("voteEnded", handleVoteEnded);
     };
   }, []);
 

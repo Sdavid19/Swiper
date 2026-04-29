@@ -5,7 +5,7 @@ import { Category, Question, QuestionBank, User, Vote } from "@prisma/client";
 import { AppModule } from "../../src/app.module";
 import { resetDb } from "../helpers/db-reset";
 
-describe('Vote Integration', () => {
+describe('Vote integration test', () => {
     let module: TestingModule;
     let prisma: PrismaService;
     let voteService: VoteService;
@@ -83,7 +83,7 @@ describe('Vote Integration', () => {
 
         });
 
-        it('should return list of votes user participated inonly', async () => {
+        it('should return list of votes user participated on only', async () => {
             const result = await voteService.findAllVotesUserParticipatedIn(testUser2.id, undefined, undefined, 1, 10, []);
 
             expect(result).toBeDefined();

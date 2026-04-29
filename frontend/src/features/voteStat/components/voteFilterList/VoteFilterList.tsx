@@ -12,18 +12,23 @@ import { CategoryFilterModal } from "@/src/shared/components/FilterCategoryModal
 export function VoteFilterList() {
   const requestId = useRef(0);
 
+  //kereső mező
   const [textFilter, setTextFilter] = useState("");
   const [debouncedFilter, setDebouncedFilter] = useState("");
+
+   //kiválasztott kategóriák
   const [selected, setSelected] = useState<number[]>([]);
 
+  ///dátummező
   const [tempDate, setTempDate] = useState<Date | null>(null);
   const [appliedDate, setAppliedDate] = useState<Date | null>(null);
 
+  ///paginációs adatok
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
-
+  //modalok láthatósága
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [dateModalVisible, setDateModalVisible] = useState(false);
 
@@ -123,6 +128,9 @@ export function VoteFilterList() {
           </View>
         }
       />
+
+      {/* A dátum választó teljesne máshogy működik Android és IOS rendszeren
+        ezért operációs rendszertől függően jelenik meg a filter.*/}
 
       <CategoryFilterModal
         selected={selected}
