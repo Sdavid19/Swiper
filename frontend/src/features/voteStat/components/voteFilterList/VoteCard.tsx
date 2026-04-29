@@ -7,6 +7,7 @@ import { Badge } from "@/src/shared/components/Badge";
 import { VoteStatNavigation } from "@/src/navigation";
 import { CardyButton } from "@/src/shared/components/Buttons/CardButton";
 import { ChartColumnDecreasing, Eye } from "lucide-react-native";
+import { formatDate } from "@/src/shared/utils/date.service";
 
 type CardProps = {
   vote: VoteDto;
@@ -20,14 +21,6 @@ export function VoteCard({ vote }: CardProps) {
   };
 
   const date = new Date(vote.startsAt);
-
-  const formattedDate = date.toLocaleString("hu-HU", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 
   return (
     <View key={vote.id} style={styles.container}>
@@ -52,7 +45,7 @@ export function VoteCard({ vote }: CardProps) {
           </View>
           <View style={styles.descContainer}>
             <Text style={styles.desc}>
-              ended {formattedDate}
+              started  {formatDate(date)}
             </Text>
           </View>
         </View>
