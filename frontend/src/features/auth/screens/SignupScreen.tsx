@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Platform, Image } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import { signup } from "../services/auth.service";
 import { SignupDto } from "../../../shared/types/generated";
 import { NavigateLink } from "../components/NavigateLink";

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma';
-import { VoteFilterDto, CreateAnswerDto, AnswerTopStatsDto, AnswerStatDto, VoteDetailsDto, VoteDto, CreateVoteDataDto } from '../dto';
+import { CreateAnswerDto, AnswerTopStatsDto, AnswerStatDto, VoteDetailsDto, CreateVoteDataDto } from '../dto';
 import { Prisma } from '@prisma/client';
 import { UserService } from '../../user/services/user.service';
 import { VoteListDto } from '../dto/vote-list.dto';

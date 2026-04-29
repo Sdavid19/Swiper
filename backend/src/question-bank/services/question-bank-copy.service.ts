@@ -16,10 +16,9 @@ export class QuestionBankCopyService {
 
     if (!bank) throw new NotFoundException(`Questionbank with id ${id} not found!`,);
 
-    const questions = await this.questionsService.getAllQuestionsByBankId(bank.id,);
+    const questions = await this.questionsService.findAllQuestionsByBankId(bank.id,);
 
     const createdBank = await this.bankService.create({
-      public: bank.public,
       title: `${bank.title} copy`,
       imageUrl: bank.imageUrl,
       categoryId: bank.category.id,

@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppNavigation, AppStackParamList, VoteStackParamList } from "../../../navigation";
 import { StyleSheet, Text, View } from "react-native";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { getSocket } from "../../../socket/socket";
+import { getSocket } from "@/src/shared/socket/socket"; 
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux";
@@ -10,7 +10,7 @@ import { PrimaryButton } from "../../../shared/components";
 import { LobbyUserDto } from "../../../shared/types/lobby-user.dto";
 import { BankDto } from "../../../shared/types/generated";
 import { getBankById } from "../../bank/services/bank.service";
-import { LeaveRoomButton } from "@/src/shared/components/LeaveRoomButton";
+import { LeaveRoomButton } from "@/src/shared/components/Buttons/LeaveRoomButton";
 import { RoomCode } from "../components/lobby/RoomCode";
 import { Lobby } from "../components/lobby/Lobby";
 

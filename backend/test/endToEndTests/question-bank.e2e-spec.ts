@@ -60,8 +60,7 @@ describe('Auth (e2e)', () => {
             title: 'title',
             description: 'desc',
             categoryId: +category.id,
-            imageUrl: '',
-            public: false
+            imageUrl: ''
         } as CreateBankDto;
 
     });

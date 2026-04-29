@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { store } from "../redux/store";
-import { logoutAction } from "../redux/authSlice";
-import { showError } from "../shared/utils/toast.service";
-import { ErrorResponse } from "../shared/types";
+import { store } from "../../redux/store";
+import { logoutAction } from "../../redux/authSlice";
+import { showError } from "../utils/toast.service";
+import { ErrorResponse } from "../types";
 
 export const API_URL = process.env.EXPO_PUBLIC_API_URL;
 

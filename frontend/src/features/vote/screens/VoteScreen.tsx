@@ -3,13 +3,13 @@ import { View, StyleSheet, Image, Text } from "react-native";
 import { QuestionDto } from "../../../shared/types/generated";
 import { getQuestionsByBank } from "../../question/services/question.service";
 import { SwipeCard } from "../components/swipeCard/SwipeCard";
-import { getSocket } from "@/src/socket/socket";
+import { getSocket } from "@/src/shared/socket/socket"; 
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/redux";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { AppNavigation, AppStackParamList } from "@/src/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { LeaveRoomButton } from "@/src/shared/components/LeaveRoomButton";
+import { LeaveRoomButton } from "@/src/shared/components/Buttons/LeaveRoomButton"; 
 import { SwipeButton } from "../components/swipeCard/SwipeButton";
 import { showError } from "@/src/shared/utils/toast.service";
 

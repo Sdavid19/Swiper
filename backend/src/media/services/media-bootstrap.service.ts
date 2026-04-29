@@ -19,20 +19,20 @@ export class MediaBootstrapService {
 
     if (platformCount === 0) {
       if (this.hasApiKey()) {
-        console.log('fetching platforms...');
+        console.log('fetching platforms');
         await this.importer.fetchAndSavePlatforms();
       } else {
-        console.log('No API key, loading platforms from files...');
+        console.log('No API key, loading platforms from files');
         await this.importer.savePlatformsFromFile();
       }
     }
 
     if (mediaCount === 0) {
       if (this.hasApiKey()) {
-        console.log('fetching media...');
+        console.log('fetching media');
         await this.importer.fetchAndSaveMedia();
       } else {
-        console.log('No API key, loading media from files...');
+        console.log('No API key, loading media from files');
         await this.importer.saveMediaFromFile();
         await this.importer.saveConnectionsFromFile();
       }

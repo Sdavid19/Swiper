@@ -123,6 +123,7 @@ export class RoomService {
 
     room.votes[userId][questionId] = answer;
 
+    //ha az utolsó szavazat is meg volt, el lehet menteni
     if (this.isEveryoneVoted(roomId)) {
       const room = this.rooms.get(roomId);
       if (!room) return;

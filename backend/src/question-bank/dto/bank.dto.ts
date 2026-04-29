@@ -13,12 +13,6 @@ export class BankDto {
   description: string;
 
   @ApiProperty()
-  public: boolean;
-
-  @ApiProperty()
-  usageCount: number;
-
-  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

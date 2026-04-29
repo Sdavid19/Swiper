@@ -2,14 +2,14 @@ import { StyleSheet, Text, View } from "react-native";
 import RNPickerSelect, { PickerSelectProps } from 'react-native-picker-select';
 
 interface LabeledPickerSelectProps extends PickerSelectProps {
-    title?: string;
+    label?: string;
     errorMessages?: string[];
 }
 
-export function PickerSelect({ title, errorMessages, disabled, ...props }: LabeledPickerSelectProps) {
+export function PickerSelect({ label, errorMessages, disabled, ...props }: LabeledPickerSelectProps) {
     return (
         <View style={{ marginBottom: 20, width: '55%' }}>
-            {title && <Text style={styles.label}>{title}</Text>}
+            {label && <Text style={styles.label}>{label}</Text>}
 
             <View style={[styles.inputContainer, {backgroundColor: !disabled ? '#fff' : 'transparent'}]}>
                 <RNPickerSelect

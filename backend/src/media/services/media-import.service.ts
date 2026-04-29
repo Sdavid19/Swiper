@@ -50,7 +50,7 @@ export class MediaImportService {
       return;
     }
 
-    console.log(`Fetched ${media.length} media. Saving...`);
+    console.log(`Fetched ${media.length} media.`);
     await this.saveMediaFromApi(media);
     const mediaMap = await this.buildMediaMap(media);
     await this.saveConnectionsFromApi(media, mediaMap);

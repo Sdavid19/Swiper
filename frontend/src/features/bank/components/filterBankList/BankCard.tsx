@@ -6,7 +6,7 @@ import { shortenString } from "../../../../shared/utils/text.service";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigation } from "../../../../navigation";
 import { Play, Plus } from "lucide-react-native";
-import { CardyButton } from "../../../../shared/components/CardButton";
+import { CardyButton } from "../../../../shared/components/Buttons/CardButton";
 
 type BankBase = {
   id: number;

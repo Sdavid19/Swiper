@@ -7,7 +7,7 @@ import { RootState } from "@/src/redux";
 import { getAllBanksWithFilter } from "../../services/bank.service";
 import { setBanks, appendBanks, setFilterAction } from "@/src/redux/bankSlice";
 import { BankListItemDto } from "@/src/shared/types/generated";
-import { SearchInputField } from "@/src/shared/components/SearchInputField";
+import { SearchInputField } from "@/src/shared/components/Form/SearchInputField";
 import { CategoryFilterModal } from "@/src/shared/components/FilterCategoryModal/CategoryFilterModal";
 import { StateFilterButton } from "../StateFilterButton";
 

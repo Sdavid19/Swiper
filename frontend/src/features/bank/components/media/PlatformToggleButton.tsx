@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { SvgFromUrl } from "../../../../shared/components/SvgFromUrl";
+import { SvgFromUrl } from "../../../../shared/components/Image/SvgFromUrl";
 import { PlatformDto } from "../../../../shared/types/generated";
 
 type PlatformToggleButtonProps = {

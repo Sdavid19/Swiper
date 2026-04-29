@@ -5,7 +5,7 @@ import { getImage } from "@/src/shared/utils/image.service";
 import { shortenString } from "@/src/shared/utils/text.service";
 import { Badge } from "@/src/shared/components/Badge";
 import { VoteStatNavigation } from "@/src/navigation";
-import { CardyButton } from "@/src/shared/components/CardButton";
+import { CardyButton } from "@/src/shared/components/Buttons/CardButton";
 import { ChartColumnDecreasing, Eye } from "lucide-react-native";
 
 type CardProps = {

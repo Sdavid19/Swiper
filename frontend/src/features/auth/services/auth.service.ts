@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import api from "../../../api/client";
+import api from "../../../shared/api/client";
 import {
   SigninDto,
   SigninResponseDto,
@@ -8,7 +8,8 @@ import {
 } from "../../../shared/types/generated";
 import { store } from "../../../redux/store";
 import { setCredentials, logoutAction } from "../../../redux/authSlice";
-import { connectSocket, disconnectSocket } from "@/src/socket/socket";
+import { connectSocket, disconnectSocket } from "@/src/shared/socket/socket";
+
 
 export const login = async (data: SigninDto): Promise<void> => {
   const response = await api.post<SigninResponseDto>("/auth/login", data);

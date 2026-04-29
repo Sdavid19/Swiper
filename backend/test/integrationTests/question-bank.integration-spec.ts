@@ -130,7 +130,7 @@ describe('QuestionBank Integration', () => {
                 "MOVIE",
             );
 
-            const questions = await questionService.getAllQuestionsByBankId(result.id);
+            const questions = await questionService.findAllQuestionsByBankId(result.id);
 
             expect(result).toBeDefined();
             expect(result.title).toBe(template.title);

@@ -1,4 +1,4 @@
-import api from "../../../api/client";
+import api from "../../../shared/api/client";
 import { CategoryDto } from "../../../shared/types/generated";
 
 export const getCategories = async (): Promise<CategoryDto[]> => {

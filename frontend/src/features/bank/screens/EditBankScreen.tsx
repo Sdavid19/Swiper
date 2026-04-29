@@ -33,8 +33,7 @@ export function EditBankScreen({ route }: EditBankProps) {
   const dispatch = useDispatch();
 
   const user = useSelector((state: RootState) => state.auth.user);
-  const navigation =
-    useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<EditBankStackParamList>>();
 
   const [bank, setBank] = useState<BankListItemDto>();
   const [categories, setCategories] = useState<CategoryDto[]>([]);

@@ -6,6 +6,7 @@ export class SignupDto {
   @IsEmail({}, { message: ValidationMessages.emailInvalid })
   @IsNotEmpty()
   @ApiProperty()
+  @Length(3, 255, {message: ValidationMessages.emailLengthInvalid})
   email: string;
 
   @IsString()
@@ -16,8 +17,6 @@ export class SignupDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  @Length(3, 20, {
-    message: ValidationMessages.usernameLengthInvalid,
-  })
+  @Length(3, 20, {message: ValidationMessages.usernameLengthInvalid,})
   name: string;
 }

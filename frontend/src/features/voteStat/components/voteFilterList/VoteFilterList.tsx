@@ -6,7 +6,7 @@ import { DateFilterModal } from "./DateFilterModal/DateFilterModal";
 import { DatePicker } from "./DateFilterModal/DatePicker";
 import { VoteCard } from "./VoteCard";
 import { getVotesByUserParticipatedIn } from "../../../vote/services/vote.service";
-import { SearchInputField } from "@/src/shared/components/SearchInputField";
+import { SearchInputField } from "@/src/shared/components/Form/SearchInputField";
 import { CategoryFilterModal } from "@/src/shared/components/FilterCategoryModal/CategoryFilterModal";
 
 export function VoteFilterList() {

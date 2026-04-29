@@ -52,7 +52,7 @@ export class QuestionController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   deleteQuestion(@Param('id') id: string) {
-    return this.questionService.deleteQuestion(+id,);
+    this.questionService.deleteQuestion(+id);
   }
 
   @Post('upload/:id')
@@ -61,7 +61,7 @@ export class QuestionController {
     FileInterceptor('file', imageUploadConfig),
   )
   @UseGuards(AuthGuard)
-  uploadFile(
+  uploadImage(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {

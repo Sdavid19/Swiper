@@ -59,7 +59,7 @@ export function EditBankForm({
     value: c.id,
   }));
 
-  const setUpDataForUpdate = () => {
+  const setupFormForUpdate = () => {
     if (bank) {
       setForm({
         title: bank.title,
@@ -106,7 +106,7 @@ export function EditBankForm({
   };
 
   useEffect(() => {
-    setUpDataForUpdate();
+    setupFormForUpdate();
   }, [bank]);
 
   return (
@@ -122,7 +122,7 @@ export function EditBankForm({
 
       <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <PickerSelect
-          title={screenMode == "View" ? "Category" : "Category*"}
+          label={screenMode == "View" ? "Category" : "Category*"}
           value={form.categoryId}
           onValueChange={(value) =>
             isEditable && setField("categoryId", value ? Number(value) : 0)

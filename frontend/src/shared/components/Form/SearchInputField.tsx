@@ -1,5 +1,5 @@
 import { Search } from "lucide-react-native";
-import { InputField } from "./Form/InputField";
+import { InputField } from "./InputField";
 import { useEffect } from "react";
 
 type SearchInputFieldProps = {

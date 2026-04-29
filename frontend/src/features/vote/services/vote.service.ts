@@ -1,4 +1,4 @@
-import api from "@/src/api/client";
+import api from "@/src/shared/api/client";
 import { AnswerTopStatsDto, VoteFilterDto, VoteListDto } from "@/src/shared/types/generated";
 
 export const getTopVoteStats = async (id: number): Promise<AnswerTopStatsDto> => {

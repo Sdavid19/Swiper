@@ -19,7 +19,7 @@ export class SeedService implements OnModuleInit {
       return;
     }
 
-    console.log('Empty database detected, seeding...');
+    console.log('Empty database, seeding started.');
 
     await this.seed();
 

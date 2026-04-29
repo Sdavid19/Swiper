@@ -117,6 +117,7 @@ export class VoteGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const savedVote = await this.roomService.vote(roomId, userId, questionId, answer);
 
+    //ha véget ért a szavazás és van elmentett, akkor véget ért a szavazás
     if (savedVote) {
       this.server.to(roomId.toString()).emit('gameEnded', { voteId: savedVote.id });
     }
@@ -143,12 +144,11 @@ export class VoteGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const remainingUsers = this.roomService.getUsers(roomId);
 
     if (remainingUsers.length === 0) {
+      //ha üres a szoba, akkor törlésre kerül
       this.roomService.deleteRoom(roomId);
-      console.log(`Room ${roomId} closed because it's empty.`);
+      console.log(`Room ${roomId} closed.`);
     } else {
-      if (
-        !this.roomService.isEveryoneReady(roomId)
-      ) {
+      if (!this.roomService.isEveryoneReady(roomId)) {
         this.roomService.clearCountdown(roomId);
         this.server.to(roomId.toString()).emit('countdownCanceled');
       }
@@ -192,6 +192,7 @@ export class VoteGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       countdown--;
 
+      //idő eltelésének jelzése
       if (countdown > 0) {
         this.server.to(roomId.toString()).emit('countdownTick', countdown);
       }

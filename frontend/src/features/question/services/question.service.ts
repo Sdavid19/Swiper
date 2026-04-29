@@ -1,4 +1,4 @@
-import api from "../../../api/client";
+import api from "../../../shared/api/client";
 import { CreateQuestionDto, QuestionDto, QuestionImageDto, UpdateQuestionDto } from "../../../shared/types/generated";
 
 export const getQuestionsByBank = async (bankId: number): Promise<QuestionDto[]> => {
@@ -21,7 +21,7 @@ export const updateQuestion = async (id: number, dto: UpdateQuestionDto): Promis
   return response.data;
 }
 
-export const deleteQuestion = async (id: number): Promise<QuestionDto[]> => {
+export const deleteQuestion = async (id: number): Promise<void> => {
   const response = await api.delete(`/questions/${id}`);
   return response.data;
 }

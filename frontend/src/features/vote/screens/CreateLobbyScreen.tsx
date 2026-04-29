@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View, } from "react-native";
 import { PrimaryButton } from "../../../shared/components";
 import { useEffect, useState } from "react";
-import { getSocket } from "../../../socket/socket";
+import { getSocket } from "@/src/shared/socket/socket"; 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppNavigation, AppStackParamList } from "../../../navigation";
 import { useSelector } from "react-redux";

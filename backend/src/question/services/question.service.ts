@@ -5,9 +5,7 @@ import { QuestionBankService } from '../../question-bank/services/question-bank.
 
 @Injectable()
 export class QuestionService {
-  constructor(
-    private readonly prisma: PrismaService,
-  ) { }
+  constructor(private readonly prisma: PrismaService) { }
 
   async findById(id: number,): Promise<QuestionDto> {
     const question = await this.prisma.question.findUnique({ where: { id } });
@@ -17,7 +15,7 @@ export class QuestionService {
     return question;
   }
 
-  async findQuestionsByBank(bankId: number,): Promise<QuestionDto[]> {
+  async findQuestionsByBank(bankId: number): Promise<QuestionDto[]> {
     const bank = await this.prisma.questionBank.findUnique({
       where: { id: bankId },
     });
@@ -25,7 +23,7 @@ export class QuestionService {
     if (!bank) throw new NotFoundException(`There is no bank with id ${bankId}`);
 
     const questions = await this.prisma.question.findMany({ where: { bankId } });
-    
+
     return questions;
   }
 
@@ -41,12 +39,12 @@ export class QuestionService {
     return result;
   }
 
-  async createMany(bankId: number, dto: CreateQuestionsDto,) {
+  async createMany(bankId: number, dto: CreateQuestionsDto) {
     if (!dto.questions.length) {
       return;
     }
 
-    return this.prisma.question.createMany({
+    return await this.prisma.question.createMany({
       data: dto.questions.map((q) => ({
         bankId,
         description: q.description,
@@ -57,9 +55,9 @@ export class QuestionService {
     });
   }
 
-  async getAllQuestionsByBankId(id: number) {
+  async findAllQuestionsByBankId(bankId: number) {
     const questions = await this.prisma.question.findMany({
-      where: { bankId: id },
+      where: { bankId },
     });
 
     return questions;
@@ -73,7 +71,7 @@ export class QuestionService {
   }
 
   deleteQuestion(id: number) {
-    return this.prisma.question.delete({
+    this.prisma.question.delete({
       where: { id },
     });
   }

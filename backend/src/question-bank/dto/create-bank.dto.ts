@@ -1,12 +1,10 @@
 import { Type } from 'class-transformer';
 import {
-  IsBoolean,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   Length,
-  Validate,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ValidationMessages } from '../../shared/constants/validation-messages';
@@ -34,10 +32,4 @@ export class CreateBankDto {
   @IsOptional()
   @ApiProperty({ required: false })
   imageUrl?: string | null;
-
-  @Type(() => Boolean)
-  @IsBoolean()
-  @IsOptional()
-  @ApiProperty({ required: false })
-  public?: boolean = false;
 }

@@ -21,8 +21,6 @@ describe('QuestionBankService - mapToBankListItemDto', () => {
       createdAt: new Date(),
       updatedAt: new Date(),
       imageUrl: 'img.jpg',
-      public: true,
-      usageCount: 10,
       category: { id: 2, name: 'Cat' },
       creator: { id: 1, name: 'User' },
       _count: { votes: 3, questions: 5 },
@@ -36,8 +34,6 @@ describe('QuestionBankService - mapToBankListItemDto', () => {
       title: 'Test Bank',
       description: 'Desc',
       imageUrl: 'img.jpg',
-      public: true,
-      usageCount: 10,
       voteCount: 3,
       questionCount: 5,
     });

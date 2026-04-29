@@ -8,7 +8,7 @@ import Toast from "react-native-toast-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect } from "react";
 import { AppState } from "react-native";
-import { getSocket } from "./src/socket/socket";
+import { getSocket } from "./src/shared/socket/socket"; 
 
 
 export default function App() {
