@@ -146,7 +146,6 @@ export class VoteGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (remainingUsers.length === 0) {
       //ha üres a szoba, akkor törlésre kerül
       this.roomService.deleteRoom(roomId);
-      console.log(`Room ${roomId} closed.`);
     } else {
       if (!this.roomService.isEveryoneReady(roomId)) {
         this.roomService.clearCountdown(roomId);

@@ -43,7 +43,6 @@ export function CreateLobbyScreen({ route }: CreateLobbyScreenProps) {
   useEffect(() => {
 
     getSocket()?.on("roomCreated", ({ roomId, bankId }) => {
-      console.log("Room létrehozva:", roomId, bankId);
       navigation.reset({
         index: 0,
         routes: [
