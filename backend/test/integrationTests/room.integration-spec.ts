@@ -6,7 +6,7 @@ import { resetDb } from "../helpers/db-reset";
 import { Category, QuestionBank, User } from "@prisma/client";
 
 describe('RoomService integration test', () => {
-    let module: TestingModule;
+    let testModule: TestingModule;
     let prisma: PrismaService;
     let roomService: RoomService;
 
@@ -16,12 +16,12 @@ describe('RoomService integration test', () => {
     let bank: QuestionBank;
 
     beforeAll(async () => {
-        module = await Test.createTestingModule({
+        testModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
 
-        prisma = module.get(PrismaService);
-        roomService = module.get(RoomService);
+        prisma = testModule.get(PrismaService);
+        roomService = testModule.get(RoomService);
     });
 
     beforeEach(async () => {
@@ -55,7 +55,7 @@ describe('RoomService integration test', () => {
     });
 
     afterAll(async () => {
-        await module.close();
+        await testModule.close();
     });
 
     it('should manage room correctly and save votes to DB', async () => {

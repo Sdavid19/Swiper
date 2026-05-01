@@ -57,7 +57,7 @@ describe('AuthModule – Integration Test', () => {
     await expect(
       authService.signin({
         email: user.email,
-        password: 'wrongpassword',
+        password: 'wrong-password',
       }),
     ).rejects.toThrow();
   });

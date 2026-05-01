@@ -31,18 +31,16 @@ describe('QuestionBank (e2e)', () => {
   };
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    const testMoudle: TestingModule = await Test.createTestingModule({imports: [AppModule]}).compile();
 
     process.env.NODE_ENV = 'test';
 
-    app = moduleFixture.createNestApplication();
+    app = testMoudle.createNestApplication();
     app.useGlobalPipes(new FieldErrorValidationPipe());
 
     await app.init();
 
-    prisma = moduleFixture.get(PrismaService);
+    prisma = testMoudle.get(PrismaService);
   });
 
   beforeEach(async () => {

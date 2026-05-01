@@ -6,7 +6,7 @@ import { AppModule } from "../../src/app.module";
 import { resetDb } from "../helpers/db-reset";
 
 describe('Vote integration test', () => {
-    let module: TestingModule;
+    let testModule: TestingModule;
     let prisma: PrismaService;
     let voteService: VoteService;
 
@@ -22,12 +22,10 @@ describe('Vote integration test', () => {
 
 
     beforeAll(async () => {
-        module = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile();
+        testModule = await Test.createTestingModule({imports: [AppModule],}).compile();
 
-        prisma = module.get(PrismaService);
-        voteService = module.get(VoteService);
+        prisma = testModule.get(PrismaService);
+        voteService = testModule.get(VoteService);
     });
 
     beforeEach(async () => {
@@ -61,7 +59,7 @@ describe('Vote integration test', () => {
     });
 
     afterAll(async () => {
-        await module.close();
+        await testModule.close();
     });
 
     describe('get votes user participated in', () => {

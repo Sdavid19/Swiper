@@ -1,5 +1,6 @@
 import { PrismaService } from "../../src/prisma";
 
+//táblák törlése
 export async function resetDb(prisma: PrismaService) {
     await prisma.answer.deleteMany();
     await prisma.vote.deleteMany();

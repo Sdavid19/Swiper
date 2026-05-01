@@ -147,6 +147,7 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
+    //a szoba adatainak elmentése DTO-vá alakítással
     const asnwers = Object.entries(room.votes).flatMap(([userId, questions]) => {
       return Object.entries(questions).map(
         ([questionId, answer]) =>

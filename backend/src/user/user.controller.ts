@@ -44,8 +44,7 @@ export class UserController {
   @ApiOkResponse({ type: UserImageDto })
   @UseInterceptors(FileInterceptor('file', imageUploadConfig),)
   @UseGuards(AuthGuard)
-  uploadFile(@Param('id') id: string, @UploadedFile() file: Express.Multer.File,
-  ) {
+  uploadFile(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
     return this.userImageService.updateUserImage(+id, file.filename,);
   }
 }

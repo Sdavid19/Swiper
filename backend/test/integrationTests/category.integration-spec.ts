@@ -6,19 +6,17 @@ import { SeedService } from '../../src/prisma/seed.service';
 import { resetDb } from '../helpers/db-reset';
 
 describe('Category integration test', () => {
-    let module: TestingModule;
+    let testModule: TestingModule;
     let prisma: PrismaService;
     let categoryService: CategoryService;
     let seedService: SeedService;
 
     beforeAll(async () => {
-        module = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile();
+        testModule = await Test.createTestingModule({imports: [AppModule],}).compile();
 
-        prisma = module.get(PrismaService);
-        categoryService = module.get(CategoryService);
-        seedService = module.get(SeedService);
+        prisma = testModule.get(PrismaService);
+        categoryService = testModule.get(CategoryService);
+        seedService = testModule.get(SeedService);
 
         await resetDb(prisma);
 
@@ -26,7 +24,7 @@ describe('Category integration test', () => {
     });
 
     afterAll(async () => {
-        await module.close();
+        await testModule.close();
     });
 
     it('should findAll() return all categories', async () => {

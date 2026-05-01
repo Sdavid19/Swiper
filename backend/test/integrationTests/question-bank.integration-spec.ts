@@ -8,7 +8,7 @@ import { Category, Media, QuestionBankTemplate, User } from "@prisma/client";
 import { QuestionService } from "../../src/question/services/question.service";
 
 describe('QuestionBank integration test', () => {
-    let module: TestingModule;
+    let testMOdule: TestingModule;
     let prisma: PrismaService;
     let bankService: QuestionBankService;
     let questionService: QuestionService
@@ -23,13 +23,11 @@ describe('QuestionBank integration test', () => {
     let series1: Media;
 
     beforeAll(async () => {
-        module = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile();
+        testMOdule = await Test.createTestingModule({imports: [AppModule]}).compile();
 
-        prisma = module.get(PrismaService);
-        bankService = module.get(QuestionBankService);
-        questionService = module.get(QuestionService);
+        prisma = testMOdule.get(PrismaService);
+        bankService = testMOdule.get(QuestionBankService);
+        questionService = testMOdule.get(QuestionService);
     });
 
     beforeEach(async () => {
@@ -44,7 +42,7 @@ describe('QuestionBank integration test', () => {
     });
 
     afterAll(async () => {
-        await module.close();
+        await testMOdule.close();
     });
 
     describe('create bank', () => {

@@ -24,18 +24,16 @@ describe('Auth (e2e)', () => {
       .send({ email, password });
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    const testModule: TestingModule = await Test.createTestingModule({imports: [AppModule],}).compile();
 
     process.env.NODE_ENV = 'test';
 
-    app = moduleFixture.createNestApplication();
+    app = testModule.createNestApplication();
     app.useGlobalPipes(new FieldErrorValidationPipe());
 
     await app.init();
 
-    prisma = moduleFixture.get(PrismaService);
+    prisma = testModule.get(PrismaService);
   });
 
   beforeEach(async () => {
@@ -87,7 +85,7 @@ describe('Auth (e2e)', () => {
     expect(res.body.message.password).toBeDefined();
   });
 
-  it('should login and return token + user', async () => {
+  it('should login and return token, user', async () => {
     const user = createUser();
 
     await signup(user).expect(201);
