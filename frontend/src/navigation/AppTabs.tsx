@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { HomeScreen } from "../features/bank/screens/HomeScreen";
 import { EditBankStack } from "./EditBankStack";
 import { ProfileStack } from "./ProfileStack";
-import { BookCheck, BookSearch, House, PieChart, Plus, User } from "lucide-react-native";
+import { BookSearch, House, PieChart, Plus, User } from "lucide-react-native";
 import { VoteStack } from "./VoteStack";
 import { VoteStatStack } from "./VoteStatStack";
 
@@ -24,9 +24,7 @@ export function AppTabs() {
         options={{
           headerShown: false,
           tabBarLabel: "My banks",
-          tabBarIcon: ({ color, size }) => (
-            <BookSearch color={color} size={size} />
-          ),
+          tabBarIcon: ({ color, size }) => <BookSearch color={color} size={size} />
         }}
         component={EditBankStack}
       />
@@ -36,9 +34,7 @@ export function AppTabs() {
         options={{
           headerShown: false,
           tabBarLabel: "Join room",
-          tabBarIcon: ({ color, size }) => (
-            <Plus color={color} size={size + 10} />
-          ),
+          tabBarIcon: ({ color, size }) => <Plus color={color} size={size + 10} />
         }}
         component={VoteStack}
       />
@@ -48,9 +44,7 @@ export function AppTabs() {
         options={{
           headerShown: false,
           tabBarLabel: "Stats",
-          tabBarIcon: ({ color, size }) => (
-            <PieChart color={color} size={size}/>
-          ),
+          tabBarIcon: ({ color, size }) => <PieChart color={color} size={size} />
         }}
         component={VoteStatStack}
       />

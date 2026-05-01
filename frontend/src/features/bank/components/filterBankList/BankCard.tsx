@@ -55,7 +55,7 @@ export function BankCard({ bank, isTemplate }: CardProps) {
 
           <View style={styles.descContainer}>
             <Text style={styles.desc} numberOfLines={1} ellipsizeMode="tail">
-              {bank.description}
+              {shortenString(bank.description, 40)} {isTemplate ? "creator" : ""}
             </Text>
           </View>
         </View>

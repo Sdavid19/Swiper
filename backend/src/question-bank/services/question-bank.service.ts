@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateBankDto, UpdateBankDto, BankDetailDto, BankListItemDto, BankListDto, BankState } from '../dto';
+import { CreateBankDto, UpdateBankDto, BankDetailDto, BankListItemDto, BankListDto, BankState, BankDto } from '../dto';
 import { CreateQuestionDto } from '../../question/dto';
 import { QuestionBankTemplateService } from '../../question-bank-template/question-bank-template.service';
 import { QuestionService } from '../../question/services/question.service';
 import { MediaService } from '../../media/services/media.service';
 import { MediaType, Prisma } from '@prisma/client';
 import { CategoryService } from '../../category';
+import { mapToBankListItemDto } from '../mapper/question-bank-mapper';
 
 @Injectable()
 export class QuestionBankService {
@@ -26,7 +27,7 @@ export class QuestionBankService {
 
     if (!bank) throw new NotFoundException();
 
-    return this.mapToBankListItemDto(bank);
+    return mapToBankListItemDto(bank);
   }
 
   async findTopBanks(userId: number): Promise<BankListItemDto[]> {
@@ -41,7 +42,7 @@ export class QuestionBankService {
       take: 3,
     });
 
-    return banks.map(this.mapToBankListItemDto.bind(this));
+    return banks.map(mapToBankListItemDto.bind(this));
   }
 
   async findByIdWithQuestions(
@@ -95,7 +96,7 @@ export class QuestionBankService {
     ]);
 
     return {
-      banks: data.map(this.mapToBankListItemDto.bind(this)),
+      banks: data.map(mapToBankListItemDto.bind(this)),
       hasMore: page * limit < total,
     };
   }
@@ -112,7 +113,7 @@ export class QuestionBankService {
       include: this.bankIncludeOptions(),
     });
 
-    return this.mapToBankListItemDto(data);
+    return mapToBankListItemDto(data);
   }
 
   async create(dto: CreateBankDto, userId: number): Promise<BankListItemDto> {
@@ -140,7 +141,7 @@ export class QuestionBankService {
       include: this.bankIncludeOptions(),
     });
 
-    return this.mapToBankListItemDto(bank);
+    return mapToBankListItemDto(bank);
   }
 
   async delete(id: number) {
@@ -202,21 +203,6 @@ export class QuestionBankService {
     });
 
     return bank;
-  }
-
-  private mapToBankListItemDto(bank: any): BankListItemDto {
-    return {
-      id: bank.id,
-      title: bank.title,
-      category: bank.category,
-      description: bank.description,
-      createdAt: bank.createdAt,
-      imageUrl: bank.imageUrl,
-      updatedAt: bank.updatedAt,
-      voteCount: bank._count?.votes ?? 0,
-      questionCount: bank._count?.questions ?? 0,
-      creator: bank.creator,
-    };
   }
 
    buildBankTextSearchFilter(text?: string): Prisma.QuestionBankWhereInput {

@@ -55,13 +55,10 @@ export type AuthNavigation = NativeStackNavigationProp<AuthStackParamList>;
 
 export type AppNavigation = NativeStackNavigationProp<AppStackParamList>;
 
-export type EditBankNavigation =
-  NativeStackNavigationProp<EditBankStackParamList>;
+export type EditBankNavigation = NativeStackNavigationProp<EditBankStackParamList>;
 
-export type ProfileNavigation =
-  NativeStackNavigationProp<ProfileStackParamList>;
+export type ProfileNavigation = NativeStackNavigationProp<ProfileStackParamList>;
 
-export type VoteStatNavigation =
-  NativeStackNavigationProp<VoteStatStackParamList>;
+export type VoteStatNavigation = NativeStackNavigationProp<VoteStatStackParamList>;
 
 export type VoteNavigation = NativeStackNavigationProp<VoteStackParamList>;

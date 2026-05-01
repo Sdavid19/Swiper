@@ -38,7 +38,7 @@ describe('QuestionBankService - filters', () => {
       expect(service.buildBankTextSearchFilter('   ')).toEqual({});
     });
 
-    it('should build OR filter correctly', () => {
+    it('should build filter correctly', () => {
       const result = service.buildBankTextSearchFilter('test');
 
       expect(result).toEqual({

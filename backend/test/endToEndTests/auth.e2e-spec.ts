@@ -4,100 +4,105 @@ import request from 'supertest';
 import { PrismaService } from '../../src/prisma';
 import { AppModule } from '../../src/app.module';
 import { FieldErrorValidationPipe } from '../../src/shared/pipes/field-validation.pipe';
-import { resetDb } from '../helpers/db-reset';
 
 describe('Auth (e2e)', () => {
-    let app: INestApplication;
-    let prisma: PrismaService;
+  let app: INestApplication;
+  let prisma: PrismaService;
 
-    const user = {
-        email: `test-${Date.now()}@example.com`,
-        password: 'Password123!',
-        name: 'Test User',
-    };
+  const createUser = () => ({
+    email: `test-${Date.now()}-${Math.random()}@example.com`,
+    password: 'Password123!',
+    name: 'Test User',
+  });
 
-    beforeAll(async () => {
-        const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile();
+  const signup = (user: any) =>
+    request(app.getHttpServer()).post('/auth/signup').send(user);
 
-        require('dotenv').config({ path: '.env.test' });
+  const login = (email: string, password: string) =>
+    request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ email, password });
 
-        app = moduleFixture.createNestApplication();
-        app.useGlobalPipes(new FieldErrorValidationPipe());
-        await app.init();
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
-        prisma = moduleFixture.get(PrismaService);
-        await resetDb(prisma);
-    });
+    process.env.NODE_ENV = 'test';
 
-    afterAll(async () => {
-        await app.close();
-    });
+    app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new FieldErrorValidationPipe());
 
-    it('POST /auth/signup should create user', async () => {
-        const res = await request(app.getHttpServer())
-            .post('/auth/signup')
-            .send(user)
-            .expect(201);
+    await app.init();
 
-        expect(res.body).toBeDefined();
-        expect(res.body.email).toBe(user.email);
-    });
+    prisma = moduleFixture.get(PrismaService);
+  });
 
-    it('POST /auth/signup wrong email should return error', async () => {
-        const res = await request(app.getHttpServer())
-            .post('/auth/signup')
-            .send({ email: "", password: 'password', name: 'asd' })
-            .expect(400);
+  beforeEach(async () => {
+    await prisma.user.deleteMany();
+  });
 
-        expect(res.body.error).toBe('Field error');
-        expect(res.body.message.email).toBeDefined();
-    });
+  afterAll(async () => {
+    await app.close();
+  });
 
-    it('POST /auth/signup wrong username should return error', async () => {
-        const res = await request(app.getHttpServer())
-            .post('/auth/signup')
-            .send({ email: "", password: 'password', name: 'a' })
-            .expect(400);
+  it('should create user', async () => {
+    const user = createUser();
 
-        expect(res.body.error).toBe('Field error');
-        expect(res.body.message.name).toBeDefined();
-    });
+    const res = await signup(user).expect(201);
 
-    it('POST /auth/signup wrong password should return error', async () => {
-        const res = await request(app.getHttpServer())
-            .post('/auth/signup')
-            .send({ email: "", password: 'pass', name: 'asd' })
-            .expect(400);
+    expect(res.body.email).toBe(user.email);
+  });
 
-        expect(res.body.statusCode).toBe(400);
-        expect(res.body.error).toBe('Field error');
-        expect(res.body.message.password).toBeDefined();
-    });
+  it('should return error for invalid email', async () => {
+    const res = await signup({
+      email: '',
+      password: 'password',
+      name: 'asd',
+    }).expect(400);
 
-    it('POST /auth/login should return token + user', async () => {
-        const res = await request(app.getHttpServer())
-            .post('/auth/login')
-            .send({
-                email: user.email,
-                password: user.password,
-            })
-            .expect(200);
+    expect(res.body.error).toBe('Field error');
+    expect(res.body.message.email).toBeDefined();
+  });
 
-        expect(res.body.access_token).toBeDefined();
-        expect(res.body.user.email).toBe(user.email);
-    });
+  it('should return error for invalid username', async () => {
+    const res = await signup({
+      email: 'test@test.com',
+      password: 'password',
+      name: 'a',
+    }).expect(400);
 
-    it('POST /auth/login wrong password should fail', async () => {
-        const res = await request(app.getHttpServer())
-            .post('/auth/login')
-            .send({
-                email: user.email,
-                password: 'wrong-password',
-            })
-            .expect(401);
-    });
+    expect(res.body.error).toBe('Field error');
+    expect(res.body.message.name).toBeDefined();
+  });
 
+  it('should return error for weak password', async () => {
+    const res = await signup({
+      email: 'test@test.com',
+      password: 'pass',
+      name: 'asd',
+    }).expect(400);
 
+    expect(res.body.error).toBe('Field error');
+    expect(res.body.message.password).toBeDefined();
+  });
+
+  it('should login and return token + user', async () => {
+    const user = createUser();
+
+    await signup(user).expect(201);
+
+    const res = await login(user.email, user.password).expect(200);
+
+    expect(res.body.access_token).toBeDefined();
+    expect(res.body.user.email).toBe(user.email);
+  });
+
+  it('should fail login with wrong password', async () => {
+    const user = createUser();
+
+    await signup(user).expect(201);
+
+    await login(user.email, 'wrong-password').expect(401);
+  });
 });

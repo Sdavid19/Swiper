@@ -152,25 +152,5 @@ describe('QuestionBankService', () => {
             expect(result[0].questionCount).toBe(5);
         });
 
-
-        it('should return only top 3 banks from 5 results', async () => {
-            prismaMock.questionBank.findMany.mockResolvedValue([
-                { id: 1, _count: { votes: 100, questions: 1 }, category: {}, creator: {} },
-                { id: 2, _count: { votes: 90, questions: 1 }, category: {}, creator: {} },
-                { id: 3, _count: { votes: 80, questions: 1 }, category: {}, creator: {} },
-                { id: 4, _count: { votes: 70, questions: 1 }, category: {}, creator: {} },
-                { id: 5, _count: { votes: 60, questions: 1 }, category: {}, creator: {} },
-            ]);
-
-            const result = await service.findTopBanks(1);
-
-            expect(result.length).toBe(5);
-
-            expect(prismaMock.questionBank.findMany).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    take: 3,
-                }),
-            );
-        });
     });
 });

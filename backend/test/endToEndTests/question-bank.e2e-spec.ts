@@ -4,107 +4,121 @@ import request from 'supertest';
 import { PrismaService } from '../../src/prisma';
 import { AppModule } from '../../src/app.module';
 import { FieldErrorValidationPipe } from '../../src/shared/pipes/field-validation.pipe';
-import { SigninDto } from '../../src/auth/dto';
-import { UserDto } from '../../src/user/dto';
-import { CreateBankDto } from '../../src/question-bank/dto';
-import { Category } from '@prisma/client';
-import { resetDb } from '../helpers/db-reset';
 
-describe('Auth (e2e)', () => {
-    let app: INestApplication;
-    let prisma: PrismaService;
+describe('QuestionBank (e2e)', () => {
+  let app: INestApplication;
+  let prisma: PrismaService;
 
-    let accessToken: string;
-    let user: UserDto;
-    let category: Category;
+  const signupAndLogin = async (email: string) => {
+    const password = 'Password123!';
 
-
-    const singInDto = {
-        email: `test@example.com`,
-        password: 'password',
+    await request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({
+        email,
+        password,
         name: 'Test User',
-    } as SigninDto;
+      });
 
-    const logInDto = {
-        email: `test@example.com`,
-        password: 'password',
-    } as SigninDto;
+    const res = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ email, password });
 
-    let createBankDto: CreateBankDto;
+    return {
+      token: res.body.access_token,
+      user: res.body.user,
+    };
+  };
 
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
-    beforeAll(async () => {
-        process.env.NODE_ENV = 'test';
-        const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile();
+    process.env.NODE_ENV = 'test';
 
-        require('dotenv').config({ path: '.env.test' });
+    app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new FieldErrorValidationPipe());
 
-        app = moduleFixture.createNestApplication();
-        app.useGlobalPipes(new FieldErrorValidationPipe());
-        await app.init();
+    await app.init();
 
-        prisma = moduleFixture.get(PrismaService);
-        await resetDb(prisma);
+    prisma = moduleFixture.get(PrismaService);
+  });
 
-        category = await prisma.category.create({ data: { name: 'Math', color: 'blue', slug: 'math' } })
+  beforeEach(async () => {
+    await prisma.questionBank.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.category.deleteMany();
+  });
 
-        await request(app.getHttpServer()).post('/auth/signup').send(singInDto);
-        const loginRes = await request(app.getHttpServer()).post('/auth/login').send(logInDto);
+  afterAll(async () => {
+    await app.close();
+  });
 
-        accessToken = loginRes.body.access_token;
-        user = loginRes.body.user;
+  it('should create question bank', async () => {
+    const email = `test-${Date.now()}@test.com`;
 
-        createBankDto = {
-            title: 'title',
-            description: 'desc',
-            categoryId: +category.id,
-            imageUrl: ''
-        } as CreateBankDto;
+    const { token, user } = await signupAndLogin(email);
 
+    const category = await prisma.category.create({
+      data: {
+        name: 'Math',
+        color: 'blue',
+        slug: 'math',
+      },
     });
 
-    afterAll(async () => {
-        await app.close();
+    const dto = {
+      title: 'title',
+      description: 'desc',
+      categoryId: category.id,
+      imageUrl: '',
+    };
+
+    const res = await request(app.getHttpServer())
+      .post('/question-banks/create')
+      .set('Authorization', `Bearer ${token}`)
+      .send(dto)
+      .expect(201);
+
+    expect(res.body.title).toBe(dto.title);
+    expect(res.body.category.id).toBe(category.id);
+    expect(res.body.creator.id).toBe(user.id);
+  });
+
+  it('should not create without categoryId', async () => {
+    const email = `test-${Date.now()}@test.com`;
+
+    const { token } = await signupAndLogin(email);
+
+    const res = await request(app.getHttpServer())
+      .post('/question-banks/create')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'title' })
+      .expect(400);
+
+    expect(res.body.message.categoryId).toBeDefined();
+  });
+
+  it('should not create without title', async () => {
+    const email = `test-${Date.now()}@test.com`;
+
+    const { token } = await signupAndLogin(email);
+
+    const category = await prisma.category.create({
+      data: {
+        name: 'Math',
+        color: 'blue',
+        slug: 'math',
+      },
     });
 
-    describe('create bank', () => {
-        it('should create question bank', async () => {
-            const resp = await request(app.getHttpServer())
-                .post('/question-banks/create')
-                .set('Authorization', `Bearer ${accessToken}`)
-                .send(createBankDto)
-                .expect(201);
+    const res = await request(app.getHttpServer())
+      .post('/question-banks/create')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ categoryId: category.id, title: '' })
+      .expect(400);
 
-            expect(resp.body.title).toBe(createBankDto.title);
-            expect(resp.body.category.id).toBe(createBankDto.categoryId);
-            expect(resp.body.creator.id).toBe(user.id);
-        });
-
-        it('should not create question bank without category', async () => {
-            const res = await request(app.getHttpServer())
-                .post('/question-banks/create')
-                .set('Authorization', `Bearer ${accessToken}`)
-                .send({ title: 'title' })
-                .expect(400);
-
-            expect(res.body.error).toBe('Field error');
-            expect(res.body.message.categoryId).toBeDefined();
-
-        });
-
-        it('should not create question bank without title', async () => {
-            const res = await request(app.getHttpServer())
-                .post('/question-banks/create')
-                .set('Authorization', `Bearer ${accessToken}`)
-                .send({ title: '', category: category.id })
-                .expect(400);
-
-            expect(res.body.error).toBe('Field error');
-            expect(res.body.message.title).toBeDefined();
-
-        });
-    })
-
+    expect(res.body.message.title).toBeDefined();
+  });
 });

@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Platform, Image, Text } from "react-native";
-
+import { StyleSheet, View, Image } from "react-native";
 import { SigninDto } from "../../../shared/types/generated";
 import { AxiosError } from "axios";
 import { login } from "../services/auth.service";
-
 import { NavigateLink } from "../components/NavigateLink";
 import { InputField, PrimaryButton } from "../../../shared/components";
 import { ValidationErrorMessage, ErrorResponse } from "../../../shared/types";
@@ -41,54 +39,54 @@ export function LoginScreen() {
   };
 
   return (
-  <KeyboardAwareScrollView
-    contentContainerStyle={styles.container}
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
       enableOnAndroid={true}
       keyboardOpeningTime={0}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
-  >
-    <View style={styles.logoContainer}>
-      <Image
-        style={styles.logo}
-        source={require('../../../../assets/logo.png')}
-        resizeMode="cover"
-      />
-    </View>
+    >
+      <View style={styles.logoContainer}>
+        <Image
+          style={styles.logo}
+          source={require('../../../../assets/logo.png')}
+          resizeMode="cover"
+        />
+      </View>
 
-    <View style={styles.formContainer}>
-      <InputField
-        label="Email"
-        placeholder="example@gmail.com"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        errorMessages={errors?.email}
-        Icon={Mail}
-      />
+      <View style={styles.formContainer}>
+        <InputField
+          label="Email"
+          placeholder="example@gmail.com"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          errorMessages={errors?.email}
+          Icon={Mail}
+        />
 
-      <InputField
-        label="Password"
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        errorMessages={errors?.password}
-        Icon={KeyRound}
-      />
+        <InputField
+          label="Password"
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          errorMessages={errors?.password}
+          Icon={KeyRound}
+        />
 
-      <PrimaryButton
-        title="Login"
-        onPress={handleLogin}
-        disabled={isButtonDisabled()}
-        style={styles.loginButton}
-      />
+        <PrimaryButton
+          title="Login"
+          onPress={handleLogin}
+          disabled={isButtonDisabled()}
+          style={styles.loginButton}
+        />
 
-      <NavigateLink text="Not a member yet?" component="Signup" />
-    </View>
-  </KeyboardAwareScrollView>
-);
+        <NavigateLink text="Not a member yet?" component="Signup" />
+      </View>
+    </KeyboardAwareScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -100,8 +98,8 @@ const styles = StyleSheet.create({
   },
 
   logoContainer: {
-  alignItems: 'center',
-   marginBottom: 60
+    alignItems: 'center',
+    marginBottom: 60
   },
 
   logo: {

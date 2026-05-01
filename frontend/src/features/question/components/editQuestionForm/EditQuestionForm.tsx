@@ -67,7 +67,7 @@ export function EditQuestionForm({ screenMode, bankId, question, setQuestion }: 
             <InputField
                 value={text}
                 onChangeText={setText}
-                label="Question"
+                label="Question*"
                 editable={screenMode != "View"}
                 errorMessages={errors?.text}
             />

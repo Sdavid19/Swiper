@@ -1,10 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { getAllBanksWithFilter, getTopBanks } from "../services/bank.service";
+import { getTopBanks } from "../services/bank.service";
 import { useCallback, useEffect, useState } from "react";
-import {
-  BankListItemDto,
-  QuestionBankTemplateDto,
-} from "../../../shared/types/generated";
+import { BankListItemDto, QuestionBankTemplateDto } from "../../../shared/types/generated";
 import { BankCard } from "../components/filterBankList/BankCard";
 import { getAllTemplates } from "../services/template.service";
 import { useFocusEffect } from "@react-navigation/native";
