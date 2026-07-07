@@ -16,7 +16,7 @@
 
 ---
 
-###Telepítés
+## Telepítés
 
 ### 1. API kulcs beszerzése
 
