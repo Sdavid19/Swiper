@@ -7,13 +7,52 @@
 * NestJS
 * Docker
 * PostgreSQL
+* Prisma
 
 ### Frontend
 
 * React Native
 * Expo
 * TypeScript
+* Redux
 * Websocket
+
+---
+
+## Funkciók
+
+* Kérdésbankok létrehozása
+* Kérdésbankok generálása filmes/sorozatos témákban
+* Szavazások indítása
+* Szavazatok rögzítése
+* Eredmények összesítése
+* Statisztikák készítése
+* Android és iOS támogatás
+
+### Menü
+Kérdésbank generálás sorozatok és filmek alapján a felső menüpontban, ezek külső API forrásból érkeznek. Az alsó menüpontban a felhasználó által legtöbbet használt kérdésbankkal szavazás indítható. Szavazés indítása a Play gomb megnyomásával egy külön képernyőről indítható.
+
+ ![Image Alt](https://raw.githubusercontent.com/Sdavid19/Swiper/refs/heads/master/frontend/Menu.png)
+
+### Bank szerkesztő
+Kérdésbankok létrehozása és szekresztése ezeken az oldalakon lehetségesek. A kérdésbankok címmel és kategóriával rendelkező kérdésgyűjtemények, amelyekkel szavazások indítható.
+
+![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Bank_Editor.png?raw=true)
+
+### Szoba
+Ide tudnak becsaktlakozni a felhasználók. Egy felhasználó egy kérdésbankkal szavazást indíthat és itt csatlakozhatbak be mások a megfelelő 6 számjegyű kódot megadva.
+
+![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Room.png?raw=true)
+
+### Szavazás
+Szavazás itt történik, a felhasználók jobbra/balra húzással szavazhatnak. Minden résztvevőt meg kell várni míg végez.
+
+![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Vote.png?raw=true)
+
+### Statisztika
+A szavazás végeztével itt tekinthetők meg a statisztikák. Oszlop diagram szemlélteti a kérdésekre adott igen szavazatokat csökkenő sorrendben. Az oszlopokra nyomva jelennek meg a részletesebb statisztikák például az igenek/nemek aránya.
+
+![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Stats.png?raw=true)
 
 ---
 
@@ -82,33 +121,6 @@ Az alkalmazás futtatható:
 
 * Expo Go alkalmazásból
 * Android illetve IOS készülékeken
-
----
-
-## Funkciók
-
-* Kérdésbankok létrehozása
-* Kérdésbankok generálása filmes/sorozatos témákban
-* Szavazások indítása
-* Szavazatok rögzítése
-* Eredmények összesítése
-* Statisztikák készítése
-* Android és iOS támogatás
-
-### Menü
- ![Image Alt](https://raw.githubusercontent.com/Sdavid19/Swiper/refs/heads/master/frontend/Menu.png)
-
-### Bank szerkesztő
-![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Bank_Editor.png?raw=true)
-
-### Szoba
-![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Room.png?raw=true)
-
-### Szavazás
-![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Vote.png?raw=true)
-
-### Statisztika
-![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Stats.png?raw=true)
 
 ---
 
