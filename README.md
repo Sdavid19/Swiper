@@ -34,7 +34,7 @@ Kérdésbank generálás sorozatok és filmek alapján a felső menüpontban, ez
 
  ![Image Alt](https://raw.githubusercontent.com/Sdavid19/Swiper/refs/heads/master/frontend/Menu.png)
 
-### Bank szerkesztő
+### Bank lsitázó és szerkesztő
 Kérdésbankok létrehozása és szekresztése ezeken az oldalakon lehetségesek. A kérdésbankok címmel és kategóriával rendelkező kérdésgyűjtemények, amelyekkel szavazások indítható.
 
 ![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Bank_Editor.png?raw=true)
