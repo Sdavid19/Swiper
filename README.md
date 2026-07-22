@@ -13,6 +13,7 @@
 * React Native
 * Expo
 * TypeScript
+* Websocket
 
 ---
 
@@ -93,6 +94,21 @@ Az alkalmazás futtatható:
 * Eredmények összesítése
 * Statisztikák készítése
 * Android és iOS támogatás
+
+### Menü
+ ![Image Alt](https://raw.githubusercontent.com/Sdavid19/Swiper/refs/heads/master/frontend/Menu.png)
+
+### Bank szerkesztő
+![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Bank_Editor.png?raw=true)
+
+### Szoba
+![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Room.png?raw=true)
+
+### Szavazás
+![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Vote.png?raw=true)
+
+### Statisztika
+![Image Alt](https://github.com/Sdavid19/Swiper/blob/master/frontend/Stats.png?raw=true)
 
 ---
 
